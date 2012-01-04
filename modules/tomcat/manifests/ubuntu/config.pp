@@ -1,0 +1,10 @@
+class skeleton::ubuntu::config(
+)
+{
+
+
+
+
+
+
+}
