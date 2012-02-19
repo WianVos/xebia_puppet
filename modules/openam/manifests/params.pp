@@ -1,0 +1,4 @@
+class openam::params{
+	
+	
+}
