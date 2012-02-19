@@ -31,7 +31,7 @@ define common::archive::regfile (
     		require => [Package["curl"],File["${target}"]],
     		path => ["/bin","/usr/bin", "/usr/sbin"],
     		timeout => "$timeout",
-    		logoutput => "true",
+    		logoutput => true,
 		}
 
   

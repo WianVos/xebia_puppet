@@ -25,7 +25,8 @@ class tomcat::admin {
     gid => $tomcat::params::tomcat_user_group? {
       ''      => undef,
       default => $tomcat::params::tomcat_user_group,
-    }
+    },
+    managehome => true
   }
   
   group{"tomcat user group":

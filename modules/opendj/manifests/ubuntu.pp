@@ -1,6 +1,6 @@
 class opendj::ubuntu {
 
-	case $lsbdistcodename {
+	case $::lsbdistcodename {
 		lucid : { include opendj::ubuntu::lucid }
 		default : { notice "unsupported ubuntu release"}
 	}
