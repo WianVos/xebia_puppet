@@ -1,5 +1,6 @@
-class tomcat_host(customer="benito",
-		  environment="test"){
+class tomcat_host(
+		$customer="benito",
+		$environment="test"){
 	include tomcat
 
 	tomcat::instance {"tomcat":

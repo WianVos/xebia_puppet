@@ -13,9 +13,9 @@
 # [Remember: No empty lines between comments and class definition]
 class opendj::base {
 
-	case $operatingsystem {
+	case $::operatingsystem {
                 Ubuntu  : { include opendj::ubuntu}
-                default : { notice "unsupported operatingsystem ${operatingsystem}" }
+                default : { notice "unsupported operatingsystem ${::operatingsystem}" }
                 }
 
 }
