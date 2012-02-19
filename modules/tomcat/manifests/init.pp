@@ -15,8 +15,8 @@ class tomcat {
 
 	include tomcat::params
 	
-	case $operatingsystem {
+	case $::operatingsystem {
                 Ubuntu  : { include tomcat::ubuntu}
-                default : { notice "unsupported operatingsystem ${operatingsystem}" }
+                default : { notice "unsupported operatingsystem ${::operatingsystem}" }
                 }
 }

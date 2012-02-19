@@ -1,1 +1,1 @@
-include common
+include common::packages
