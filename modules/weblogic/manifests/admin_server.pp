@@ -24,10 +24,16 @@ class weblogic::admin_server(
 	file {"${weblogic::params::infradir}/weblogic/weblogic.py":
 		source => "puppet:///modules/weblogic/admin_server/weblogic.py"
 		}
-	file {"${weblogic::params::infradir}/weblogic/environment_template.py":
+	file {"${weblogic::params::infradir}/weblogic/${domain_name}.py":
 		content => template('weblogic/admin_server/environment_template.py.erb'),
 		}
 	file {"${weblogic::params::infradir}/weblogic/weblogic_template.py":
 		content => template('weblogic/admin_server/weblogic_template.py.erb'),
 		}
+	
+	exec{"${domain_name} domain creation":
+		command => "${weblogic::params::installpath}/wlserver_10.3/common/bin/wlst.sh -i weblogic.py -p ${domain_name}",
+		cwd => "${weblogic::params::infradir}/weblogic",
+		
+	
 }
