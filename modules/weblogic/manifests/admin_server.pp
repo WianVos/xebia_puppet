@@ -37,7 +37,7 @@ class weblogic::admin_server(
 		}
 	
 	exec{"${domain_name} domain creation":
-		command => "${weblogic::params::installpath}/wlserver_10.3/common/bin/wlst.sh -i weblogic.py -p ${domain_name}",
+		command => "${weblogic::params::installpath}/wlserver_10.3/common/bin/wlst.sh weblogic.py -p ${domain_name}",
 		cwd => "${weblogic::params::infradir}/weblogic",
 		creates => "${weblogic::params::application_base_dir}/${domain_name}",
 		require => File["${weblogic::params::infradir}/weblogic/domain_utility.py","${weblogic::params::infradir}/weblogic/schemes.py","${weblogic::params::infradir}/weblogic/weblogic.py","${weblogic::params::infradir}/weblogic/${domain_name}.py","${weblogic::params::infradir}/weblogic/weblogic_template.py"  ]
