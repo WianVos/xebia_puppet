@@ -5,7 +5,7 @@ class weblogic::install{
 
         # get some variables to local
         $installpath = "${weblogic::params::installpath}"
-	$jvmpath = "${weblogic::params::jvmpath}"	
+		$jvmpath = "${weblogic::params::jvmpath}"	
 
         File { owner => root, group => root, mode => 700 }
 

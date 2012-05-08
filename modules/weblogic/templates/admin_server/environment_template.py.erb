@@ -1,0 +1,27 @@
+# WebLogic properties template, replace everything between '<>' angle brackets
+scheme='prd'
+
+# domain settings
+weblogic_password='<<%= scope.lookupvar('weblogic::params::password')  %>>'
+domain_name='<<%= scope.lookupvar('weblogic::params::domain_name')%>>'
+
+# Listen addresses, if this isn't a 2 node setup, modify the domain topology below
+list_of_servers=['<<%= fqdn %>>']
+
+###############################################################################
+# Domain Topology
+###############################################################################
+
+# Clusters
+clusters=[]
+servers_to_clusters={} 
+
+# Machines
+machines=[]
+
+# Admin Server 
+admin_server={'ListenAddress':list_of_servers[0]}
+admin_server_machine={'ListenAddress':list_of_servers[0]}
+
+# Managed Servers
+managed_servers=[]

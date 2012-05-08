@@ -9,7 +9,7 @@ puppet node_aws bootstrap\
  --login ubuntu\
  --keyfile /root/wianpe12.pem\
  --keyname wianpe12\
- --node-group tomcat\
+ --node-group weblogic_host\
  --enc-server ip-10-111-10-44.ec2.internal\
  --enc-ssl \
  --enc-auth-user xadmin\
