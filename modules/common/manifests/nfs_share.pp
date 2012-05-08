@@ -6,8 +6,8 @@ define common::nfs_share(
 	
 	package{"${name} nfs_server":
 		name => $::operatingsystem ?{
-				ubuntu => "unfs3",
-				default => "unfs3"},
+				ubuntu => "nfs-kernel-server",
+				default => "nfs-kernel-server"},
 		ensure => present,
 		}
 	

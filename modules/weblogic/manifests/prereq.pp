@@ -1,6 +1,6 @@
 class weblogic::prereq{
 	
-	file{"/var/tmp/weblogic/config":
+	file{"/var/tmp/weblogic_config":
 		recurse => true,
 		ensure => present
 	}
