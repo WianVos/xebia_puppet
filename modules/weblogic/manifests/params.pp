@@ -23,8 +23,9 @@ $installpath = $::weblogic_installpath ? {
 		''	=> "/opt/jrockit",
 		default => "${::weblogic_jvmpath}"
 		}
-	$domain_base_dir = $::weblogic_domain_base_dir ? {
-		''	=> "/data/domains",
-		default => "${::weblogic_domain_base_dir}"
-		}
+	$data_dir = "/data"
+	$domain_base_dir = "${data_dir}/domains"
+	$application_base_dir = "${data_dir}/applications"
+	$log_base_dir = "${data_dir}/logs"
+	
 }	

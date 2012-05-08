@@ -7,4 +7,5 @@ class weblogic::managed_node(
 		require => Class["weblogic::prereq"]
 	}
 	
+	
 }
