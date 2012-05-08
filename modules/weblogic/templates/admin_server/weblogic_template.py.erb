@@ -3,14 +3,14 @@ overwrite_domain=True
 
 # installation locations
 middleware_home='/opt/weblogic/Middleware'
-java_home='/opt/weblogic/Middleware/jdk160_21'
+java_home='<%= scope.lookupvar('weblogic::params::jvmpath') %>'
 
 
 # Templates to load in the domain
 baseTemplate=middleware_home + '/wlserver_10.3/common/templates/domains/wls.jar'
 extensionTemplates=[]
 
-domain_dir_default='/data/user_projects/domains/<domain_name>'
+domain_dir_default='<%= scope.lookupvar('weblogic::params::domain_base_dir')%>/<%= domain_name %>'
 app_dir_default='/data/user_projects/applications/<domain_name>'
 
 #domain_default={'AdministrationPortEnabled': True}

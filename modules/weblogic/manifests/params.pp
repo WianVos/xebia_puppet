@@ -1,10 +1,12 @@
 class weblogic::params {
-	
-	$installpath = $::weblogic_installpath ? {
+$installpath = $::weblogic_installpath ? {
 		''	=> "/opt/weblogic",
 		default => "${::weblogic_installpath}"
 		}
-	
+	$infradir = $::weblogic_infradir ? {
+		''	=> "/etc/xebia_infra",
+		default => "${::weblogic_infradir}"
+		}
 	$tmpdir = $::weblogic_tmpdir ? {
 		'' 	=> "/opt/weblogictmp",
 		default => "${::weblogic_tmpdir}"
@@ -21,4 +23,8 @@ class weblogic::params {
 		''	=> "/opt/jrockit",
 		default => "${::weblogic_jvmpath}"
 		}
-}
+	$domain_base_dir = $::weblogic_domain_base_dir ? {
+		''	=> "/data/domains",
+		default => "${::weblogic_domain_base_dir}"
+		}
+}	
