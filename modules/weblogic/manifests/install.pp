@@ -27,7 +27,8 @@ class weblogic::install{
 	exec {"weblogic install":
 		command	=> "${weblogic::params::jvmpath}/bin/java -jar ${weblogic::params::tmpdir}/${weblogic::params::jarfile} -mode=silent -silent_xml=${weblogic::params::tmpdir}/weblogic-silent.xml && touch ${weblogic::params::installpath}/weblogicinstalled",
 		creates => "${weblogic::params::installpath}/weblogicinstalled",
-		require => File["weblogic silent installfile","weblogic binary", "${weblogic::params::installpath}"]
+		require => File["weblogic silent installfile","weblogic binary", "${weblogic::params::installpath}"],
+		timeout => 0
 		}
 
 
