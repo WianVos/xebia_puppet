@@ -25,6 +25,9 @@ class weblogic::admin_server(
 		source => "puppet:///modules/weblogic/admin_server/weblogic.py"
 		}
 	file {"${weblogic::params::infradir}/weblogic/environment_template.py":
-		content => template('weblogic/weblogic-silent.xml.erb'),
+		content => template('weblogic/admin_server/environment_template.py.erb'),
+		}
+	file {"${weblogic::params::infradir}/weblogic/weblogic_template.py":
+		content => template('weblogic/admin_server/weblogic_template.py.erb'),
 		}
 }

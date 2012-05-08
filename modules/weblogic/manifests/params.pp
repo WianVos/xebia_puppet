@@ -27,8 +27,13 @@ $installpath = $::weblogic_installpath ? {
 		''	=> "/data/domains",
 		default => "${::weblogic_domain_base_dir}"
 		}
-	$applications_base_dir = $::weblogic_applications_base_dir ? {
+	$application_base_dir = $::weblogic_application_base_dir ? {
 		''	=> "/data/applications",
-		default => "${::weblogic_applications_base_dir}"
+		default => "${::weblogic_application_base_dir}"
 		}
+	$log_base_dir = $::weblogic_log_base_dir ? {
+		''	=> "/data/logs",
+		default => "${::weblogic_log_base_dir}"
+		}
+	
 }	
