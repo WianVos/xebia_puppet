@@ -18,8 +18,8 @@ define common::nfs_share(
 	
 	
 	exec{"export ${hosts}:${path}":
-		command => "/usr/sbin/exportfs ${options_string} ${hosts}:${path} && touch /var/tmp/share_${path}",
-		creates => "/var/tmp/share_${path}"
+		command => "/usr/sbin/exportfs ${options_string} ${hosts}:${path}",
+		require => Package["${name} nfs_server"]
 	}	
 
 }
