@@ -2,11 +2,11 @@
 scheme='prd'
 
 # domain settings
-weblogic_password='<<%= scope.lookupvar('weblogic::params::password')  %>>'
-domain_name='<<%= scope.lookupvar('weblogic::params::domain_name')%>>'
+weblogic_password='<%= scope.lookupvar('weblogic::params::password')  %>'
+domain_name='<%= scope.lookupvar('weblogic::params::domain_name')%>'
 
 # Listen addresses, if this isn't a 2 node setup, modify the domain topology below
-list_of_servers=['<<%= fqdn %>>']
+list_of_servers=['<%= fqdn %>']
 
 ###############################################################################
 # Domain Topology
