@@ -10,7 +10,7 @@ puppet node_aws bootstrap\
  --keyfile /root/wianpe12.pem\
  --keyname wianpe12\
  --node-group tomcat\
- --enc-server ip-10-190-179-232.ec2.internal\
+ --enc-server ip-10-111-10-44.ec2.internal\
  --enc-ssl \
  --enc-auth-user xadmin\
  --enc-auth-passwd xitaxita01\
