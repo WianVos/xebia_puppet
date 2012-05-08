@@ -1,5 +1,5 @@
 class weblogic::params {
-$installpath = $::weblogic_installpath ? {
+	$installpath = $::weblogic_installpath ? {
 		''	=> "/opt/weblogic",
 		default => "${::weblogic_installpath}"
 		}
@@ -27,5 +27,6 @@ $installpath = $::weblogic_installpath ? {
 	$domain_base_dir = "${data_dir}/domains"
 	$application_base_dir = "${data_dir}/applications"
 	$log_base_dir = "${data_dir}/logs"
+	$password = "fifaifoefung666"
 	
 }	
