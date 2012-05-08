@@ -1,5 +1,5 @@
 class weblogic::admin_server(
-	$domain_name = ""
+	$domain_name = "$::domain_name"
 ){
 	include weblogic::params
 	include weblogic::prereq
