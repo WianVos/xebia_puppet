@@ -27,7 +27,7 @@ class nexus(
 if $url == "" {
 	fail("Cannot initialize the Nexus class - the url parameter is mandatory")
 }
-$NEXUS_URL = $url
+$nexus_url = $url
 
 if ($username != "")  and ($password == "") {
 	fail("Cannot initialize the Nexus class - both username and password must be set")
