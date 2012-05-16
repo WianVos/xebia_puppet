@@ -92,7 +92,7 @@ class deployit(
 			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-cli.zip",
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
-			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-cli"]]
+			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-cli"], Packages[${packages}]]
 	}
 	
   	if $install == "server" {
@@ -113,7 +113,7 @@ class deployit(
 			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-server.zip",
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
-			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-server"]]
+			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-server"], Packages[${packages}]]
 		}
 		
     }

@@ -7,7 +7,7 @@ class deployit::params{
 	
 	#prerequisite packages wich will be installed before the installation of deployit
 	$packages = $::deployit_packages ? {
-		'' => ['openjdk-6-jdk'], # Default value
+		'' => ['openjdk-6-jdk','unzip'], # Default value
 		default => $::deployit_installed_packages,
 	}
 	
