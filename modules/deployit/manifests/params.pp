@@ -31,7 +31,7 @@ class deployit::params{
 	
 	#the deployit homedir . this is a link to the perticular versioned basedir of deployit	
 	$homedir = $::deployit_homedir ? {
-		'' => '/opt/deployit', # Default value
+		'' => "/opt/deployit", # Default value
 		default => $::deployit_homedir,
 	}
 	
