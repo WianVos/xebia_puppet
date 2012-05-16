@@ -1,3 +1,3 @@
-class deployit::host{
+class deployit_host{
 	include deployit
 }
