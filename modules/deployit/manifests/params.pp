@@ -37,7 +37,7 @@ class deployit::params{
 	
 	#the deployit tmpdir. this is the directory that will be used for all kinds of temporary storage
 	$tmpdir = $::deployit_tmpdir ? {
-		'' => '/opt/deployit', # Default value
+		'' => '/var/tmp/deployit', # Default value
 		default => $::deployit_tmpdir,
 	}
 	#Module management peritcular variables
