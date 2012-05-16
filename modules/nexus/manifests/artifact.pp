@@ -50,7 +50,7 @@ define nexus::artifact(
 			command => $cmd,
 			unless  => $::operatingsystem ? {
 				default	=> "/bin/test -f ${output}",
-				Ubuntu  => "/bin/test -f ${output}",
+				Ubuntu  => "/usr/bin/test -f ${output}",
 				}
 				
 		}
