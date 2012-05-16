@@ -64,15 +64,11 @@ class deployit(
 		group	=> "${install_group}"
 	}
 	
+	
 	#download and unpack the needed files into the temporary directory in accordance with the installation type
 	# cli is downloaded always 
 	# server in downloaded only if installation type is set to server
-	file{"$basedir":
-		ensure => $manage_directory,
-		owner => "${install_owner}",
-		group => "${install_group}"
-	}
- 	
+	
     class {
 		'nexus' :
 			url => "${deployit::params::nexus_url}",
@@ -86,23 +82,38 @@ class deployit(
 			classifier 	=> 'cli',
 			packaging 	=> 'zip',
 			repository 	=> "releases",
-			output 		=> "${deployit::params::nexus_tmpDir}/deployit-${version}-cli.zip",
+			output 		=> "${tmpdir}/deployit-${version}-cli.zip",
 			ensure 		=> $manage_nexus,
-			require 	=> Class["nexus"]
+			require 	=> [Class["nexus"],File["${tmpdir}"]]
+	}
+	
+	exec{
+		"unpack deployit-cli":
+			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-cli.zip",
+			cwd 		=> "${basedir}",
+			creates 	=> "${basedir}/cli",
+			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-cli"]]
 	}
 	
   	if $install == "server" {
     	
     	nexus::artifact {
 			'deployit-server' :
-				gav =>
-				"com.xebialabs.deployit:deployit:${version}",
+				gav 		=> "com.xebialabs.deployit:deployit:${version}",
 				classifier 	=> 'server',
 				packaging 	=> 'zip',
 				repository 	=> "releases",
-				output 		=> "${deployit::params::nexus_tmpDir}/deployit-${version}-server.zip",
+				output 		=> "${tmpdir}/deployit-${version}-server.zip",
 				ensure 		=> $manage_nexus,
-				require 	=> Class["nexus"]
+				require 	=> [Class["nexus"],File["${tmpdir}"]]
+		}
+		
+		exec{
+			"unpack deployit-server":
+			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-server.zip",
+			cwd 		=> "${basedir}",
+			creates 	=> "${basedir}/cli",
+			require 	=> [File["${basedir}"], Nexus::Artifact["deployit-server"]]
 		}
 		
     }
