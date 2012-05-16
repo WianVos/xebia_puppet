@@ -59,10 +59,9 @@ class deployit(
 	}
 	#homedir
 	file {"${homedir}":
-		ensure 	=> "${manage_link}",
+		ensure 	=> "${manage_directory}",
 		owner 	=> "${install_owner}",
-		group	=> "${install_group}",
-		target	=> "${basedir}"
+		group	=> "${install_group}"
 	}
 	
 	
