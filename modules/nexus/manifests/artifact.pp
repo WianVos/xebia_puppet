@@ -48,7 +48,11 @@ define nexus::artifact(
 	if $ensure == present {
 		exec { "Download ${gav}-${classifier}":
 			command => $cmd,
-			unless  => "/bin/test -f ${output}"
+			unless  => $::operatingsystem ? {
+				default	=> "/bin/test -f ${output}",
+				Ubuntu  => "/bin/test -f ${output}",
+				}
+				
 		}
 	} elsif $ensure == absent {
 		file { "Remove ${gav}-${classifier}":
