@@ -25,7 +25,7 @@ class deployit::params{
 	
 	#the basedir where the perticular version of deployit will be installed
 	$basedir = $::deployit_basedir ? {
-		'' => "/opt/deployit_${version}", # Default value
+		'' => "/opt/deployit/${version}", # Default value
 		default => $::deployit_basedir,
 	} 
 	

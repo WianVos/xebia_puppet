@@ -61,7 +61,8 @@ class deployit(
 	file {"${homedir}":
 		ensure 	=> "${manage_link}",
 		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
+		group	=> "${install_group}",
+		target	=> "${basedir}"
 	}
 	
 	
