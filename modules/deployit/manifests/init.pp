@@ -58,11 +58,11 @@ class deployit(
 		group	=> "${install_group}"
 	}
 	#homedir
-	file {"${homedir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
+#	file {"${homedir}":
+#		ensure 	=> "${manage_directory}",
+#		owner 	=> "${install_owner}",
+#		group	=> "${install_group}"
+#	}
 	
 	
 	#download and unpack the needed files into the temporary directory in accordance with the installation type
