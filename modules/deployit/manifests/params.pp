@@ -23,11 +23,6 @@ class deployit::params{
 		default => $::deployit_install_filesource
 	}
 	
-	#install_type. Possible options server of cli
-	$install_type = $::deployit_install_type ? {
-		'' => "server", # Default value
-		default => $::deployit_install_type,
-	}
 	
 	#the deployit version which we will install
 	$version = $::deployit_version ? {

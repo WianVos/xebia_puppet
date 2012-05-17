@@ -9,7 +9,6 @@ class deployit(
 	$absent 		= $deployit::params::absent,
 	$disabled 		= $deployit::params::disabled,
 	$install		= $deployit::params::install,
-	$install_type	= $deployit::params::install_type,
 	$install_filesource	= $deployit::params::install_filesource,
 	$install_owner	= $deployit::params::install_owner,
 	$install_group	= $deployit::params::install_group
@@ -90,7 +89,6 @@ if $install == "nexus" {
 			require 	=> [Class["nexus"],File["${tmpdir}"]]
 	}
 		
-if ($install == "nexus") and ($install_type == "server")  {
     nexus::artifact {
 		'deployit-server' :
 			gav 		=> "com.xebialabs.deployit:deployit:${version}",
@@ -113,16 +111,14 @@ if $install == "files" {
       	   before => Exec["unpack deployit-cli"]
       	   	}	  
     
-    if $install_type == "server" {
-    	file {"deployit-${version}-cli.zip":
+    
+    file {"deployit-${version}-server.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
+   	   	   path => "${tmpdir}/deployit-${version}-server.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/deployit-${version}-cli.zip",
+      	   source => "$install_filesource/deployit-${version}-server.zip",
       	   before => Exec["unpack deployit-server"]
         }
-    }
-    	
 }
 
 	
@@ -138,19 +134,18 @@ exec{
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				}
 		}
-	}
-if $install_type == "server"{
+	
+
 	exec{
 		"unpack deployit-server":
 			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-server.zip",
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
-			require 	=> $install ?{
+			require 	=> $install ? {
 					default => File["${basedir}","deployit-${version}-server.zip"],
 					'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
 					}
-		}
-	}		
+		}		
 }
 	
 	
