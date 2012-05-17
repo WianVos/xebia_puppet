@@ -11,10 +11,22 @@ class deployit::params{
 		default => $::deployit_installed_packages,
 	}
 	
-	#install type . Possible options server of cli 
+	#install method . Possible options files or nexus 
 	$install = $::deployit_install ? {
-		'' => "server", # Default value
+		'' => "files", # Default value
 		default => $::deployit_install,
+	}
+	
+	# install_filesource . only needed if install is files
+	$install_filesource = $::deployit_install_filesource ? {
+		'' => "puppet:///modules/deployit/files",
+		default => $::deployit_install_filesource
+	}
+	
+	#install_type. Possible options server of cli
+	$install_type = $::deployit_install_type ? {
+		'' => "server", # Default value
+		default => $::deployit_install_type,
 	}
 	
 	#the deployit version which we will install
