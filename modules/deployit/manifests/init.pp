@@ -105,13 +105,13 @@ if ($install == "nexus") and ($install_type == "server")  {
 	
 if $install == "files" {
 	  
-    file { 'deployit_sources':
-      ensure => directory,
-      path => "${tmpdir}",
-      require => File["${tmpdir}"],
-      source => $install_filesource,
-      recurse => true,
-      }
+ 	file {'deployit_sources':
+   		   ensure => directory,
+   	   	   path => "${tmpdir}/",
+      	   require => File["${tmpdir}"],
+      	   source => $install_filesource,
+      	   recurse => true,
+      	}
 }
 	
 	
@@ -122,7 +122,7 @@ exec{
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/cli",
 		require 	=> $install ?{
-				default => File["${basedir}","deployit_sources"],
+				default => [File["${basedir}","deployit_sources"]],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				}
 		}
@@ -134,7 +134,7 @@ if $install_type == "server"{
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
 			require 	=> $install ?{
-					default => File["${basedir}","deployit_sources"],
+					default => [File["${basedir}","deployit_sources"]],
 					'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
 					}
 		}
