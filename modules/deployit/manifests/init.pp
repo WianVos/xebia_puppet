@@ -146,7 +146,7 @@ if $install_type == "server"{
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
 			require 	=> $install ?{
-					default => File["${basedir}"],
+					default => File["${basedir}","deployit-${version}-server.zip"],
 					'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
 					}
 		}
