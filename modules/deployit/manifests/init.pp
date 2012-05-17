@@ -74,7 +74,7 @@ class deployit(
 			ensure 		=> $manage_user,
 			gid 		=> "${install_group}",
 			managehome 	=> false,
-			home 		=> ${homedir},
+			home 		=> "${homedir}",
 			system 		=> true,
 			
 	}
