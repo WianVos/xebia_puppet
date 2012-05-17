@@ -16,7 +16,7 @@ export PATH
 # Get a sane screen width
 [ -z "${COLUMNS:-}" ] && COLUMNS=80
 
-[ -z "${CONSOLETYPE:-}" ] && CONSOLETYPE="`/sbin/consoletype`"
+[ -z "${CONSOLETYPE:-}" ] && CONSOLETYPE="serial"
 
 if [ -f /etc/sysconfig/i18n -a -z "${NOLOCALE:-}" ] ; then
   . /etc/profile.d/lang.sh
