@@ -3,7 +3,7 @@
 # deployit          Start/Stop the deployit daemon.
 #
 #Date: 07-02-2012 Version 1.0
-#Author: Everhard Faas & Benito Prijs
+#Author: Let's just say i have someone else to thank for this script .. 
 #
 # processname: deployit
 # config: /opt/deployit/deployit-3.6.1-server/conf/deployit.conf
@@ -15,7 +15,7 @@
 RUNNINGUSER="deployit"
 PROG="deployit-server"
 PIDFILE="/var/run/deployit.pid"
-DEPLOYIT_HOME="/opt/deployit/deployit-server"
+DEPLOYIT_HOME="/opt/deployit/server"
 
 PID=$(ps -fu $RUNNINGUSER|grep $PROG |awk '{print $2}')
 if [ "$PID" != "" ]
