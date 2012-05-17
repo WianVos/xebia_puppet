@@ -111,6 +111,10 @@ if $install == "files" {
       	   require => File["${tmpdir}"],
       	   source => $install_filesource,
       	   recurse => true,
+      	   before => $install_type ? {
+      	   	default => Exec["unpack deployit-cli"],
+      	   	server => Exec["unpack deployit-cli","unpack deployit-server"]
+      	   }
       	}
 }
 	
@@ -122,7 +126,7 @@ exec{
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/cli",
 		require 	=> $install ?{
-				default => [File["${basedir}","deployit_sources"]],
+				default => File["${basedir}"],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				}
 		}
@@ -134,7 +138,7 @@ if $install_type == "server"{
 			cwd 		=> "${basedir}",
 			creates 	=> "${basedir}/cli",
 			require 	=> $install ?{
-					default => [File["${basedir}","deployit_sources"]],
+					default => File["${basedir}"],
 					'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
 					}
 		}
