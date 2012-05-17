@@ -70,13 +70,13 @@ class deployit::params{
 	
 	# setting the install owner
 	$install_owner = $::deployit_install_owner ? {
-		'' => "root",
+		'' => "deployit",
 		default => $::deployit_install_owner 
 	}
 	
 	#setting the install group
 	$install_group = $::deployit_install_group ? {
-		'' => "root",
+		'' => "deployit",
 		default => $::deployit_install_group
 	}	
 	

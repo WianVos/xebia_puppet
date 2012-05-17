@@ -40,6 +40,11 @@ class deployit(
 		default => "present"
 	}
 	
+	$manage_user = $absent ? {
+		true 	=> "absent",
+		false 	=> "present",
+		default => "present"
+	}
 	$disable_service = $disabled ? {
 		true 	=> "disabled",
 		false 	=> "enabled",
@@ -58,6 +63,21 @@ class deployit(
 		before => File["$tmpdir","$basedir"]
 	}
 	
+	#create the needed users
+	group {
+		"$install_group":
+			ensure => $manage_user,
+	}
+	
+	user {
+		"$install_owner":
+			ensure 		=> $manage_user,
+			gid 		=> "${install_group}",
+			managehome 	=> false,
+			home 		=> ${homedir},
+			system 		=> true,
+			
+	}
 	#create the needed directory structures
 	
 	#tmpdir
@@ -164,14 +184,18 @@ file{
 	"${homedir}/cli":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/deployit-${version}-cli",
-		require 	=> Exec["unpack deployit-cli"]
+		require 	=> Exec["unpack deployit-cli"],
+		owner		=> "${install_owner}",
+		group		=> "${install_group}"
 	}				
 
 file{
 	"${homedir}/server":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/deployit-${version}-server",
-		require 	=> Exec["unpack deployit-server"]
+		require 	=> Exec["unpack deployit-server"],
+		owner		=> "${install_owner}",
+		group		=> "${install_group}"
 	}	
 
 file{
