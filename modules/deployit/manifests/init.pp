@@ -175,12 +175,22 @@ file{
 	}	
 
 file{
+	"init functions":
+		ensure 		=> $manage_files,
+		source 		=> "$install_filesource/functions.sh",
+		path		=> "/etc/init.d/functions",
+		owner		=> root,
+		group		=> root,
+		mode		=> 700,
+}
+
+file{
 	"init script":
 		ensure 		=> $manage_files,
 		source 		=> "$install_filesource/deployit-initd.sh",
 		path		=> "/etc/init.d/deployit",
 		owner		=> root,
-		group		=> group,
+		group		=> root,
 		mode		=> 700,
 }
 
