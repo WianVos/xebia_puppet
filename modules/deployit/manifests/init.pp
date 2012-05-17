@@ -218,9 +218,19 @@ file{
 		mode		=> 700,
 }
 
+file{
+	"deployit config file":
+		ensure 		=> $manage_files,
+		source 		=> "$install_filesource/deployit.conf",
+		path		=> "${basedir}/deployit-${version}-server/conf/deployit.conf",
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		mode		=> 700,
+}
+
 service{
 	'deployit':
-		require 	=> File["${homedir}/server"],
+		require 	=> File["${homedir}/server","deployit config file"],
 		ensure		=> "${ensure_service}",
 		enable		=> "${disable_service}",
 		hasrestart	=> true,
