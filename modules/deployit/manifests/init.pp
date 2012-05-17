@@ -176,7 +176,7 @@ file{
 
 service{
 	'deployit':
-		require 	=> "${homedir}/server",
+		require 	=> File["${homedir}/server"],
 		pattern		=> 'com.xebialabs.deployit.DeployitBootstrapper',
 		start		=> "${homedir}/server/bin/server.sh",
 		ensure		=> "${ensure_service}",
