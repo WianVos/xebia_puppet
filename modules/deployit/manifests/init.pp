@@ -174,15 +174,24 @@ file{
 		require 	=> Exec["unpack deployit-server"]
 	}	
 
+file{
+	"init script":
+		ensure 		=> $manage_files,
+		source 		=> "$install_filesource/deployit-initd.sh",
+		path		=> "/etc/init.d/deployit",
+		owner		=> root,
+		group		=> group,
+		mode		=> 700,
+}
+
 service{
 	'deployit':
 		require 	=> File["${homedir}/server"],
-		pattern		=> 'com.xebialabs.deployit.DeployitBootstrapper',
-		start		=> "${homedir}/server/bin/server.sh",
 		ensure		=> "${ensure_service}",
 		enable		=> "${disable_service}",
-		hasrestart	=> false
+		hasrestart	=> true,
 	}	
+	
 }
 	
 	
