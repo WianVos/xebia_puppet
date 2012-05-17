@@ -34,7 +34,7 @@ class deployit(
 		default => "link",
 	}
 	
-	$manage_nexus = $absent ? {
+	$manage_files = $absent ? {
 		true => "absent",
 		false => "present",
 		default => "present"
@@ -86,7 +86,7 @@ if $install == "nexus" {
 			packaging 	=> 'zip',
 			repository 	=> "releases",
 			output 		=> "${tmpdir}/deployit-${version}-cli.zip",
-			ensure 		=> $manage_nexus,
+			ensure 		=> $manage_files,
 			require 	=> [Class["nexus"],File["${tmpdir}"]]
 	}
 		
@@ -98,25 +98,33 @@ if ($install == "nexus") and ($install_type == "server")  {
 			packaging 	=> 'zip',
 			repository 	=> "releases",
 			output 		=> "${tmpdir}/deployit-${version}-server.zip",
-			ensure 		=> $manage_nexus,
+			ensure 		=> $manage_files,
 			require 	=> [Class["nexus"],File["${tmpdir}"]]
 		}
 	}
 	
 if $install == "files" {
 	  
- 	file {'deployit_sources':
-   		   ensure => directory,
-   	   	   path => "${tmpdir}/",
+ 	file {"deployit-${version}-cli.zip":
+   		   ensure => $manage_files,
+   	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
       	   require => File["${tmpdir}"],
-      	   source => $install_filesource,
-      	   recurse => true,
-      	   before => $install_type ? {
-      	   	default => Exec["unpack deployit-cli"],
-      	   	server => Exec["unpack deployit-cli","unpack deployit-server"]
-      	   }
-      	}
+      	   source => "$install_filesource/deployit-${version}-cli.zip",
+      	   before => Exec["unpack deployit-cli"]
+      	   	}	  
+    
+    if $install_type == "server" {
+    	file {"deployit-${version}-cli.zip":
+   		   ensure => $manage_files,
+   	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
+      	   require => File["${tmpdir}"],
+      	   source => "$install_filesource/deployit-${version}-cli.zip",
+      	   before => Exec["unpack deployit-server"]
+        }
+    }
+    	
 }
+
 	
 	
 	
@@ -126,7 +134,7 @@ exec{
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/cli",
 		require 	=> $install ?{
-				default => File["${basedir}"],
+				default => File["${basedir}","deployit-${version}-cli.zip"],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				}
 		}
