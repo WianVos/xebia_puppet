@@ -19,7 +19,7 @@ class deployit::params{
 	
 	# install_filesource . only needed if install is files
 	$install_filesource = $::deployit_install_filesource ? {
-		'' => "puppet:///modules/deployit/files",
+		'' => "puppet:///modules/deployit",
 		default => $::deployit_install_filesource
 	}
 	
