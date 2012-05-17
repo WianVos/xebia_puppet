@@ -13,7 +13,7 @@
 . /etc/init.d/functions
 
 RUNNINGUSER="deployit"
-PROG="deployit-server"
+PROG="deployit"
 PIDFILE="/var/run/deployit.pid"
 DEPLOYIT_HOME="/opt/deployit/server"
 
@@ -54,7 +54,7 @@ start() {
 		su - $RUNNINGUSER -c "${DEPLOYIT_HOME}/bin/server.sh >/dev/null &"
 
 
-        	PID=$(ps -fu $RUNNINGUSER|grep deployit-server |awk '{print $2}')
+        	PID=$(ps -fu $RUNNINGUSER|grep deployit|awk '{print $2}')
        	 	if [ "$PID" != "" ]
  		then
                 	echo ${PID} >$PIDFILE 
