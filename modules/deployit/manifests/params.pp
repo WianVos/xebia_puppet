@@ -26,7 +26,7 @@ class deployit::params{
 	
 	#the deployit version which we will install
 	$version = $::deployit_version ? {
-		'' => '3.7',
+		'' => '3.7.0',
 		default => $::deployit_version
 	}
 	
