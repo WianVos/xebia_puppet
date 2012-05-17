@@ -32,7 +32,7 @@ class deployit::params{
 	
 	#the basedir where the perticular version of deployit will be installed
 	$basedir = $::deployit_basedir ? {
-		'' => "/opt/deployit", # Default value
+		'' => "/opt/deployit_base", # Default value
 		default => $::deployit_basedir,
 	} 
 	
@@ -60,6 +60,12 @@ class deployit::params{
 	$disabled = $::deployit_disabled ? {
 		'' => false,
 		default => $::deployit_disabled
+	}
+	
+	# setting deployit_ensure to false wil result in the service not being started
+	$ensure = $::deployit_ensure ? {
+		'' => running,
+		default => $::deployit_ensure
 	}
 	
 	# setting the install owner

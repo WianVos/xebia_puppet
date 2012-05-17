@@ -1,42 +1,55 @@
 #
 #
 class deployit(
-	$packages 		= $deployit::params::packages, 
-	$version 		= $deployit::params::version,
-	$basedir 		= $deployit::params::basedir,
-	$homedir 		= $deployit::params::homedir,
-	$tmpdir			= $deployit::params::tmpdir,
-	$absent 		= $deployit::params::absent,
-	$disabled 		= $deployit::params::disabled,
-	$install		= $deployit::params::install,
+	$packages 			= $deployit::params::packages, 
+	$version 			= $deployit::params::version,
+	$basedir 			= $deployit::params::basedir,
+	$homedir 			= $deployit::params::homedir,
+	$tmpdir				= $deployit::params::tmpdir,
+	$absent 			= $deployit::params::absent,
+	$disabled 			= $deployit::params::disabled,
+	$ensure				= $deployit::params::ensure,
+	$install			= $deployit::params::install,
 	$install_filesource	= $deployit::params::install_filesource,
-	$install_owner	= $deployit::params::install_owner,
-	$install_group	= $deployit::params::install_group
+	$install_owner		= $deployit::params::install_owner,
+	$install_group		= $deployit::params::install_group
 	
 		
 ) inherits deployit::params{
 	
 	#set various manage parameters in accordance to the $absent directive
 	$manage_package = $absent ? {
-		true => "absent",
-		false => "installed",
+		true 	=> "absent",
+		false 	=> "installed",
 		default => "installed"
 	}
 	
 	$manage_directory = $absent ? {
-		true => "absent",
+		true 	=> "absent",
 		default => "directory",
 	}
 	
 	$manage_link = $absent ? {
-		true => "absent",
+		true 	=> "absent",
 		default => "link",
 	}
 	
 	$manage_files = $absent ? {
-		true => "absent",
-		false => "present",
+		true 	=> "absent",
+		false 	=> "present",
 		default => "present"
+	}
+	
+	$disable_service = $disabled ? {
+		true 	=> "disabled",
+		false 	=> "enabled",
+		default => "enabled"
+	}
+	
+	$ensure_service = $ensure ? {
+		true	=> "running",
+		false 	=> "stoppped",
+		default	=> "running"
 	}
 	
 	#install packages as needed by deployit	
@@ -60,11 +73,11 @@ class deployit(
 		group	=> "${install_group}"
 	}
 	#homedir
-#	file {"${homedir}":
-#		ensure 	=> "${manage_directory}",
-#		owner 	=> "${install_owner}",
-#		group	=> "${install_group}"
-#	}
+	file {"${homedir}":
+		ensure 	=> "${manage_directory}",
+		owner 	=> "${install_owner}",
+		group	=> "${install_group}"
+	}
 	
 	
 #download and unpack the needed files into the temporary directory in accordance with the installation type
@@ -128,7 +141,7 @@ exec{
 	 "unpack deployit-cli":
 		command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-cli.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/cli",
+		creates 	=> "${basedir}/deployit-${version}-cli",
 		require 	=> $install ?{
 				default => File["${basedir}","deployit-${version}-cli.zip"],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
@@ -136,16 +149,40 @@ exec{
 		}
 	
 
-	exec{
-		"unpack deployit-server":
-			command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-server.zip",
-			cwd 		=> "${basedir}",
-			creates 	=> "${basedir}/cli",
-			require 	=> $install ? {
-					default => File["${basedir}","deployit-${version}-server.zip"],
-					'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
-					}
-		}		
+exec{
+	"unpack deployit-server":
+		command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-server.zip",
+		cwd 		=> "${basedir}",
+		creates 	=> "${basedir}/deployit-${version}-server",
+		require 	=> $install ? {
+				default => File["${basedir}","deployit-${version}-server.zip"],
+				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
+				}
+		}
+
+file{
+	"${homedir}/cli":
+		ensure 		=> $manage_link,
+		target 		=> "${basedir}/deployit-${version}-cli",
+		require 	=> Exec["unpack deployit-cli"]
+	}				
+
+file{
+	"${homedir}/server":
+		ensure 		=> $manage_link,
+		target 		=> "${basedir}/deployit-${version}-server",
+		require 	=> Exec["unpack deployit-server"]
+	}	
+
+service{
+	'deployit':
+		require 	=> "${homedir}/server",
+		pattern		=> 'com.xebialabs.deployit.DeployitBootstrapper',
+		start		=> "${homedir}/server/bin/server.sh",
+		ensure		=> "${ensure_service}",
+		enable		=> "${disable_service}",
+		hasrestart	=> false
+	}	
 }
 	
 	
