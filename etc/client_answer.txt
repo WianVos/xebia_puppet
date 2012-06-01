@@ -1,0 +1,8 @@
+q_install=y
+q_puppet_cloud_install=y
+q_puppet_enterpriseconsole_install=n
+q_puppet_symlinks_install=y
+q_puppetagent_install=y
+q_puppetagent_server=ip-10-32-10-243.eu-west-1.compute.internal
+q_puppetmaster_install=n
+q_vendor_packages_install=y
