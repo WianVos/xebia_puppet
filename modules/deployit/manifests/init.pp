@@ -238,7 +238,7 @@ exec{
 
 service{
 	'deployit':
-		require 	=> File["${homedir}/server","deployit config file"],
+		require 	=> [File["${homedir}/server","deployit config file"],Exec["init deployit"]],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
 	}		
