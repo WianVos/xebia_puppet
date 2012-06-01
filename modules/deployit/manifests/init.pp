@@ -230,7 +230,9 @@ file{
 exec{
 	"init deployit":
 		creates		=> "${homedir}/server/repository",
-		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize << EOF ; yes ; EOF",
+		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize <<EOF 
+						yes
+						EOF",
 		user		=> "${install_owner}",
 		require		=> Exec["unpack deployit-server"],
 		 
