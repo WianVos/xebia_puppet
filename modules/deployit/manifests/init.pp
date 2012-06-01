@@ -220,7 +220,7 @@ file{
 	"deployit config file":
 		ensure 		=> $manage_files,
 		source 		=> "$install_filesource/deployit.conf",
-		path		=> "${homedir}/deployit-${version}-server/conf/deployit.conf",
+		path		=> "${basedir}/deployit-${version}-server/conf/deployit.conf",
 		owner		=> "${install_owner}",
 		group		=> "${install_group}",
 		require 	=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
