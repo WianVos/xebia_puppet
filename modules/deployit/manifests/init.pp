@@ -231,7 +231,7 @@ file{
 	"deployit init_script":
 		ensure 		=> $manage_files,
 		content 	=> template("deployit/deployit_init.sh.erb"),
-		path		=> "${homedir}/deployit-${version}-server/bin/deployit_init.sh",
+		path		=> "${basedir}/deployit-${version}-server/bin/deployit_init.sh",
 		owner		=> "${install_owner}",
 		group		=> "${install_group}",
 		require 	=> [Exec["unpack deployit-server"],File["deployit config file","${homedir}/server"]],
