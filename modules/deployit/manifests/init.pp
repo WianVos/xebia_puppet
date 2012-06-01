@@ -227,26 +227,7 @@ file{
 		mode		=> 700,
 }
 
-file{
-	"deployit init_script":
-		ensure 		=> $manage_files,
-		content 	=> template("deployit/deployit_init.sh.erb"),
-		path		=> "${basedir}/deployit-${version}-server/bin/deployit_init.sh",
-		owner		=> "${install_owner}",
-		group		=> "${install_group}",
-		require 	=> [Exec["unpack deployit-server"],File["deployit config file","${homedir}/server"]],
-		mode		=> 700,		
-}
 
-#exec{
-#	"init deployit":
-#		creates		=> "${homedir}/server/repository",
-#		command		=> "${homedir}/server/bin/deployit_init.sh",
-#		user		=> "${install_owner}",
-#		require		=> [Exec["unpack deployit-server"],File["deployit init_script"]],
-#		logoutput	=> true,
-#		 
-#}
 exec{
 	"init deployit":
 		creates		=> "${homedir}/server/repository",
@@ -254,7 +235,7 @@ exec{
 						yes
 						EOF",
 		user		=> "${install_owner}",
-		require		=> [Exec["unpack deployit-server"],File["deployit init_script"]],
+		require		=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
 		logoutput	=> true,
 		 
 }
