@@ -45,12 +45,8 @@ class deployit(
 		false 	=> "present",
 		default => "present"
 	}
-	$disable_service = $disabled ? {
-		true 	=> "disabled",
-		false 	=> "enabled",
-		default => "enabled"
-	}
 	
+
 	$ensure_service = $ensure ? {
 		true	=> "running",
 		false 	=> "stoppped",
@@ -165,7 +161,8 @@ exec{
 		require 	=> $install ?{
 				default => File["${basedir}","deployit-${version}-cli.zip"],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
-				}
+				},
+		user		=>	"${install_owner}",
 		}
 	
 
@@ -177,7 +174,8 @@ exec{
 		require 	=> $install ? {
 				default => File["${basedir}","deployit-${version}-server.zip"],
 				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
-				}
+				},
+		user		=> "${install_owner}",
 		}
 
 file{
