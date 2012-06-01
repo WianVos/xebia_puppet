@@ -227,13 +227,21 @@ file{
 		mode		=> 700,
 }
 
+exec{
+	"init deployit":
+		creates		=> "${homedir}/server/repository",
+		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize << EOF ; yes ; EOF",
+		user		=> "${install_owner}",
+		require		=> Exec["unpack deployit-server"],
+		 
+}
+
 service{
 	'deployit':
 		require 	=> File["${homedir}/server","deployit config file"],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
-	}	
-	
+	}		
 }
 	
 	
