@@ -238,10 +238,21 @@ file{
 		mode		=> 700,		
 }
 
+#exec{
+#	"init deployit":
+#		creates		=> "${homedir}/server/repository",
+#		command		=> "${homedir}/server/bin/deployit_init.sh",
+#		user		=> "${install_owner}",
+#		require		=> [Exec["unpack deployit-server"],File["deployit init_script"]],
+#		logoutput	=> true,
+#		 
+#}
 exec{
 	"init deployit":
 		creates		=> "${homedir}/server/repository",
-		command		=> "${homedir}/server/bin/deployit_init.sh",
+		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize <<EOF
+						yes
+						EOF",
 		user		=> "${install_owner}",
 		require		=> [Exec["unpack deployit-server"],File["deployit init_script"]],
 		logoutput	=> true,
