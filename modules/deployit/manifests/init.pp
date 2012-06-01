@@ -243,6 +243,7 @@ exec{
 		command		=> "${homedir}/server/bin/deployit_init.sh",
 		user		=> "${install_owner}",
 		require		=> [Exec["unpack deployit-server"],File["deployit init_script"]],
+		logoutput	=> true,
 		 
 }
 
