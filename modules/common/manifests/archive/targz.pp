@@ -15,7 +15,9 @@ define common::archive::targz (
 	$target,
   	$regdir="/var/tmp",
 	$timeout='360',
-	$owner = 'root'
+	$owner = 'root',
+	$group = 'root',
+	$mode = '700'
 	){
 
   require common::packages
@@ -27,13 +29,12 @@ define common::archive::targz (
 	}
 
   exec {"$name download and unpack":
-    command 	=> "/usr/bin/curl ${source_url} | tar -xzf - -C ${target} && touch ${regdir}/${name}",
+    command 	=> "/usr/bin/curl ${source_url} | tar -xzf - -C ${target} && chown -R ${owner}:${group} ${target} && chmod -R ${mode} ${target} && touch ${regdir}/${name}",
     creates 	=> "$regdir/$name",
     require 	=> [Package["curl"],File["${target}"]],
     path 		=> ["/bin","/usr/bin", "/usr/sbin"],
     timeout 	=> "$timeout",
     logoutput 	=> true,
-    user		=> $owner
 		}
 
   

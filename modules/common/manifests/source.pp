@@ -21,6 +21,8 @@ define common::source(
 						source_url 	=> $source_url,
 						target 		=> $target,
 						owner 		=> "${owner}",
+						group		=> "${group}",
+						mode		=> "${mode}",
 						regdir		=> "${regdir}"
 					}
 				}
@@ -28,6 +30,8 @@ define common::source(
 						source_url 	=> $source_url,
 						target 		=> $target,
 						owner 		=> "${owner}",
+						group		=> "${group}",
+						mode		=> "${mode}",
 						regdir		=> "${regdir}"
 						
 					}
