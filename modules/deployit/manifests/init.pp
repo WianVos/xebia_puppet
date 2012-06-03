@@ -225,15 +225,14 @@ file{
 		group		=> "${install_group}",
 		require 	=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
 		mode		=> 700,
+		notify		=> Service["deployit"]
 }
 
 
 exec{
 	"init deployit":
 		creates		=> "${homedir}/server/repository",
-		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize <<EOF
-						yes
-						EOF",
+		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
 		user		=> "${install_owner}",
 		require		=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
 		logoutput	=> true,
