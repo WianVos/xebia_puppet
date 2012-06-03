@@ -156,6 +156,8 @@ if $install == "source" {
     ensure 		=> $manage_link,
     target 		=>"${homedir}/logs",
     require => File["${homedir}"],
+    owner		=> "${install_owner}",
+  	group		=> "${install_group}"
   	}
   
   file {"/etc/default/jetty":
