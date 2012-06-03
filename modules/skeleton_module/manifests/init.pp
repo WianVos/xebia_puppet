@@ -184,6 +184,7 @@ file{
 	}	
 
 
+
 #file{
 #	"init script":
 #		ensure 		=> $manage_files,

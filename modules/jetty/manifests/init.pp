@@ -135,7 +135,7 @@ if $install == "source" {
 }
 
 
-file{
+  file{
 	"${homedir}/jetty":
 		ensure 		=> $manage_link,
 		target 		=> "${basetarget}",
@@ -149,43 +149,24 @@ file{
 	}	
 
 
-#file{
-#	"init script":
-#		ensure 		=> $manage_files,
-#		source 		=> "",
-#		path		=> "/etc/init.d/jetty",
-#		owner		=> root,
-#		group		=> root,
-#		mode		=> 700,
-#}
+ 
 
-#file{
-#	"jetty config file":
-#		ensure 		=> $manage_files,
-#		source 		=> "$install_filesource/jetty.conf",
-#		path		=> "${basedir}/jetty-${version}-server/conf/jetty.conf",
-#		owner		=> "${install_owner}",
-#		group		=> "${install_group}",
-#		require 	=> [Exec["unpack jetty-server"],File["${homedir}/server"]],
-#		mode		=> 700,
-#		notify		=> Service["jetty"]
-#}
-#
-#
-#exec{
-#	"init jetty":
-#		creates		=> "${homedir}/server/repository",
-#		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
-#		user		=> "${install_owner}",
-#		require		=> [Exec["unpack jetty-server"],File["${homedir}/server"]],
-#		logoutput	=> true,
-#		 
-#}
-
-service{
+  file { "/var/log/jetty":
+    ensure 		=> $manage_link,
+    target 		=>"${homedir}/jetty/logs",
+    require => File["${homedir}/jetty"],
+  	}
+  
+  file { "/etc/init.d/jetty":
+  	ensure 		=> $manage_link,
+    target 		=>"${homedir}/jetty/bin/jetty.sh",
+    require => File["${homedir}/jetty"],
+  	}
+  service{
 	'jetty':
 		require 	=> File["${homedir}/jetty"],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
-	}		
+  	}	
+  	
 }
