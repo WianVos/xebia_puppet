@@ -1,8 +1,8 @@
 class deployit::params{
 	
-	$nexus_url = "http://dexter.xebialabs.com/nexus"
-	$nexus_user = "deployment"
-	$nexus_password = "_#$(%RJf-W}"
+	$nexus_url = ""
+	$nexus_user = ""
+	$nexus_password = ""
 	$nexus_tmpDir = "/var/tmp"
 	
 	#prerequisite packages wich will be installed before the installation of deployit
