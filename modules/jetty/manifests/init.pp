@@ -99,51 +99,14 @@ class deployit(
 #download and unpack the needed files into the temporary directory in accordance with the installation type
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
-if $install == "nexus" {	
-    class {
-		'nexus' :
-			url => "${jetty::params::nexus_url}",
-			username => "${jetty::params::nexus_user}",
-			password => "${jetty::params::nexus_password}"
-	}
-	
-	nexus::artifact {
-		'jetty-cli' :
-			gav 		=> "com.xebialabs.jetty:jetty:${version}",
-			classifier 	=> 'cli',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/jetty-${version}-cli.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-	}
-		
-    nexus::artifact {
-		'jetty-server' :
-			gav 		=> "com.xebialabs.jetty:jetty:${version}",
-			classifier 	=> 'server',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/jetty-${version}-server.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-		}
-	}
+
 	
 if $install == "files" {
-	  
- 	file {"jetty-${version}-cli.zip":
+
+    file {
+       "jetty-distribution-${version}.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/jetty-${version}-cli.zip",
-      	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/jetty-${version}-cli.zip",
-      	   before => Exec["unpack jetty-cli"]
-      	   	}	  
-    
-    
-    file {"jetty-${version}-server.zip":
-   		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/jetty-${version}-server.zip",
+   	   	   path => "${tmpdir}/jetty-distribution-${version}.zip",
       	   require => File["${tmpdir}"],
       	   source => "$install_filesource/jetty-${version}-server.zip",
       	   before => Exec["unpack jetty-server"]
@@ -153,21 +116,10 @@ if $install == "files" {
 	
 	
 	
-exec{
-	 "unpack jetty-cli":
-		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}-cli.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/jetty-${version}-cli",
-		require 	=> $install ?{
-				default => File["${basedir}","jetty-${version}-cli.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["jetty-cli"]],
-				},
-		user		=>	"${install_owner}",
-		}
-	
+
 
 exec{
-	"unpack jetty-server":
+	"unpack jetty":
 		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}-server.zip",
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/jetty-${version}-server",

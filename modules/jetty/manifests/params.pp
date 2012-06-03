@@ -26,7 +26,7 @@ class jetty::params{
 	
 	#the jetty version which we will install
 	$version = $::jetty_version ? {
-		'' => '3.7.0',
+		'' => '8.1.4.v20120524',
 		default => $::jetty_version
 	}
 	
