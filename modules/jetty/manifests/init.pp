@@ -133,12 +133,6 @@ if $install == "source" {
 	
 }
 
-	
-	
-	
-
-	
-
 
 file{
 	"${homedir}/jetty":
@@ -189,7 +183,7 @@ file{
 
 service{
 	'jetty':
-		require 	=> File["${homedir}/server"],
+		require 	=> File["${homedir}/jetty"],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
 	}		
