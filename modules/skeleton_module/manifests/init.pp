@@ -173,49 +173,49 @@ file{
 	"${homedir}/skeleton":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/skeleton-${version}-server",
-		require 	=> Exec["unpack skeleton-server"],
-		owner		=> $install ? {
-			nexus	:	{}
-			files	:	{}
-			source	: 	{}
-		}
-		"${install_owner}",
+		require		=> $install ? {
+				nexus	=>	Exec["unpack skeleton"],
+				files	=>	Exec["unpack skeleton"],
+				source	=> 	Common::Source["skeleton-${version}.zip"],
+				default =>	Exec["unpack skeleton"],
+				},
+		owner		=> "${install_owner}",
 		group		=> "${install_group}"
 	}	
 
 
-file{
-	"init script":
-		ensure 		=> $manage_files,
-		source 		=> "",
-		path		=> "/etc/init.d/skeleton",
-		owner		=> root,
-		group		=> root,
-		mode		=> 700,
-}
+#file{
+#	"init script":
+#		ensure 		=> $manage_files,
+#		source 		=> "",
+#		path		=> "/etc/init.d/skeleton",
+#		owner		=> root,
+#		group		=> root,
+#		mode		=> 700,
+#}
 
-file{
-	"skeleton config file":
-		ensure 		=> $manage_files,
-		source 		=> "$install_filesource/skeleton.conf",
-		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
-		owner		=> "${install_owner}",
-		group		=> "${install_group}",
-		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
-		mode		=> 700,
-		notify		=> Service["skeleton"]
-}
-
-
-exec{
-	"init skeleton":
-		creates		=> "${homedir}/server/repository",
-		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
-		user		=> "${install_owner}",
-		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
-		logoutput	=> true,
-		 
-}
+#file{
+#	"skeleton config file":
+#		ensure 		=> $manage_files,
+#		source 		=> "$install_filesource/skeleton.conf",
+#		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
+#		owner		=> "${install_owner}",
+#		group		=> "${install_group}",
+#		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		mode		=> 700,
+#		notify		=> Service["skeleton"]
+#}
+#
+#
+#exec{
+#	"init skeleton":
+#		creates		=> "${homedir}/server/repository",
+#		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
+#		user		=> "${install_owner}",
+#		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		logoutput	=> true,
+#		 
+#}
 
 service{
 	'skeleton':
