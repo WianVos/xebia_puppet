@@ -137,7 +137,7 @@ if $install == "source" {
 
 
   file{
-	"${homedir}/jetty":
+	"${homedir}":
 		ensure 		=> $manage_link,
 		target 		=> "${basetarget}",
 		require		=> $install ? {
@@ -154,18 +154,25 @@ if $install == "source" {
 
   file { "/var/log/jetty":
     ensure 		=> $manage_link,
-    target 		=>"${homedir}/jetty/logs",
-    require => File["${homedir}/jetty"],
+    target 		=>"${homedir}/logs",
+    require => File["${homedir}"],
   	}
+  
+  file {"/etc/default/jetty":
+  	ensure		=> $manage_files,
+  	content		=> "JETTY_HOME=\"${$homedir}\"",
+  	owner		=> "${install_owner}",
+  	group		=> "${install_group}"
+  }
   
   file { "/etc/init.d/jetty":
   	ensure 		=> $manage_link,
-    target 		=>"${homedir}/jetty/bin/jetty.sh",
-    require => File["${homedir}/jetty"],
+    target 		=>"${homedir}/bin/jetty.sh",
+    require => File["${homedir}"],
   	}
   service{
 	'jetty':
-		require 	=> File["${homedir}/jetty"],
+		require 	=> File["${homedir}","/etc/init.d/jetty","/etc/default/jetty","/var/log/jetty" ],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
   	}	
