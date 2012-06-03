@@ -1,6 +1,6 @@
 #
 #
-class deployit(
+class skeleton(
 	$packages 			= $skeleton::params::packages, 
 	$version 			= $skeleton::params::version,
 	$basedir 			= $skeleton::params::basedir,

@@ -1,6 +1,6 @@
 #
 #
-class deployit(
+class jetty(
 	$packages 			= $jetty::params::packages, 
 	$version 			= $jetty::params::version,
 	$basedir 			= $jetty::params::basedir,
