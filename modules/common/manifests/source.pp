@@ -8,7 +8,7 @@ define common::source(
 		$regdir	=	"/etc/xebia_puppet_reg"
 	)
 {
-	if !defined(File[${regdir}]) {
+	if !defined(File["${regdir}"]) {
 		file {"${regdir}":
 				ensure 	=> directory,
 				owner 	=> "root",
