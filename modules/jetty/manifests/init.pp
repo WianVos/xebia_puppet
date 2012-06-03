@@ -1,21 +1,21 @@
 #
 #
 class deployit(
-	$packages 			= $skeleton::params::packages, 
-	$version 			= $skeleton::params::version,
-	$basedir 			= $skeleton::params::basedir,
-	$homedir 			= $skeleton::params::homedir,
-	$tmpdir				= $skeleton::params::tmpdir,
-	$absent 			= $skeleton::params::absent,
-	$disabled 			= $skeleton::params::disabled,
-	$ensure				= $skeleton::params::ensure,
-	$install			= $skeleton::params::install,
-	$install_filesource	= $skeleton::params::install_filesource,
-	$install_owner		= $skeleton::params::install_owner,
-	$install_group		= $skeleton::params::install_group,
-	$install_source_url	= $skeleton::params::install_source_url
+	$packages 			= $jetty::params::packages, 
+	$version 			= $jetty::params::version,
+	$basedir 			= $jetty::params::basedir,
+	$homedir 			= $jetty::params::homedir,
+	$tmpdir				= $jetty::params::tmpdir,
+	$absent 			= $jetty::params::absent,
+	$disabled 			= $jetty::params::disabled,
+	$ensure				= $jetty::params::ensure,
+	$install			= $jetty::params::install,
+	$install_filesource	= $jetty::params::install_filesource,
+	$install_owner		= $jetty::params::install_owner,
+	$install_group		= $jetty::params::install_group,
+	$install_source_url	= $jetty::params::install_source_url
 		
-) inherits skeleton::params{
+) inherits jetty::params{
 	
 	#set various manage parameters in accordance to the $absent directive
 	$manage_package = $absent ? {
@@ -53,7 +53,7 @@ class deployit(
 		default	=> "running"
 	}
 	
-	#install packages as needed by skeleton	
+	#install packages as needed by jetty	
 	package{$packages:
 		ensure => $manage_package,
 		before => File["$tmpdir","$basedir"]
@@ -99,53 +99,24 @@ class deployit(
 #download and unpack the needed files into the temporary directory in accordance with the installation type
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
-if $install == "nexus" {	
-    class {
-		'nexus' :
-			url => "${skeleton::params::nexus_url}",
-			username => "${skeleton::params::nexus_user}",
-			password => "${skeleton::params::nexus_password}"
-	}
-	
-		
-    nexus::artifact {
-		'skeleton' :
-			gav 		=> "com.xebialabs.skeleton:skeleton:${version}",
-			classifier 	=> 'server',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/skeleton-${version}-server.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-		}
-	
-	exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> [File["${basedir}"], Nexus::Artifact["skeleton"]],		
-		user		=> "${install_owner}",
-		}
-	
-}
+
 	
 if $install == "files" {
 	  
-    file {"skeleton-${version}.zip":
+    file {"jetty-${version}.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/skeleton-${version}.zip",
+   	   	   path => "${tmpdir}/jetty-${version}.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/skeleton-${version}.zip",
-      	   before => Exec["unpack skeleton"]
+      	   source => "$install_filesource/jetty-${version}.zip",
+      	   before => Exec["unpack jetty"]
         }
         
     exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+	"unpack jetty":
+		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> File["${basedir}","skeleton-${version}.zip"],
+		creates 	=> "${basedir}/jetty-${version}",
+		require 	=> File["${basedir}","jetty-${version}.zip"],
 		user		=> "${install_owner}",
 		}
     
@@ -153,10 +124,10 @@ if $install == "files" {
 
 if $install == "source" {
 	
-	common::source{"skeleton-${version}.zip":
+	common::source{"unpack jetty":
 		source_url 	=>  "${install_source_url}",
         target 		=>	"${basedir}",
-		type		=>	"zip",
+		type		=>	"targz",
 		owner		=> 	"${install_owner}",				
 	}
 	
@@ -170,14 +141,13 @@ if $install == "source" {
 
 
 file{
-	"${homedir}/skeleton":
+	"${homedir}/jetty":
 		ensure 		=> $manage_link,
-		target 		=> "${basedir}/skeleton-${version}-server",
+		target 		=> "${basedir}/jetty-${version}-server",
 		require		=> $install ? {
-				nexus	=>	Exec["unpack skeleton"],
-				files	=>	Exec["unpack skeleton"],
-				source	=> 	Common::Source["skeleton-${version}.zip"],
-				default =>	Exec["unpack skeleton"],
+				files	=>	Exec["unpack jetty"],
+				source	=> 	Common::Source["unpack jetty"],
+				default =>	Exec["unpack jetty"],
 				},
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
@@ -188,38 +158,38 @@ file{
 #	"init script":
 #		ensure 		=> $manage_files,
 #		source 		=> "",
-#		path		=> "/etc/init.d/skeleton",
+#		path		=> "/etc/init.d/jetty",
 #		owner		=> root,
 #		group		=> root,
 #		mode		=> 700,
 #}
 
 #file{
-#	"skeleton config file":
+#	"jetty config file":
 #		ensure 		=> $manage_files,
-#		source 		=> "$install_filesource/skeleton.conf",
-#		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
+#		source 		=> "$install_filesource/jetty.conf",
+#		path		=> "${basedir}/jetty-${version}-server/conf/jetty.conf",
 #		owner		=> "${install_owner}",
 #		group		=> "${install_group}",
-#		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		require 	=> [Exec["unpack jetty-server"],File["${homedir}/server"]],
 #		mode		=> 700,
-#		notify		=> Service["skeleton"]
+#		notify		=> Service["jetty"]
 #}
 #
 #
 #exec{
-#	"init skeleton":
+#	"init jetty":
 #		creates		=> "${homedir}/server/repository",
 #		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
 #		user		=> "${install_owner}",
-#		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		require		=> [Exec["unpack jetty-server"],File["${homedir}/server"]],
 #		logoutput	=> true,
 #		 
 #}
 
 service{
-	'skeleton':
-		require 	=> [File["${homedir}/server","skeleton config file"],Exec["init skeleton"]],
+	'jetty':
+		require 	=> File["${homedir}/server"],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
 	}		
