@@ -119,7 +119,7 @@ if $install == "files" {
 		require 	=> File["${basedir}","jetty-${version}.zip"],
 		user		=> "${install_owner}",
 		}
-    
+    $basetarget = "${basedir}/jetty-${version}"
 }
 
 if $install == "source" {
@@ -131,13 +131,14 @@ if $install == "source" {
 		owner		=> 	"${install_owner}",				
 	}
 	
+	$basetarget = "${basedir}/jetty-distribution-${version}"
 }
 
 
 file{
 	"${homedir}/jetty":
 		ensure 		=> $manage_link,
-		target 		=> "${basedir}/jetty-${version}-server",
+		target 		=> "${basetarget}",
 		require		=> $install ? {
 				files	=>	Exec["unpack jetty"],
 				source	=> 	Common::Source["unpack jetty"],
@@ -188,12 +189,3 @@ service{
 		hasrestart	=> true,
 	}		
 }
-	
-	
-	
-	
-	
-	
-	
-
-
