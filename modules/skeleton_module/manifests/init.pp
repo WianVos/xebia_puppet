@@ -12,8 +12,8 @@ class deployit(
 	$install			= $skeleton::params::install,
 	$install_filesource	= $skeleton::params::install_filesource,
 	$install_owner		= $skeleton::params::install_owner,
-	$install_group		= $skeleton::params::install_group
-	
+	$install_group		= $skeleton::params::install_group,
+	$install_source_url	= $skeleton::params::install_source_url
 		
 ) inherits skeleton::params{
 	
@@ -107,16 +107,6 @@ if $install == "nexus" {
 			password => "${skeleton::params::nexus_password}"
 	}
 	
-	nexus::artifact {
-		'skeleton-cli' :
-			gav 		=> "com.xebialabs.skeleton:skeleton:${version}",
-			classifier 	=> 'cli',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/skeleton-${version}-cli.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-	}
 		
     nexus::artifact {
 		'skeleton-server' :
@@ -128,88 +118,76 @@ if $install == "nexus" {
 			ensure 		=> $manage_files,
 			require 	=> [Class["nexus"],File["${tmpdir}"]]
 		}
-	}
+	
+	exec{
+	"unpack skeleton":
+		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+		cwd 		=> "${basedir}",
+		creates 	=> "${basedir}/skeleton-${version}",
+		require 	=> [File["${basedir}"], Nexus::Artifact["skeleton"]],		
+		user		=> "${install_owner}",
+		}
+	
+}
 	
 if $install == "files" {
 	  
- 	file {"skeleton-${version}-cli.zip":
+    file {"skeleton-${version}.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/skeleton-${version}-cli.zip",
+   	   	   path => "${tmpdir}/skeleton-${version}.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/skeleton-${version}-cli.zip",
-      	   before => Exec["unpack skeleton-cli"]
-      	   	}	  
-    
-    
-    file {"skeleton-${version}-server.zip":
-   		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/skeleton-${version}-server.zip",
-      	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/skeleton-${version}-server.zip",
-      	   before => Exec["unpack skeleton-server"]
+      	   source => "$install_filesource/skeleton-${version}.zip",
+      	   before => Exec["unpack skeleton"]
         }
+        
+    exec{
+	"unpack skeleton":
+		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+		cwd 		=> "${basedir}",
+		creates 	=> "${basedir}/skeleton-${version}",
+		require 	=> File["${basedir}","skeleton-${version}.zip"],
+		user		=> "${install_owner}",
+		}
+    
+}
+
+if $install == "source" {
+	
+	common::source{"skeleton-${version}.zip":
+		source_url 	=>  "${install_source_url}",
+        target 		=>	"${basedir}",
+		type		=>	"zip",
+		owner		=> 	"${install_owner}",				
+	}
+	
 }
 
 	
 	
 	
-exec{
-	 "unpack skeleton-cli":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}-cli.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}-cli",
-		require 	=> $install ?{
-				default => File["${basedir}","skeleton-${version}-cli.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["skeleton-cli"]],
-				},
-		user		=>	"${install_owner}",
-		}
+
 	
 
-exec{
-	"unpack skeleton-server":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}-server.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}-server",
-		require 	=> $install ? {
-				default => File["${basedir}","skeleton-${version}-server.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["skeleton-server"]],
-				},
-		user		=> "${install_owner}",
-		}
 
 file{
-	"${homedir}/cli":
-		ensure 		=> $manage_link,
-		target 		=> "${basedir}/skeleton-${version}-cli",
-		require 	=> Exec["unpack skeleton-cli"],
-		owner		=> "${install_owner}",
-		group		=> "${install_group}"
-	}				
-
-file{
-	"${homedir}/server":
+	"${homedir}/skeleton":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/skeleton-${version}-server",
 		require 	=> Exec["unpack skeleton-server"],
-		owner		=> "${install_owner}",
+		owner		=> $install ? {
+			nexus	:	{}
+			files	:	{}
+			source	: 	{}
+		}
+		"${install_owner}",
 		group		=> "${install_group}"
 	}	
 
-file{
-	"init functions":
-		ensure 		=> $manage_files,
-		source 		=> "$install_filesource/functions.sh",
-		path		=> "/etc/init.d/functions",
-		owner		=> root,
-		group		=> root,
-		mode		=> 700,
-}
 
 file{
 	"init script":
 		ensure 		=> $manage_files,
-		source 		=> "$install_filesource/skeleton-initd.sh",
+		source 		=> "",
 		path		=> "/etc/init.d/skeleton",
 		owner		=> root,
 		group		=> root,

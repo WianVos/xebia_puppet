@@ -23,6 +23,11 @@ class skeleton::params{
 		default => $::skeleton_install_filesource
 	}
 	
+	# install_source_url . only needed if install is source
+	$install_source_url = $::skeleton_install_source_url ? {
+		'' => "http://",
+		default => $::skeleton_install_source_url
+	}
 	
 	#the skeleton version which we will install
 	$version = $::skeleton_version ? {

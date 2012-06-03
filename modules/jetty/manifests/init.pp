@@ -111,14 +111,7 @@ if $install == "files" {
       	   source => "$install_filesource/jetty-${version}-server.zip",
       	   before => Exec["unpack jetty-server"]
         }
-}
-
-	
-	
-	
-
-
-exec{
+    exec{
 	"unpack jetty":
 		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}-server.zip",
 		cwd 		=> "${basedir}",
@@ -129,6 +122,14 @@ exec{
 				},
 		user		=> "${install_owner}",
 		}
+}
+
+	
+	
+	
+
+
+
 
 file{
 	"${homedir}/cli":

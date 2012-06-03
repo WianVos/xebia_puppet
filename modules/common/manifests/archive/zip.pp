@@ -13,8 +13,9 @@ $target=<pathname>
 define common::archive::zip (
 	$source_url,
 	$target,
-   	$regdir="/var/tmp",
-	$timeout='360'
+   	$regdir		= "/var/tmp",
+	$timeout	= '360',
+	$owner 		= 'root'
 ){
 
   require common::packages
@@ -26,12 +27,13 @@ define common::archive::zip (
 	}
 
  	exec {"$name download and unpack":
-    		command => "bash -c TMPFILE=`/bin/mktemp -u`; /usr/bin/curl -o \$TMPFILE.zip --url ${source_url} && unzip \$TMPFILE.zip -d ${target} && rm \$TMPFILE.zip && touch ${regdir}/${name}",
-    		creates => "$regdir/$name",
-    		require => [Package["unzip","curl"],File["${target}"]],
-    		path => ["/bin","/usr/bin", "/usr/sbin"],
-    		timeout => "$timeout",
-    		logoutput => "true",
+    		command 	=> "bash -c TMPFILE=`/bin/mktemp -u`; /usr/bin/curl -o \$TMPFILE.zip --url ${source_url} && unzip \$TMPFILE.zip -d ${target} && rm \$TMPFILE.zip && touch ${regdir}/${name}",
+    		creates 	=> "$regdir/$name",
+    		require 	=> [Package["unzip","curl"],File["${target}"]],
+    		path 		=> ["/bin","/usr/bin", "/usr/sbin"],
+    		timeout 	=> "${timeout}",
+    		logoutput 	=> true,
+    		user 		=> "{$owner}",
 		}
 }
 
