@@ -128,7 +128,8 @@ if $install == "source" {
 		source_url 	=>  "${install_source_url}",
         target 		=>	"${basedir}",
 		type		=>	"targz",
-		owner		=> 	"${install_owner}",				
+		owner		=> 	"${install_owner}",	
+		group		=>	"${install_group}"			
 	}
 	
 	$basetarget = "${basedir}/jetty-distribution-${version}"
