@@ -112,7 +112,7 @@ if $install == "files" {
         }
         
     exec{
-	"unpack jetty":
+	"unpack_jetty":
 		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}.zip",
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/jetty-${version}",
@@ -124,7 +124,7 @@ if $install == "files" {
 
 if $install == "source" {
 	
-	common::source{"unpack jetty":
+	common::source{"unpack_jetty":
 		source_url 	=>  "${install_source_url}",
         target 		=>	"${basedir}",
 		type		=>	"targz",
@@ -140,9 +140,9 @@ file{
 		ensure 		=> $manage_link,
 		target 		=> "${basetarget}",
 		require		=> $install ? {
-				files	=>	Exec["unpack jetty"],
-				source	=> 	Common::Source["unpack jetty"],
-				default =>	Exec["unpack jetty"],
+				files	=>	Exec["unpack_jetty"],
+				source	=> 	Common::Source["unpack_jetty"],
+				default =>	Exec["unpack_jetty"],
 				},
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
