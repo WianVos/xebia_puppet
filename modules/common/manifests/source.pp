@@ -4,21 +4,32 @@ define common::source(
 		$type	=	"zip",
 		$owner	=	"root",
 		$group 	=	"system", 
-		$mode	=	"700"
+		$mode	=	"700",
+		$regdir	=	"/etc/xebia_puppet_reg"
 	)
-	{
+{
+	if !defined(File[${regdir}]) {
+		file {"${regdir}":
+				ensure 	=> directory,
+				owner 	=> "root",
+		}
+	}
+	
 	
 	case $type {
 		zip : { common::archive::zip{"$name":
 						source_url 	=> $source_url,
 						target 		=> $target,
-						owner 		=> "${owner}"
+						owner 		=> "${owner}",
+						regdir		=> "${regdir}"
 					}
 				}
 		targz : { common::archive::targz{"$name":
 						source_url 	=> $source_url,
 						target 		=> $target,
-						owner 		=> "${owner}"
+						owner 		=> "${owner}",
+						regdir		=> "${regdir}"
+						
 					}
 				}
 		
@@ -27,7 +38,8 @@ define common::source(
 						target 		=> $target,
 						owner 		=> "${owner}",
 						group		=> "${group}",
-						mode		=> "${mode}"
+						mode		=> "${mode}",
+						regdir		=> "${regdir}"						
 					}
 				}
 		default : { notice "$type is an unsupported archive" }	
