@@ -1,20 +1,28 @@
 #!/bin/sh
+set -x
+
+#include conf file
+. ../etc/bootstrap.conf
+
+#get the node type
+if [ $1 == "" ]; then node_group="default" ; else node_group=$1 ; fi
 
 puppet node_aws bootstrap\
  --mode agent\
- --group wian\
- -i ami-ad36fbc4\
- --type m1.large\
- --pe-version=2.0\
- --login ubuntu\
- --keyfile /root/wianpe12.pem\
- --keyname wianpe12\
- --node-group default\
- --enc-server ip-10-111-10-44.ec2.internal\
+ --group $aws_sec_group\
+ --image $aws_ami\
+ --type $aws_ami_type\
+ --region $aws_region\
+ --pe-version=$pe_version\
+ --login $image_login\
+ --keyfile $image_keyfile\
+ --keyname $image_keyname\
+ --node-group $node_group\
+ --enc-server $dashboard_server\
  --enc-ssl \
- --enc-auth-user xadmin\
- --enc-auth-passwd xitaxita01\
+ --enc-auth-user $dashboard_auth_user\
+ --enc-auth-passwd $dashboard_auth_passwd\
  --enc-port 443\
- --installer-answers ../files/client_answer.txt\
- --installer-payload /root/puppet-enterprise-2.0-all.tar.gz\
- --install-script puppet-enterprise\
+ --installer-answers $installer_answers\
+ --installer-payload $installer_payload\
+ --install-script $install_script
