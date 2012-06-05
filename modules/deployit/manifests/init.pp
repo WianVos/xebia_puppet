@@ -270,9 +270,9 @@ service{
 		hasrestart	=> true,
 	}
 	
-	notice("${::deployit_ssh}")
+	notice("test ${::deployit_ssh}")
 		
-	notice("${::deployit_http_bind_address}")	
+	notice("test1 ${::deployit_http_bind_address}")	
 }
 	
 	
