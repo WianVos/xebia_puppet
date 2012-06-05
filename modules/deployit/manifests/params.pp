@@ -93,6 +93,50 @@ class deployit::params{
 		default => $::deployit_install_group
 	}
 	
-		
+	#Deployit specific parameters
 	
+	$admin_password = $::deployit_admin_password ? {
+		'' 		=> "admin",
+		default => $::deployit_admin_password
+	}
+	
+	$jcr_repository_path = $::deployit_jcr_repository_path ? {
+		''		=> "repository",
+		default => $::deployit_jcr_repository_path
+	}
+	
+	$threads_min = $::deployit_threads_min ?{
+		''		=> "3",
+		default	=> $::deployit_threads_min
+	}
+
+	$ssl = $::deployit_ssl ?{
+		''		=> 'false',
+		default	=> $::deployit_ssl
+	}
+	
+	$http_bind_address = $::deployit_http_bind_address ? {
+		''		=>	"0.0.0.0",
+		default	=>	$::deployit_http_bind_address
+	}
+	
+	$http_context_root = $::deployit_http_context_root ? {
+		''		=> "/deployit",
+		default	=> $::deployit_http_context_root
+	}
+	
+	$threads_max = $::deployit_threads_max ? {
+		''		=> "24",
+		default	=> $::deployit_threads_max
+	}
+	
+	$http_port = $::deployit_http_port ?{
+		''		=> "4516",
+		default	=> $::deployit_http_port
+	}
+	
+	$importable_packages_path = $::deployit_importable_packages_path ? {
+		'' 		=> "importablePackages",
+		default => $::deployit_importable_packages_path
+	}	
 }

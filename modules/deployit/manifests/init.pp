@@ -1,21 +1,29 @@
 #
 #
 class deployit(
-	$packages 				= $deployit::params::packages, 
-	$version 				= $deployit::params::version,
-	$basedir 				= $deployit::params::basedir,
-	$homedir 				= $deployit::params::homedir,
-	$tmpdir					= $deployit::params::tmpdir,
-	$absent 				= $deployit::params::absent,
-	$disabled 				= $deployit::params::disabled,
-	$ensure					= $deployit::params::ensure,
-	$install				= $deployit::params::install,
-	$install_filesource		= $deployit::params::install_filesource,
-	$install_owner			= $deployit::params::install_owner,
-	$install_group			= $deployit::params::install_group,
-	$intergrate				= $deployit::params::intergrate,
-	$intergration_classes	= $deployit::params::intergration_classes
-	
+	$packages 					= $deployit::params::packages, 
+	$version 					= $deployit::params::version,
+	$basedir 					= $deployit::params::basedir,
+	$homedir 					= $deployit::params::homedir,
+	$tmpdir						= $deployit::params::tmpdir,
+	$absent 					= $deployit::params::absent,
+	$disabled 					= $deployit::params::disabled,
+	$ensure						= $deployit::params::ensure,
+	$install					= $deployit::params::install,
+	$install_filesource			= $deployit::params::install_filesource,
+	$install_owner				= $deployit::params::install_owner,
+	$install_group				= $deployit::params::install_group,
+	$intergrate					= $deployit::params::intergrate,
+	$intergration_classes		= $deployit::params::intergration_classes,
+	$admin_password				= $deployit::params::admin_password,
+	$jcr_repository_path		= $deployit::params::jcr_repository_path,
+	$threads_min				= $deployit::params::threads_min,
+	$threads_max				= $deployit::params::threads_max,
+	$ssl						= $deployit::params::ssl,
+	$http_bind_address			= $deployit::params::http_bind_address,
+	$http_context_root			= $deployit::params::http_context_root,
+	$http_port					= $deployit::params::http_port,
+	$importable_packages_path	= $deployit::params::importable_packages_path
 		
 ) inherits deployit::params{
 	
@@ -56,7 +64,7 @@ class deployit(
 	}
 	
 	#xebia_puppet stuff
-	if $integrate == true {
+	if $intergrate == true {
 		class{"xebia_common::regdir":}
 	}
 	#install packages as needed by deployit	
