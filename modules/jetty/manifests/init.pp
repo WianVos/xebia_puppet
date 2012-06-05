@@ -120,7 +120,7 @@ if $install == "files" {
 
 if $install == "source" {
 	
-	common::source{"unpack_jetty":
+	xebia_common::source{"unpack_jetty":
 		source_url 	=>  "${install_source_url}",
         target 		=>	"${basedir}",
 		type		=>	"targz",
