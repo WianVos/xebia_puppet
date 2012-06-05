@@ -1,4 +1,4 @@
-common::ulimit {"test":
+xebia_common::ulimit {"test":
 			domain => 'root',
 			type => 'hard',
 			item => 'nofile',
