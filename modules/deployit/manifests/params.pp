@@ -47,6 +47,19 @@ class deployit::params{
 		'' => '/var/tmp/deployit', # Default value
 		default => $::deployit_tmpdir,
 	}
+	
+	#INTEGRATION Section
+	#setup integration dir, makes module play well with others
+	$intergrate = $::deployit_integrate ? {
+		'' => true,
+		default => $::deployit_integrate
+	}
+	
+	$intergration_classes = $::deployit_intergration_classes ? {
+		'' 			=> [xebia_common::regdir,deployit::features::expconn],
+		default		=> $::deployit_intergration_classes
+	}
+	
 	#Module management peritcular variables
 	#kudos to example 42 for the inspiration
 	
@@ -78,6 +91,8 @@ class deployit::params{
 	$install_group = $::deployit_install_group ? {
 		'' => "deployit",
 		default => $::deployit_install_group
-	}	
+	}
+	
+		
 	
 }

@@ -1,18 +1,20 @@
 #
 #
 class deployit(
-	$packages 			= $deployit::params::packages, 
-	$version 			= $deployit::params::version,
-	$basedir 			= $deployit::params::basedir,
-	$homedir 			= $deployit::params::homedir,
-	$tmpdir				= $deployit::params::tmpdir,
-	$absent 			= $deployit::params::absent,
-	$disabled 			= $deployit::params::disabled,
-	$ensure				= $deployit::params::ensure,
-	$install			= $deployit::params::install,
-	$install_filesource	= $deployit::params::install_filesource,
-	$install_owner		= $deployit::params::install_owner,
-	$install_group		= $deployit::params::install_group
+	$packages 				= $deployit::params::packages, 
+	$version 				= $deployit::params::version,
+	$basedir 				= $deployit::params::basedir,
+	$homedir 				= $deployit::params::homedir,
+	$tmpdir					= $deployit::params::tmpdir,
+	$absent 				= $deployit::params::absent,
+	$disabled 				= $deployit::params::disabled,
+	$ensure					= $deployit::params::ensure,
+	$install				= $deployit::params::install,
+	$install_filesource		= $deployit::params::install_filesource,
+	$install_owner			= $deployit::params::install_owner,
+	$install_group			= $deployit::params::install_group,
+	$intergrate				= $deployit::params::intergrate,
+	$intergration_classes	= $deployit::params::intergration_classes
 	
 		
 ) inherits deployit::params{
@@ -22,7 +24,7 @@ class deployit(
 		true 	=> "absent",
 		false 	=> "installed",
 		default => "installed"
-	}
+	}	
 	
 	$manage_directory = $absent ? {
 		true 	=> "absent",
@@ -53,6 +55,10 @@ class deployit(
 		default	=> "running"
 	}
 	
+	#xebia_puppet stuff
+	if $integrate == true {
+		class{"xebia_common::regdir":}
+	}
 	#install packages as needed by deployit	
 	package{$packages:
 		ensure => $manage_package,
@@ -230,6 +236,7 @@ file{
 }
 
 
+
 exec{
 	"init deployit":
 		creates		=> "${homedir}/server/repository",
@@ -239,6 +246,8 @@ exec{
 		logoutput	=> true,
 		 
 }
+
+#export facts
 
 service{
 	'deployit':
