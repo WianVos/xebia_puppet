@@ -7,6 +7,7 @@ class xebia_common::regdir(
 	$scriptdir	=	"${basedir}/${baseregdir}/bin"
 	$configdir	=	"${basedir}/${baseregdir}/etc"
 	$markerdir	=	"${basedir}/${baseregdir}/marker"
+	$factdir	=	"/etc/facts.d"
 	
 	$manage_directory = $absent ? {
 		true 	=> "absent",
@@ -20,7 +21,7 @@ class xebia_common::regdir(
 		
 		file {"${basedir}/${baseregdir}":}
 		
-		file {["${scriptdir}","${configdir}","${markerdir}"]:
+		file {["${scriptdir}","${configdir}","${markerdir}","${factdir}"]:
 			require		=>	File["${$basedir}/${baseregdir}"]
 		}
 	

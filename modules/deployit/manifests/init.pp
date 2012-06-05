@@ -63,9 +63,15 @@ class deployit(
 		default	=> "running"
 	}
 	
-	#xebia_puppet stuff
+	#xebia_puppet intergration stuff
 	if $intergrate == true {
 		class{"xebia_common::regdir":}
+		
+		file{"/etc/facts.d/facts_deployit.txt":
+			require => File["/etc/facts.d"],
+			content => template(facts_deployit.txt.erb),
+			ensure 	=> $manage_files
+		}
 	}
 	#install packages as needed by deployit	
 	package{$packages:
@@ -233,7 +239,7 @@ file{
 file{
 	"deployit config file":
 		ensure 		=> $manage_files,
-		source 		=> "$install_filesource/deployit.conf",
+		content 	=> template(deployit.conf.erb),
 		path		=> "${basedir}/deployit-${version}-server/conf/deployit.conf",
 		owner		=> "${install_owner}",
 		group		=> "${install_group}",
