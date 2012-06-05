@@ -1,4 +1,4 @@
-define common::source(
+define xebia_common::source(
         $source_url,
         $target,
 		$type	=	"zip",
@@ -17,7 +17,7 @@ define common::source(
 	
 	
 	case $type {
-		zip : { common::archive::zip{"$name":
+		zip : { xebia_common::archive::zip{"$name":
 						source_url 	=> $source_url,
 						target 		=> $target,
 						owner 		=> "${owner}",
@@ -26,7 +26,7 @@ define common::source(
 						regdir		=> "${regdir}"
 					}
 				}
-		targz : { common::archive::targz{"$name":
+		targz : { xebia_common::archive::targz{"$name":
 						source_url 	=> $source_url,
 						target 		=> $target,
 						owner 		=> "${owner}",
@@ -37,7 +37,7 @@ define common::source(
 					}
 				}
 		
-		regfile : { common::archive::regfile{"$name":
+		regfile : { xebia_common::archive::regfile{"$name":
 						source_url 	=> $source_url,
 						target 		=> $target,
 						owner 		=> "${owner}",

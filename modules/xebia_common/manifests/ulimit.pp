@@ -1,4 +1,4 @@
-define common::ulimit (
+define xebia_common::ulimit (
 	$domain="root",
 	$type="soft",
 	$item="nofile",

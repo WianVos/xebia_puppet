@@ -10,7 +10,7 @@ $target=<pathname>
 
 
 */
-define common::archive::targz (
+define xebia_common::archive::targz (
 	$source_url,
 	$target,
   	$regdir="/var/tmp",
@@ -20,7 +20,7 @@ define common::archive::targz (
 	$mode = '700'
 	){
 
-  require common::packages
+  require xebia_common::packages
  
   if !defined(File[$target]) {
   	file {"$target":

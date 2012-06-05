@@ -10,7 +10,7 @@ $target=<pathname>
 
 
 */
-define common::archive::regfile (
+define xebia_common::archive::regfile (
 	$source_url,
 	$target,
   	$regdir		= "/var/tmp",
@@ -20,7 +20,7 @@ define common::archive::regfile (
 	$mode		= '700'
 	){
 
-  require common::packages
+  require xebia_common::packages
  
   if !defined(File[$target]) {
   	file {"$target":

@@ -225,7 +225,8 @@ file{
 		group		=> "${install_group}",
 		require 	=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
 		mode		=> 700,
-		notify		=> Service["deployit"]
+		notify		=> Service["deployit"],
+		replace		=> false
 }
 
 
@@ -234,7 +235,7 @@ exec{
 		creates		=> "${homedir}/server/repository",
 		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
 		user		=> "${install_owner}",
-		require		=> [Exec["unpack deployit-server"],File["${homedir}/server"]],
+		require		=> [Exec["unpack deployit-server"],File["${homedir}/server","deployit config file"]],
 		logoutput	=> true,
 		 
 }

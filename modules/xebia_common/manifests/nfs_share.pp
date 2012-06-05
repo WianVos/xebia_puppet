@@ -1,4 +1,4 @@
-define common::nfs_share(
+define xebia_common::nfs_share(
 	$path = "$name",
 	$hosts = "",
 	$options = "async,"

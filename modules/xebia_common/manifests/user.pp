@@ -1,10 +1,10 @@
 /*
-common:user
+xebia_common:user
 Group creation and checking is nog really in here .. 
 i have to fix this later on .. (bummer)
 
 */
-define common::user (
+define xebia_common::user (
 	$username="$name",
 	$userid="",
 	$gid="nogroup"

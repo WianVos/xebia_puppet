@@ -1,6 +1,6 @@
-# Class: common
+# Class: xebia_common
 #
-# This module manages common
+# This module manages xebia_common
 #
 # Parameters:
 #
@@ -11,7 +11,7 @@
 # Sample Usage:
 #
 # [Remember: No empty lines between comments and class definition]
-class common::packages {
+class xebia_common::packages {
 
  if !defined(Package['curl']) {
     package{'curl':
