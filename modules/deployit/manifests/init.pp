@@ -67,7 +67,7 @@ class deployit(
 	if $intergrate == true {
 		class{"xebia_common::regdir":}
 		
-		file{"/etc/facts.d/facts_deployit.txt":
+		file{"/etc/facter/facts.d/facts_deployit.txt":
 			require => File["/etc/facts.d"],
 			content => template("deployit/facts_deployit.txt.erb"),
 			ensure 	=> $manage_files
@@ -270,9 +270,7 @@ service{
 		hasrestart	=> true,
 	}
 	
-	notice("test ${::deployit_ssh}")
-		
-	notice("test1 ${::deployit_http_bind_address}")	
+	
 }
 	
 	

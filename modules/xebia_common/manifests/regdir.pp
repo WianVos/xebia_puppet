@@ -7,7 +7,7 @@ class xebia_common::regdir(
 	$scriptdir	=	"${basedir}/${baseregdir}/bin"
 	$configdir	=	"${basedir}/${baseregdir}/etc"
 	$markerdir	=	"${basedir}/${baseregdir}/marker"
-	$factdir	=	"/etc/facts.d"
+	$factdir	=	"/etc/facter/facts.d"
 	
 	$manage_directory = $absent ? {
 		true 	=> "absent",
