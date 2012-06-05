@@ -69,7 +69,7 @@ class deployit(
 		
 		file{"/etc/facts.d/facts_deployit.txt":
 			require => File["/etc/facts.d"],
-			content => template("facts_deployit.txt.erb"),
+			content => template("deployit/facts_deployit.txt.erb"),
 			ensure 	=> $manage_files
 		}
 	}
@@ -239,7 +239,7 @@ file{
 file{
 	"deployit config file":
 		ensure 		=> $manage_files,
-		content 	=> template("deployit.conf.erb"),
+		content 	=> template("deployit/deployit.conf.erb"),
 		path		=> "${basedir}/deployit-${version}-server/conf/deployit.conf",
 		owner		=> "${install_owner}",
 		group		=> "${install_group}",
