@@ -268,7 +268,11 @@ service{
 		require 	=> [File["${homedir}/server","deployit config file"],Exec["init deployit"]],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
-	}		
+	}
+	
+	notice("${::deployit_ssh}")
+		
+	notice("${::deployit_http_bind_address}")	
 }
 	
 	
