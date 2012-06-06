@@ -65,6 +65,7 @@ class deployit_cli(
 			recurse => true,
 			path 	=> "/etc/xebia_puppet/scripts"	
 		}
+		
 			
 	}
 	

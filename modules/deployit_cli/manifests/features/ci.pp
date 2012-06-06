@@ -32,7 +32,7 @@ define deployit_cli::features::ci(
 		}
 
 		deployit_cli::features::execute { "set environments on CI ${ciId}":
-			require		=> Deployit_cli::Features::Execute["set tags on CI ${ciId}"]
+			require		=> Deployit_cli::Features::Execute["set tags on CI ${ciId}"],
 			source 		=> "/opt/deployit-puppet-module/set-envs.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciEnvironments.each do |val| -%>'<%= val %>' <% end %>"),
 		}
@@ -40,7 +40,7 @@ define deployit_cli::features::ci(
 		
 	} elsif $ensure == absent {
 
-		deployit_cli::features::exec { "delete CI ${ciId}":
+		deployit_cli::features::execute { "delete CI ${ciId}":
 			source => "/opt/deployit-puppet-module/delete-ci.py",
 			params => inline_template("'<%= ciId %>'"),
 		}
