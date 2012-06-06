@@ -1,18 +1,20 @@
 #
 #
 class deployit_cli(
-	$packages 			= $deployit_cli::params::packages, 
-	$version 			= $deployit_cli::params::version,
-	$basedir 			= $deployit_cli::params::basedir,
-	$homedir 			= $deployit_cli::params::homedir,
-	$tmpdir				= $deployit_cli::params::tmpdir,
-	$absent 			= $deployit_cli::params::absent,
-	$disabled 			= $deployit_cli::params::disabled,
-	$ensure				= $deployit_cli::params::ensure,
-	$install			= $deployit_cli::params::install,
-	$install_filesource	= $deployit_cli::params::install_filesource,
-	$install_owner		= $deployit_cli::params::install_owner,
-	$install_group		= $deployit_cli::params::install_group
+	$packages 					= $deployit_cli::params::packages, 
+	$version 					= $deployit_cli::params::version,
+	$basedir 					= $deployit_cli::params::basedir,
+	$homedir 					= $deployit_cli::params::homedir,
+	$tmpdir						= $deployit_cli::params::tmpdir,
+	$absent 					= $deployit_cli::params::absent,
+	$disabled 					= $deployit_cli::params::disabled,
+	$ensure						= $deployit_cli::params::ensure,
+	$install					= $deployit_cli::params::install,
+	$install_filesource			= $deployit_cli::params::install_filesource,
+	$install_owner				= $deployit_cli::params::install_owner,
+	$install_group				= $deployit_cli::params::install_group,
+	$intergrate					= $deployit_cli::params::intergrate,
+	$intergration_classes		= $deployit_cli::params::intergration_classes
 	
 		
 ) inherits deployit_cli::params{
@@ -51,6 +53,19 @@ class deployit_cli(
 		true	=> "running",
 		false 	=> "stoppped",
 		default	=> "running"
+	}
+	
+	#xebia_puppet intergration stuff
+	if $intergrate == true {
+		class{$intergration_classes:}
+		
+		file {"deployit cli scripts":
+			require => File["/etc/xebia_puppet/scripts"],
+			source 	=> "puppet:///modules/deployit_cli/features/cli_python/",
+			recurse => true,
+			path 	=> "/etc/xebia_puppet/scripts"	
+		}
+			
 	}
 	
 	#install packages as needed by deployit_cli	

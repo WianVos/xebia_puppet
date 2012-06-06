@@ -76,5 +76,15 @@ class deployit_cli::params{
 		'' => "deployit",
 		default => $::deployit_cli_install_group
 	}	
+	#INTEGRATION Section
+	#setup integration dir, makes module play well with others
+	$intergrate = $::deployit_cli_integrate ? {
+		'' => true,
+		default => $::deployit_cli_integrate
+	}
 	
+	$intergration_classes = $::deployit_cli_intergration_classes ? {
+		'' 			=> [xebia_common::regdir],
+		default		=> $::deployit_cli_intergration_classes
+	}
 }
