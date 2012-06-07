@@ -74,6 +74,11 @@ class skeleton(
 			system 		=> true,
 			
 	}
+	
+	#Setup the xebia_puppet infrstructure when intergrate is set to true
+	if $intergrate == true {
+		class{$intergration_classes:}
+	}
 	#create the needed directory structures
 	
 	#tmpdir
