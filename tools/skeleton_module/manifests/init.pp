@@ -78,7 +78,12 @@ class skeleton(
 	#Setup the xebia_puppet infrstructure when intergrate is set to true
 	if $intergrate == true {
 		class{$intergration_classes:}
-		class{skeleton::features::export_facts:}	
+		class{skeleton::features::export_facts:
+			options => { "skeleton_hostname" 	=> "${::fqdn}",
+						 "skeleton_ipaddress" => "${::ipaddress}"
+			},
+			tag		=> "skeleton"
+		}	
 	}
 	#create the needed directory structures
 	
