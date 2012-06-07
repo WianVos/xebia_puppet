@@ -63,12 +63,15 @@ class deployit(
 		default	=> "running"
 	}
 	
+	
+	
+	
 	#xebia_puppet intergration stuff
 	if $intergrate == true {
 		class{"xebia_common::regdir":}
 		
 		file{"/etc/facter/facts.d/facts_deployit.txt":
-			require => File["/etc/facts.d"],
+			require => File["/etc/facter/facts.d"],
 			content => template("deployit/facts_deployit.txt.erb"),
 			ensure 	=> $manage_files
 		}
