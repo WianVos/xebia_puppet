@@ -70,10 +70,15 @@ class deployit(
 	if $intergrate == true {
 		class{"xebia_common::regdir":}
 		
-		file{"/etc/facter/facts.d/facts_deployit.txt":
-			require => File["/etc/facter/facts.d"],
-			content => template("deployit/facts_deployit.txt.erb"),
-			ensure 	=> $manage_files
+		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
+			options => { "deployit_hostname" 	=> "${::fqdn}",
+						 "deployit_ipaddress" 	=> "${::ipaddress}",
+						 "deployit_admin"		=> "admin",
+						 
+						 
+						 
+						},
+			tag		=> "skeleton"
 		}
 	}
 	#install packages as needed by deployit	

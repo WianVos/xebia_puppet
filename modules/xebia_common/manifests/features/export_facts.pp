@@ -1,4 +1,4 @@
-define skeleton::features::export_facts(
+define xebia_common::features::export_facts(
 	$factsdir 	= "/etc/puppetlabs/facter/facts.d",
 	$options 	=	'',
 	$tag		= 	'',
