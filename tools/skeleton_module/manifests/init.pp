@@ -13,7 +13,8 @@ class skeleton(
 	$install_filesource	= $skeleton::params::install_filesource,
 	$install_owner		= $skeleton::params::install_owner,
 	$install_group		= $skeleton::params::install_group,
-	$install_source_url	= $skeleton::params::install_source_url
+	$install_source_url	= $skeleton::params::install_source_url,
+	$facts_import_tags		= $skeleton::params::facts_import_tags
 		
 ) inherits skeleton::params{
 	
@@ -78,13 +79,15 @@ class skeleton(
 	#Setup the xebia_puppet infrstructure when intergrate is set to true
 	if $intergrate == true {
 		class{$intergration_classes:}
-		class{skeleton::features::export_facts:
+		
+		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
 			options => { "skeleton_hostname" 	=> "${::fqdn}",
 						 "skeleton_ipaddress" => "${::ipaddress}"
-			},
+						},
 			tag		=> "skeleton"
 		}
-			
+		
+		#Xebia_common::Features::Export_facts <<| |>>	
 	}
 	#create the needed directory structures
 	

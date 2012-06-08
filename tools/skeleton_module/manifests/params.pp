@@ -85,4 +85,13 @@ class skeleton::params{
 		default => $::skeleton_install_group
 	}	
 	
+	$intergrate = $::skeleton_intergrate ? {
+		''	=> false,
+		default	=> $::skeleton_intergrate 
+	}
+	
+	$facts_import_tags = $::skeleton_facts_import_tags ? {
+		''	=> 'none',
+		default => $::skeleton_facts_import_tags
+	}
 }
