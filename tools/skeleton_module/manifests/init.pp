@@ -83,7 +83,8 @@ class skeleton(
 						 "skeleton_ipaddress" => "${::ipaddress}"
 			},
 			tag		=> "skeleton"
-		}	
+		}
+			
 	}
 	#create the needed directory structures
 	
