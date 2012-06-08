@@ -8,6 +8,12 @@ class deployit_cli::params{
 		default => $::deployit_installed_packages,
 	}
 	
+	#setting script_dir 
+	$script_dir = $::deployit_script_dir ? {
+		''	=>	'/opt/xebia_puppet/scripts',
+		default	=> $::deployit_script_dir
+	}
+	
 	#install method . Possible options files or nexus 
 	$install = $::deployit_cli_install ? {
 		'' => "files", # Default value
@@ -92,4 +98,5 @@ class deployit_cli::params{
 		''			=> 'general',
 		default		=> $::deployit_xebia_universe
 	}
+	
 }

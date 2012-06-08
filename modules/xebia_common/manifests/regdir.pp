@@ -1,13 +1,25 @@
 class xebia_common::regdir(
 	$absent 	= 	false,
-	$basedir 	= 	"/etc",
-	$baseregdir	=	"xebia_puppet"
+	$baseregdir	=	"/etc/xebia_puppet",
+	$script_dir	=	"",
+	$config_dir	=	"",
+	$marker_dir	=	""
 ){
 	
-	$scriptdir	=	"${basedir}/${baseregdir}/bin"
-	$configdir	=	"${basedir}/${baseregdir}/etc"
-	$markerdir	=	"${basedir}/${baseregdir}/marker"
-	$factdir	=	"/etc/puppetlabs/facter/facts.d"
+	$scriptDir	=	$script_dir ?{
+		''			=>	"${baseregdir}/script",
+		default 	=>	${script_dir}
+	}
+	$configDir	=	$config_dir ?{
+		''			=>	"${baseregdir}/config",
+		default 	=>	${config_dir}
+	}
+	$markerDir	=	$marker_dir ?{
+		''			=>	"${baseregdir}/marker",
+		default 	=>	${marker_dir}
+	}
+	
+	$factDir	=	"/etc/puppetlabs/facter/facts.d"
 	
 	$manage_directory = $absent ? {
 		true 	=> "absent",
@@ -17,12 +29,12 @@ class xebia_common::regdir(
 
 	File { owner => root, group => root, mode => "744", ensure => "${manage_directory}" }
 	
-	if !defined(File["${basedir}/${baseregdir}"]) {
+	if !defined(File["${baseregdir}"]) {
 		
-		file {"${basedir}/${baseregdir}":}
+		file {"${baseregdir}":}
 		
-		file {["${scriptdir}","${configdir}","${markerdir}","${factdir}"]:
-			require		=>	File["${$basedir}/${baseregdir}"]
+		file {["${scriptDir}","${configDir}","${markerDir}","${factDir}"]:
+			require		=>	File["${baseregdir}"]
 		}
 	
 	}

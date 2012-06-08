@@ -15,7 +15,8 @@ class deployit_cli(
 	$install_group				= $deployit_cli::params::install_group,
 	$intergrate					= $deployit_cli::params::intergrate,
 	$intergration_classes		= $deployit_cli::params::intergration_classes,
-	$xebia_universe				= $deployit_cli::params::xebia_universe
+	$xebia_universe				= $deployit_cli::params::xebia_universe,
+	$script_dir					= $deployit_cli::params::script_dir
 	
 		
 ) inherits deployit_cli::params{
@@ -175,13 +176,14 @@ file{
 class{
 	"xebia_common::regdir":
 		require		=>	File["${homedir}/cli"],
+		script_dir	=>	${script_dir},
 }
 
 file {"deployit cli scripts":
 			require => Class["xebia_common::regdir"],
 			source 	=> "puppet:///modules/deployit_cli/features/cli_python/",
 			recurse => true,
-			path 	=> "/etc/xebia_puppet/scripts"	
+			path 	=> "${script_dir}"	
 		}							
 }
 	

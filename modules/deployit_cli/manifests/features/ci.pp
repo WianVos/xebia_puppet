@@ -16,12 +16,13 @@ define deployit_cli::features::ci(
 	$ciValues = {},
 	$ciEnvironments = [],
 	$ciTags = [],
-	$ensure = present
+	$ensure = present,
+	$script_dir = "${deployit_cli::params::script_dir}"
 ) {
 	if $ensure == present {
 
 		deployit_cli::features::execute { "create CI ${ciId} of type ${ciType}":
-			source 		=> "/opt/deployit-puppet-module/create-ci.py",
+			source 		=> "$sc/create-ci.py",
 			params 		=> inline_template("'<%= ciId %>' '<%= ciType %>' <% ciValues.each do |key, val| -%><%= key %>='<%= val %>' <% end -%>"),
 		}
 
