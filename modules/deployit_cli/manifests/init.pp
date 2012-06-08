@@ -66,6 +66,8 @@ class deployit_cli(
 			path 	=> "/etc/xebia_puppet/scripts"	
 		}
 		
+		#import deployit settings 
+		
 			
 	}
 	
@@ -124,7 +126,7 @@ if $install == "nexus" {
 	}
 	
 	nexus::artifact {
-		'deployit_cli-cli' :
+		'deployit-cli' :
 			gav 		=> "com.xebialabs.deployit:deployit:${version}",
 			classifier 	=> 'cli',
 			packaging 	=> 'zip',
@@ -141,9 +143,9 @@ if $install == "files" {
 	  
  	file {"deployit-${version}-cli.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/deployit_cli-${version}-cli.zip",
+   	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/deployit_cli-${version}-cli.zip",
+      	   source => "$install_filesource/deployit-${version}-cli.zip",
       	   before => Exec["unpack deployit_cli-cli"]
       	   	}	  
 }
@@ -153,12 +155,12 @@ if $install == "files" {
 	
 exec{
 	 "unpack deployit_cli-cli":
-		command 	=> "/usr/bin/unzip ${tmpdir}/deployit_cli-${version}-cli.zip",
+		command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-cli.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/deployit_cli-${version}-cli",
+		creates 	=> "${basedir}/deployit-${version}-cli",
 		require 	=> $install ?{
-				default => File["${basedir}","deployit_cli-${version}-cli.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit_cli-cli"]],
+				default => File["${basedir}","deployit-${version}-cli.zip"],
+				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				},
 		user		=>	"${install_owner}",
 		}
@@ -167,7 +169,7 @@ file{
 	"${homedir}/cli":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/deployit-${version}-cli",
-		require 	=> Exec["unpack deployit_cli-cli"],
+		require 	=> Exec["unpack deployit-cli"],
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
 	}						
