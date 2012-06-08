@@ -138,7 +138,7 @@ if $install == "source" {
 		target 		=> "${basetarget}",
 		require		=> $install ? {
 				files	=>	Exec["unpack_jetty"],
-				source	=> 	Common::Source["unpack_jetty"],
+				source	=> 	Xebia_common::Source["unpack_jetty"],
 				default =>	Exec["unpack_jetty"],
 				},
 		owner		=> "${install_owner}",
