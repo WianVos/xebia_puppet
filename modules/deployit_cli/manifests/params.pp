@@ -84,7 +84,12 @@ class deployit_cli::params{
 	}
 	
 	$intergration_classes = $::deployit_cli_intergration_classes ? {
-		'' 			=> [xebia_common::regdir],
+		'' 			=> "",
 		default		=> $::deployit_cli_intergration_classes
+	}
+	
+	$xebia_universe	= $::deployit_xebia_universe ? {
+		''			=> 'general',
+		default		=> $::deployit_xebia_universe
 	}
 }

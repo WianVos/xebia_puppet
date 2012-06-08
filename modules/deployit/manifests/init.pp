@@ -21,7 +21,8 @@ class deployit(
 	$http_bind_address			= $deployit::params::http_bind_address,
 	$http_context_root			= $deployit::params::http_context_root,
 	$http_port					= $deployit::params::http_port,
-	$importable_packages_path	= $deployit::params::importable_packages_path
+	$importable_packages_path	= $deployit::params::importable_packages_path,
+	$xebia_universe				= $deployit::params::xebia_universe
 		
 ) inherits deployit::params{
 	
@@ -74,7 +75,7 @@ class deployit(
 						 "deployit_admin"		=> "admin",
 						 "deployit_password"	=> "${admin_password}"
 						},
-			tag		=> "deployit"
+			tag		=> "${xebia_universe}"
 		}
 		
 		Xebia_common::Features::Export_facts <<| |>>

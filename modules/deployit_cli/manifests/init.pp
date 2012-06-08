@@ -14,7 +14,8 @@ class deployit_cli(
 	$install_owner				= $deployit_cli::params::install_owner,
 	$install_group				= $deployit_cli::params::install_group,
 	$intergrate					= $deployit_cli::params::intergrate,
-	$intergration_classes		= $deployit_cli::params::intergration_classes
+	$intergration_classes		= $deployit_cli::params::intergration_classes,
+	$xebia_universe				= $deployit_cli::params::xebia_universe
 	
 		
 ) inherits deployit_cli::params{
@@ -59,12 +60,7 @@ class deployit_cli(
 	if $intergrate == true {
 		class{$intergration_classes:}
 		
-		file {"deployit cli scripts":
-			require => File["/etc/xebia_puppet/scripts"],
-			source 	=> "puppet:///modules/deployit_cli/features/cli_python/",
-			recurse => true,
-			path 	=> "/etc/xebia_puppet/scripts"	
-		}
+		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}" |>>
 		
 		#import deployit settings 
 		
@@ -172,7 +168,19 @@ file{
 		require 	=> Exec["unpack deployit-cli"],
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
-	}						
+	}
+	
+class{
+	"xebia_common::regdir":
+		require		=>	"${homedir}/cli",
+}
+
+file {"deployit cli scripts":
+			require => Class["xebia_common::regdir"],
+			source 	=> "puppet:///modules/deployit_cli/features/cli_python/",
+			recurse => true,
+			path 	=> "/etc/xebia_puppet/scripts"	
+		}							
 }
 	
 	

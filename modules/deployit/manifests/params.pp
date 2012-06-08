@@ -60,6 +60,11 @@ class deployit::params{
 		default		=> $::deployit_intergration_classes
 	}
 	
+	$xebia_universe	= $::deployit_xebia_universe ? {
+		''			=> 'general',
+		default		=> $::deployit_xebia_universe
+	}
+	
 	#Module management peritcular variables
 	#kudos to example 42 for the inspiration
 	
