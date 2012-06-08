@@ -15,7 +15,6 @@ define xebia_common::features::export_facts(
 			require => File["${factsdir}"],
 			tag => $tag,
 			content => inline_template("<% options.sort_by {|key, value| key}.each do |key, value| %>
-										<%= key %> = <%= value %><% end %>
-										<% end %>")
+										<%= key %> = <%= value %><% end %>")
 	}	
 }
