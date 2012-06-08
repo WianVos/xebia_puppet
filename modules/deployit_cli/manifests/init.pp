@@ -58,8 +58,10 @@ class deployit_cli(
 	
 	#xebia_puppet intergration stuff
 	if $intergrate == true {
-		class{$intergration_classes:}
 		
+		if $intergration_classes != '' {
+			class{$intergration_classes:}
+					}
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}" |>>
 		
 		#import deployit settings 
