@@ -11,7 +11,7 @@ define xebia_common::features::export_facts(
 	
 	
 	file{"${name}":
-			path 	=> "/etc/facter/facts.d/$name.txt",
+			path 	=> "${factsdir}/$name.txt",
 			require => File["${factsdir}"],
 			tag => $tag,
 			content => inline_template("<% options.sort_by {|key, value| key}.each do |key, value| %>
