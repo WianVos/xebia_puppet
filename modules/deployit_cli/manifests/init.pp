@@ -174,7 +174,7 @@ file{
 	
 class{
 	"xebia_common::regdir":
-		require		=>	"${homedir}/cli",
+		require		=>	File["${homedir}/cli"],
 }
 
 file {"deployit cli scripts":
