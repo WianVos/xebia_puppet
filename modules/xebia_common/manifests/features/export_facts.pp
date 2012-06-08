@@ -1,5 +1,5 @@
 define skeleton::features::export_facts(
-	$factsdir 	= "/etc/facter/facts.d",
+	$factsdir 	= "/etc/puppetlabs/facter/facts.d",
 	$options 	=	'',
 	$tag		= 	'',
 	$setname	=	'skeleton_facts',
