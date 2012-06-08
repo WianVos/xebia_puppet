@@ -146,7 +146,7 @@ if $install == "files" {
    	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
       	   require => File["${tmpdir}"],
       	   source => "$install_filesource/deployit-${version}-cli.zip",
-      	   before => Exec["unpack deployit_cli-cli"]
+      	   before => Exec["unpack deployit-cli"]
       	   	}	  
 }
 
@@ -154,7 +154,7 @@ if $install == "files" {
 	
 	
 exec{
-	 "unpack deployit_cli-cli":
+	 "unpack deployit-cli":
 		command 	=> "/usr/bin/unzip ${tmpdir}/deployit-${version}-cli.zip",
 		cwd 		=> "${basedir}",
 		creates 	=> "${basedir}/deployit-${version}-cli",
