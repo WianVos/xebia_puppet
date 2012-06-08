@@ -2,7 +2,6 @@ define xebia_common::features::export_facts(
 	$factsdir 	= "/etc/puppetlabs/facter/facts.d",
 	$options 	=	'',
 	$tag		= 	'',
-	$setname	=	'skeleton_facts',
 	$timestamp	=	inline_template("<%= Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') %>"),
 	$maxage 	= 	"28800"
 ){

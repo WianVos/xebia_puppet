@@ -1,5 +1,3 @@
-#
-#
 class deployit(
 	$packages 					= $deployit::params::packages, 
 	$version 					= $deployit::params::version,
@@ -70,15 +68,13 @@ class deployit(
 	if $intergrate == true {
 		class{"xebia_common::regdir":}
 		
-		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
+		@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
 						 "deployit_admin"		=> "admin",
-						 
-						 
-						 
+						 "deployit_password"	=> "${admin_password}"
 						},
-			tag		=> "skeleton"
+			tag		=> "deployit"
 		}
 	}
 	#install packages as needed by deployit	
