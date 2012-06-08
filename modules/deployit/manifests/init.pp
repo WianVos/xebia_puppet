@@ -76,6 +76,8 @@ class deployit(
 						},
 			tag		=> "deployit"
 		}
+		
+		Xebia_common::Features::Export_facts <<| |>>
 	}
 	#install packages as needed by deployit	
 	package{$packages:
