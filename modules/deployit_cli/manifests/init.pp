@@ -181,11 +181,15 @@ class{
 		script_dir	=>	"${script_dir}",
 }
 
-file {"deployit cli scripts":
-			require => Class["xebia_common::regdir"],
-			source 	=> "puppet:///modules/deployit_cli/features/cli_python/",
-			recurse => true,
-			path 	=> "${script_dir}"	
+file {"${script_dir}/$name":
+			require 		=> Class["xebia_common::regdir"],
+			source 			=> "puppet:///modules/deployit_cli/features/cli_python/",
+			sourceselect	=> all,
+			recurse 		=> remote,
+			owner			=> "${install_owner}",
+			group			=> "${install_group}",
+			ensure			=> "${manage_files}"
+				
 		}							
 }
 	
