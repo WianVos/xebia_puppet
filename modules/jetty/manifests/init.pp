@@ -102,7 +102,7 @@ class jetty(
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-jetty-service" |>>
 		
 		if !defined(Class["deployit_cli"]) {
-			deloyit_cli::types::jetty_ssh{"jetty instance":
+			deployit_cli::types::jetty_ssh{"jetty instance":
 				environments => "${xebia_universe}",
 				hostname	=> "${::hostname}"
 			}
