@@ -104,7 +104,6 @@ class jetty(
 		if !defined(Class["deployit_cli"]) {
 			deployit_cli::types::jetty_ssh{"jetty instance":
 				environments => "${xebia_universe}",
-				hostname	=> "${::hostname}"
 			}
 		}
 			
