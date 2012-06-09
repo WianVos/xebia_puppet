@@ -33,9 +33,22 @@ class xebia_common::regdir(
 		
 		file {"${baseregdir}":}
 		
-		file {["${scriptDir}","${configDir}","${markerDir}","${factDir}"]:
-			require		=>	File["${baseregdir}"]
+		if !defined(File["${scriptDir}"]){
+			file {"${scriptDir}":
+				require		=>	File["${baseregdir}"]
+			}
 		}
+		if !defined(File["${configDir}"]){
+			file {"${configDir}":
+				require		=>	File["${baseregdir}"]
+			}
+		}
+		if !defined(File["${factDir}"]){
+			file {"${factDir}":
+				require		=>	File["${baseregdir}"]
+			}
+		}
+		
 	
 	}
 
