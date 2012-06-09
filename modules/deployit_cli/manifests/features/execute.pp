@@ -33,7 +33,7 @@ define deployit_cli::features::execute(
 	}
 	else {
 		exec { "execute ${source} with params ${params}":
-			cwd => ${homedir},
+			cwd => "${homedir}",
 			command => "${homedir}/bin/cli.sh -host ${host} -port ${port} -username ${username} -password ${password} -f ${source} -- ${params}",
 			}
 	}
