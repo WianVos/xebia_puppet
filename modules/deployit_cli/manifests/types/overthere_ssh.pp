@@ -1,8 +1,6 @@
 define deployit_cli::types::overthere_ssh(
 	$hostname		= "${::hostname}",
-	$environments	= "default",
-	
-	
+	$environments	= "general"
 ){
 	deployit_cli::features::ci{ "${hostname} ssh-host":
  				 ciId => "Infrastructure/webserver-$::ipaddress_eth1",

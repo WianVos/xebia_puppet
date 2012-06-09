@@ -86,5 +86,21 @@ class jetty::params{
 		'' => "jetty",
 		default => $::jetty_install_group
 	}	
+	#INTEGRATION Section
+	#setup integration dir, makes module play well with others
+	$intergrate = $::jetty_integrate ? {
+		'' => true,
+		default => $::jetty_integrate
+	}
+	
+	$intergration_classes = $::jetty_intergration_classes ? {
+		'' 			=> "",
+		default		=> $::jetty_intergration_classes
+	}
+	
+	$xebia_universe	= $::jetty_xebia_universe ? {
+		''			=> 'general',
+		default		=> $::jetty_xebia_universe
+	}
 	
 }

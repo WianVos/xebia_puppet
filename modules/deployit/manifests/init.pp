@@ -76,7 +76,7 @@ class deployit(
 						 "deployit_password"	=> "${admin_password}",
 						 "deployit_port"		=>	"${http_port}"
 						},
-			tag		=> "${xebia_universe}"
+			tag		=> ["${xebia_universe}-deployit-service"]
 		}
 		
 		Xebia_common::Features::Export_facts <<| |>>

@@ -1,19 +1,22 @@
 #
 #
 class jetty(
-	$packages 			= $jetty::params::packages, 
-	$version 			= $jetty::params::version,
-	$basedir 			= $jetty::params::basedir,
-	$homedir 			= $jetty::params::homedir,
-	$tmpdir				= $jetty::params::tmpdir,
-	$absent 			= $jetty::params::absent,
-	$disabled 			= $jetty::params::disabled,
-	$ensure				= $jetty::params::ensure,
-	$install			= $jetty::params::install,
-	$install_filesource	= $jetty::params::install_filesource,
-	$install_owner		= $jetty::params::install_owner,
-	$install_group		= $jetty::params::install_group,
-	$install_source_url	= $jetty::params::install_source_url
+	$packages 				= $jetty::params::packages, 
+	$version 				= $jetty::params::version,
+	$basedir 				= $jetty::params::basedir,
+	$homedir 				= $jetty::params::homedir,
+	$tmpdir					= $jetty::params::tmpdir,
+	$absent 				= $jetty::params::absent,
+	$disabled 				= $jetty::params::disabled,
+	$ensure					= $jetty::params::ensure,
+	$install				= $jetty::params::install,
+	$install_filesource		= $jetty::params::install_filesource,
+	$install_owner			= $jetty::params::install_owner,
+	$install_group			= $jetty::params::install_group,
+	$install_source_url		= $jetty::params::install_source_url,
+	$intergrate				= $jetty::params::intergrate,
+	$intergration_classes	= $jetty::params::intergration_classes,
+	$xebia_universe			= $jetty::params::xebia_universe
 		
 ) inherits jetty::params{
 	
@@ -87,6 +90,24 @@ class jetty(
 		ensure 	=> "${manage_directory}",
 		owner 	=> "${install_owner}",
 		group	=> "${install_group}"
+	}
+	
+	if $intergrate == true {
+		
+		if $intergration_classes != '' {
+			class{$intergration_classes:}
+					}
+		
+		#import the 
+		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-jetty-service" |>>
+		
+		if !defined(Class["deployit_cli"]) {
+			deloyit_cli::types::jetty_ssh{"jetty instance":
+				environments => "${xebia_universe}",
+				hostname	=> "${::hostname}"
+			}
+		}
+			
 	}
 	
 	
@@ -168,6 +189,7 @@ if $install == "source" {
     target 		=>"${homedir}/bin/jetty.sh",
     require => File["${homedir}"],
   	}
+  
   service{
 	'jetty':
 		require 	=> File["${homedir}","/etc/init.d/jetty","/etc/default/jetty","/var/log/jetty" ],
