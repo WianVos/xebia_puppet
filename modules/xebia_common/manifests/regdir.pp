@@ -8,15 +8,15 @@ class xebia_common::regdir(
 	
 	$scriptDir	=	$script_dir ?{
 		''			=>	"${baseregdir}/script",
-		default 	=>	${script_dir}
+		default 	=>	$script_dir
 	}
 	$configDir	=	$config_dir ?{
 		''			=>	"${baseregdir}/config",
-		default 	=>	${config_dir}
+		default 	=>	$config_dir
 	}
 	$markerDir	=	$marker_dir ?{
 		''			=>	"${baseregdir}/marker",
-		default 	=>	${marker_dir}
+		default 	=>	$marker_dir
 	}
 	
 	$factDir	=	"/etc/puppetlabs/facter/facts.d"
