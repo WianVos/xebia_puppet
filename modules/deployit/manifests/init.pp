@@ -72,8 +72,9 @@ class deployit(
 		@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
-						 "deployit_admin"		=> "admin",
-						 "deployit_password"	=> "${admin_password}"
+						 "deployit_user"		=> "admin",
+						 "deployit_password"	=> "${admin_password}",
+						 "deployit_port"		=>	"${http_port}"
 						},
 			tag		=> "${xebia_universe}"
 		}

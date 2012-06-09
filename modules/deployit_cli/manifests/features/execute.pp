@@ -17,39 +17,24 @@
 # }
 
 define deployit_cli::features::execute(
-	$username = 'undefined',
-	$password = 'undefined',
+	$username = "${::deployit_user}",
+	$password = "${::deployit_password}",
 	$source,
 	$params = "",
-	$host = "undefined",
-	$port = "undefined"
+	$host = "${::deployit_host}",
+	$port = "${::deployit_port}",
+	$homedir = $deployit_cli::params::homedir
 ) {
 
-	include deployit
+	
 
-	$connectHost = $host ? {
-		"undefined" => $::deployit_host,
-		default => $host,
+	if (${::username} == "" ) or (${::password} == "" ) or (${::host} == "" ) or (${port} == "") {
+		notice "unable to run deployit command"
 	}
-
-	$connectPort = $port ? {
-		"undefined" => $deployit::port,
-		default => $port,
+	else {
+		exec { "execute ${source} with params ${params}":
+			cwd => ${homedir},
+			command => "${homedir}/bin/cli.sh -host ${host} -port ${port} -username ${username} -password ${password} -f ${source} -- ${params}",
+			}
 	}
-
-	$connectUser = $username ? {
-		"undefined" => $deployit::username,
-		default => $username,
-	}
-
-	$connectPassword = $password ? {
-		"undefined" => $deployit::password,
-		default => $password,
-	}
-
-	exec { "execute ${source} with params ${params}":
-		cwd => $deployit::cliHome,
-		command => "${deployit::cliHome}/bin/cli.sh -host ${connectHost} -port ${connectPort} -username ${connectUser} -password ${connectPassword} -f ${source} -- ${params}",
-	}
-
 }

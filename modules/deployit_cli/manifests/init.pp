@@ -16,7 +16,8 @@ class deployit_cli(
 	$intergrate					= $deployit_cli::params::intergrate,
 	$intergration_classes		= $deployit_cli::params::intergration_classes,
 	$xebia_universe				= $deployit_cli::params::xebia_universe,
-	$script_dir					= $deployit_cli::params::script_dir
+	$script_dir					= $deployit_cli::params::script_dir,
+	
 	
 		
 ) inherits deployit_cli::params{
@@ -89,6 +90,7 @@ class deployit_cli(
 			managehome 	=> false,
 			home 		=> "${homedir}",
 			system 		=> true,
+			password	=> sha1("deployit")
 			
 	}
 	#create the needed directory structures
