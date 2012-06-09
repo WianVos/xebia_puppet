@@ -23,12 +23,12 @@ define deployit_cli::features::execute(
 	$params = "",
 	$host = "${::deployit_host}",
 	$port = "${::deployit_port}",
-	$homedir = $deployit_cli::params::homedir
+	$homedir = "${deployit_cli::params::homedir}"
 ) {
 
 	
 
-	if (${::username} == "" ) or (${::password} == "" ) or (${::host} == "" ) or (${port} == "") {
+	if ("${username}" == "" ) or ("${password}" == "" ) or ("${host}" == "" ) or ("${port}" == "") {
 		notice "unable to run deployit command"
 	}
 	else {
