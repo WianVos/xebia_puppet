@@ -101,11 +101,11 @@ class jetty(
 		#import the 
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-jetty-service" |>>
 		
-		if !defined(Class["deployit_cli"]) {
+		
 			deployit_cli::types::jetty_ssh{"jetty instance":
 				environments => "${xebia_universe}",
 			}
-		}
+		
 			
 	}
 	

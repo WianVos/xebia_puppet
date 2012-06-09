@@ -88,9 +88,9 @@ class jetty::params{
 	}	
 	#INTEGRATION Section
 	#setup integration dir, makes module play well with others
-	$intergrate = $::jetty_integrate ? {
+	$intergrate = $::jetty_intergrate ? {
 		'' => true,
-		default => $::jetty_integrate
+		default => $::jetty_intergrate
 	}
 	
 	$intergration_classes = $::jetty_intergration_classes ? {
