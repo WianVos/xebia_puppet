@@ -23,7 +23,7 @@ define deployit_cli::features::execute(
 	$params = "",
 	$host = "${::deployit_host}",
 	$port = "${::deployit_port}",
-	$homedir = "${deployit_cli::params::homedir}"
+	$homedir = "${deployit_cli::params::homedir}/cli"
 ) {
 
 	if ! defined(Class["deployit_cli"]){
