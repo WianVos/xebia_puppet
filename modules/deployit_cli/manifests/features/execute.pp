@@ -17,18 +17,20 @@
 # }
 
 define deployit_cli::features::execute(
-	$username = "${::deployit_user}",
-	$password = "${::deployit_password}",
 	$source,
-	$params = "",
-	$host = "${::deployit_host}",
-	$port = "${::deployit_port}",
-	$homedir = "${deployit_cli::params::homedir}/cli"
+	$params = ""
 ) {
 
 	if ! defined(Class["deployit_cli"]){
 		class{"deployit_cli":} 
 	}
+	
+	$username = "${::deployit_user}"
+	$password = "${::deployit_password}"
+	$host = "${::deployit_host}"
+	$port = "${::deployit_port}"
+	$homedir = "${deployit_cli::params::homedir}/cli"
+	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
 			command => "${homedir}/bin/cli.sh -host ${host} -port ${port} -username ${username} -password ${password} -f ${source} -- ${params}",
