@@ -26,6 +26,8 @@ define deployit_cli::features::execute(
 		class{"deployit_cli":} 
 	}
 	
+	
+	
 	$username = "${deployit_user}"
 	$password = "${deployit_password}"
 	$host = "${deployit_host}"

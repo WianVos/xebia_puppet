@@ -16,7 +16,8 @@ class deployit_cli(
 	$intergrate					= $deployit_cli::params::intergrate,
 	$intergration_classes		= $deployit_cli::params::intergration_classes,
 	$xebia_universe				= $deployit_cli::params::xebia_universe,
-	$script_dir					= $deployit_cli::params::script_dir
+	$script_dir					= $deployit_cli::params::script_dir,
+	$conf_dir					= $deployit_cli::params::conf_dir
 	
 	
 		
@@ -65,7 +66,8 @@ class deployit_cli(
 			class{$intergration_classes:}
 		}
 		
-		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service" |>>
+		#import deployit settings 
+		Xebia_common::Features::Export_config <<| tag == "${xebia_universe}-deployit-service-config" |>> { conf_dir => "${conf_dir}"}
 		
 		#import deployit settings 
 		
@@ -179,6 +181,7 @@ class{
 	"xebia_common::regdir":
 		require		=>	File["${homedir}/cli"],
 		script_dir	=>	"${script_dir}",
+		config_dir	=> "${conf_dir}"
 }
 
 file {"${script_dir}/$name":

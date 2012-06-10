@@ -13,6 +13,11 @@ class deployit_cli::params{
 		''	=>	'/etc/xebia_puppet/scripts',
 		default	=> $::deployit_script_dir
 	}
+	#setting conf_dir 
+	$conf_dir = $::deployit_conf_dir ? {
+		''	=>	'/etc/xebia_puppet/config',
+		default	=> $::deployit_conf_dir
+	}
 	
 	#install method . Possible options files or nexus 
 	$install = $::deployit_cli_install ? {

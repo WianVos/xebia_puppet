@@ -79,7 +79,19 @@ class deployit(
 			tag		=> ["${xebia_universe}-deployit-service"]
 		}
 		
+		@@xebia_common::features::export_config{"deployit_config.sh":
+			options => { "deployit_hostname" 	=> "${::fqdn}",
+						 "deployit_ipaddress" 	=> "${::ipaddress}",
+						 "deployit_user"		=> "admin",
+						 "deployit_password"	=> "${admin_password}",
+						 "deployit_port"		=>	"${http_port}"
+						},
+			confdir =>	"${xebia_common::regdir::configDir}",
+			tag		=> ["${xebia_universe}-deployit-service-config"]
+		}
+		
 		Xebia_common::Features::Export_facts <<| |>>
+		Xebia_common::Features::Export_config <<| |>>
 	}
 	#install packages as needed by deployit	
 	package{$packages:
