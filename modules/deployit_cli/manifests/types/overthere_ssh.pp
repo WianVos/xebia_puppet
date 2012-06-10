@@ -3,6 +3,7 @@ define deployit_cli::types::overthere_ssh(
 	$environments	= "general",
 	$fqdn			= "${::fqdn}"
 ){
+	
 	deployit_cli::features::ci{ "${hostname} ssh-host":
  				 ciId => "Infrastructure/ssh-host",
   				 ciType => 'overthere.SshHost',

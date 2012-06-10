@@ -26,7 +26,9 @@ define deployit_cli::features::execute(
 	$homedir = "${deployit_cli::params::homedir}"
 ) {
 
-	
+	if ! defined(Class["deployit_cli"]){
+		class{"deployit_cli":} 
+	}
 
 	if ("${username}" == "" ) or ("${password}" == "" ) or ("${host}" == "" ) or ("${port}" == "") {
 		notice "unable to run deployit command"
