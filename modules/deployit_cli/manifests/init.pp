@@ -67,7 +67,7 @@ class deployit_cli(
 		}
 		
 		#import deployit settings 
-		Xebia_common::Features::Export_config <<| tag == "${xebia_universe}-deployit-service-config" |>> { conf_dir => "${conf_dir}"}
+		Xebia_common::Features::Export_config <<| tag == "${xebia_universe}-deployit-service-config" |>> { confdir => "${conf_dir}"}
 		
 		#import deployit settings 
 		
