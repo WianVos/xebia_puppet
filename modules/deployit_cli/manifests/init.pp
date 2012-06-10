@@ -63,7 +63,8 @@ class deployit_cli(
 		
 		if $intergration_classes != '' {
 			class{$intergration_classes:}
-					}
+		}
+		
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service" |>>
 		
 		#import deployit settings 
@@ -72,10 +73,9 @@ class deployit_cli(
 	}
 	
 	#install packages as needed by deployit_cli	
-	package{$packages:
-		ensure => $manage_package,
-		before => File["$tmpdir","$basedir"]
-	}
+	#	ensure => $manage_package,
+	#	before => File["$tmpdir","$basedir"]
+	#}
 	
 	#create the needed users
 	group {
