@@ -193,7 +193,7 @@ if $install == "source" {
   	}	
   	
   deployit_cli::types::jetty_ssh{"jetty instance":
-				environments => "${xebia_universe}",
+				environments => "general",
 				require => Service["jetty"]
 	}
   	
