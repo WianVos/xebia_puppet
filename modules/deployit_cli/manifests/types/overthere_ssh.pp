@@ -9,6 +9,7 @@ define deployit_cli::types::overthere_ssh(
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
                  sudoUsername => 'root', address => "${fqdn}" },
+                 ciEnvironments => "${environments}",
   				 ensure => present,
 	}
 }

@@ -1,29 +1,35 @@
 class deployit(
-	$packages 					= params_lookup('packages, 
-	$version 					= params_lookup('version,
-	$basedir 					= params_lookup('basedir,
-	$homedir 					= params_lookup('homedir,
-	$tmpdir						= params_lookup('tmpdir,
-	$absent 					= params_lookup('absent,
-	$disabled 					= params_lookup('disabled,
-	$ensure						= params_lookup('ensure,
-	$install					= params_lookup('install,
-	$install_filesource			= params_lookup('install_filesource,
-	$install_owner				= params_lookup('install_owner,
-	$install_group				= params_lookup('install_group,
-	$intergrate					= params_lookup('intergrate,
-	$intergration_classes		= params_lookup('intergration_classes,
-	$admin_password				= params_lookup('admin_password,
-	$jcr_repository_path		= params_lookup('jcr_repository_path,
-	$threads_min				= params_lookup('threads_min,
-	$threads_max				= params_lookup('threads_max,
-	$ssl						= params_lookup('ssl,
-	$http_bind_address			= params_lookup('http_bind_address,
-	$http_context_root			= params_lookup('http_context_root,
-	$http_port					= params_lookup('http_port,
-	$importable_packages_path	= params_lookup('importable_packages_path,
-	$xebia_universe				= params_lookup('xebia_universe,
-	$plugin_install				= params_lookup('plugin_install
+	$packages 					= params_lookup('packages'), 
+	$version 					= params_lookup('version'),
+	$basedir 					= params_lookup('basedir'),
+	$homedir 					= params_lookup('homedir'),
+	$tmpdir						= params_lookup('tmpdir'),
+	$absent 					= params_lookup('absent'),
+	$disabled 					= params_lookup('disabled'),
+	$ensure						= params_lookup('ensure'),
+	$install					= params_lookup('install'),
+	$install_filesource			= params_lookup('install_filesource'),
+	$install_owner				= params_lookup('install_owner'),
+	$install_group				= params_lookup('install_group'),
+	$admin_password				= params_lookup('admin_password'),
+	$jcr_repository_path		= params_lookup('jcr_repository_path'),
+	$threads_min				= params_lookup('threads_min'),
+	$threads_max				= params_lookup('threads_max'),
+	$ssl						= params_lookup('ssl'),
+	$http_bind_address			= params_lookup('http_bind_address'),
+	$http_context_root			= params_lookup('http_context_root'),
+	$http_port					= params_lookup('http_port'),
+	$importable_packages_path	= params_lookup('importable_packages_path'),
+	$universe				= params_lookup('universe'),
+	$plugin_install				= params_lookup('plugin_install'),
+	$export_facts				= params_lookup('export_facts'),
+	$export_config				= params_lookup('export_config'),
+	$confdir					= params_lookup('confdir'),
+	$scriptdir					= params_lookup('scriptdir'),
+	$markerdir					= params_lookup('markerdir'),
+	$import_facts				= params_lookup('import_facts'),
+	$import_config				= params_lookup('import_config')
+		
 		
 ) inherits deployit::params{
 	
@@ -63,13 +69,20 @@ class deployit(
 		default	=> "running"
 	}
 	
-	
+	if !defined('xebia_common::regdir'){
+		class{'xebia_common::regdir':
+			absent 		=> "${absent}",
+			config_dir	=> "${confdir}",
+			script_dir	=> "${scriptdir}",
+			marker_dir	=> "${markerdir}",
+			
+		}
+	} 
 	
 	
 	#xebia_puppet intergration stuff
-	if $intergrate == true {
-		class{"xebia_common::regdir":}
-		
+	
+	if export_facts == true {
 		@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
@@ -77,9 +90,11 @@ class deployit(
 						 "deployit_password"	=> "${admin_password}",
 						 "deployit_port"		=>	"${http_port}"
 						},
-			tag		=> ["${xebia_universe}-deployit-service"]
+			tag		=> ["${universe}-deployit-service"]
 		}
-		
+	}
+	
+	if export_config == true {
 		@@xebia_common::features::export_config{"deployit_config.sh":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
@@ -88,12 +103,18 @@ class deployit(
 						 "deployit_port"		=>	"${http_port}"
 						},
 			confdir =>	"${xebia_common::regdir::configDir}",
-			tag		=> ["${xebia_universe}-deployit-service-config"]
+			tag		=> ["${universe}-deployit-service-config"]
 		}
-		
-		Xebia_common::Features::Export_facts <<| |>>
-		Xebia_common::Features::Export_config <<| |>>
 	}
+	
+	if import_facts == true {
+		Xebia_common::Features::Export_facts <<| |>> 
+	}
+	if import_config == true {
+		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
+		
+	}
+	
 	#install packages as needed by deployit	
 	package{$packages:
 		ensure => $manage_package,
@@ -140,36 +161,6 @@ class deployit(
 #download and unpack the needed files into the temporary directory in accordance with the installation type
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
-if $install == "nexus" {	
-    class {
-		'nexus' :
-			url => "${deployit::params::nexus_url}",
-			username => "${deployit::params::nexus_user}",
-			password => "${deployit::params::nexus_password}"
-	}
-	
-	nexus::artifact {
-		'deployit-cli' :
-			gav 		=> "com.xebialabs.deployit:deployit:${version}",
-			classifier 	=> 'cli',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/deployit-${version}-cli.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-	}
-		
-    nexus::artifact {
-		'deployit-server' :
-			gav 		=> "com.xebialabs.deployit:deployit:${version}",
-			classifier 	=> 'server',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/deployit-${version}-server.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-		}
-	}
 	
 if $install == "files" {
 	  
@@ -201,7 +192,6 @@ exec{
 		creates 	=> "${basedir}/deployit-${version}-cli",
 		require 	=> $install ?{
 				default => File["${basedir}","deployit-${version}-cli.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-cli"]],
 				},
 		user		=>	"${install_owner}",
 		}
@@ -214,7 +204,6 @@ exec{
 		creates 	=> "${basedir}/deployit-${version}-server",
 		require 	=> $install ? {
 				default => File["${basedir}","deployit-${version}-server.zip"],
-				'nexus' => [File["${basedir}"], Nexus::Artifact["deployit-server"]],
 				},
 		user		=> "${install_owner}",
 		}
@@ -269,7 +258,7 @@ file{
 		notify		=> Service["deployit"],
 		replace		=> false
 }
-if $plugin_install == "true" {
+if $plugin_install == true {
 
 	file{ "plugin install":
 		require 	=> Exec["unpack deployit-server"],
