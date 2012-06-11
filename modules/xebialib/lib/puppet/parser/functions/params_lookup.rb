@@ -36,10 +36,10 @@ EOS
     var_name = arguments[0]
     module_name = parent_module_name
     
-    if Puppet::Parser::Functions.function('hiera')
-      value = function_hiera("#{var_name}",'') if arguments[1] == 'global'
-      value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' )
-    end
+    #if Puppet::Parser::Functions.function('hiera')
+    #  value = function_hiera("#{var_name}",'') if arguments[1] == 'global'
+    #  value = function_hiera("#{module_name}_#{var_name}",'') if ( function_hiera("#{module_name}_#{var_name}",'') != :undefined && function_hiera("#{module_name}_#{var_name}",'') != '' )
+    #end
 
     if value == ''
       value = lookupvar("::#{var_name}") if arguments[1] == 'global'
