@@ -20,35 +20,29 @@ define deployit_cli::features::execute(
 	$source,
 	$params = "",
 	$homedir = "${deployit_cli::params::homedir}/cli",
-	$confdir = "/etc/xebia_puppet/config"
+	$confdir = "/etc/xebia_puppet/config",
+	$scriptdir = "${deployit_cli::params::script_dir}/deployit_cli"
 ) {
 
 	if ! defined(Class["deployit_cli"]){
 		class{"deployit_cli":} 
 	}
-	
-	
-	
-	$username = "${deployit_user}"
-	$password = "${deployit_password}"
-	$host = "${deployit_host}"
-	$port = "${deployit_port}"
-	notice ("${deployit_user}")
+
+	if ! defined(File["run_cli.sh wrapper"]){
+		file{"run_cli.sh wrapper":
+			path => "${scriptdir}/run_cli.sh",
+			content => template("deployit_cli/run_cli.sh.erb"),
+			owner	=> root,
+			group	=> root,
+			mode	=> "700",
+		}
+	}	
 	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
-			command => "bash -c set -x ; . .${confdir}/deployit_config.sh.txt ; ${homedir}/bin/cli.sh -host $deployit_host -port $deployit_port -username $deployit_username -password $deployit_password -f ${source} -- ${params}",
+			command => "${scriptdir}/run_cli.sh -f ${source} -- ${params}",
 			require => Class["deployit_cli"],
+			logoutput => true,
 			path => ["/usr/bin","/bin","/sbin","/usr/sbin"]
 			}
-
-#	if ("${username}" == "" ) or ("${password}" == "" ) or ("${host}" == "" ) or ("${port}" == "") {
-#		notice "unable to run deployit command"
-#	}
-#	else {
-#		exec { "execute ${source} with params ${params}":
-#			cwd => "${homedir}",
-#			command => "${homedir}/bin/cli.sh -host ${host} -port ${port} -username ${username} -password ${password} -f ${source} -- ${params}",
-#			}
-#	}
 }

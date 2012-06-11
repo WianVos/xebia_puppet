@@ -22,19 +22,19 @@ define deployit_cli::features::ci(
 	if $ensure == present {
 
 		deployit_cli::features::execute { "create CI ${ciId} of type ${ciType}":
-			source 		=> "${script_dir}/create-ci.py",
+			source 		=> "${script_dir}/deployit_cli/create-ci.py",
 			params 		=> inline_template("'<%= ciId %>' '<%= ciType %>' <% ciValues.each do |key, val| -%><%= key %>='<%= val %>' <% end -%>"),
 		}
 
 		deployit_cli::features::execute { "set tags on CI ${ciId}":
 			require 	=> Deployit_cli::Features::Execute["create CI ${ciId} of type ${ciType}"], 
-			source 		=> "${script_dir}/set-tags.py",
+			source 		=> "${script_dir}/deployit_cli/set-tags.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciTags.each do |val| -%>'<%= val %>' <% end %>"),
 		}
 
 		deployit_cli::features::execute { "set environments on CI ${ciId}":
 			require		=> Deployit_cli::Features::Execute["set tags on CI ${ciId}"],
-			source 		=> "${script_dir}/set-envs.py",
+			source 		=> "${script_dir}/deployit_cli/set-envs.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciEnvironments.each do |val| -%>'<%= val %>' <% end %>"),
 		}
 
@@ -42,7 +42,7 @@ define deployit_cli::features::ci(
 	} elsif $ensure == absent {
 
 		deployit_cli::features::execute { "delete CI ${ciId}":
-			source => "${script_dir}/delete-ci.py",
+			source => "${script_dir}/deployit_cli/delete-ci.py",
 			params => inline_template("'<%= ciId %>'"),
 		}
 		
