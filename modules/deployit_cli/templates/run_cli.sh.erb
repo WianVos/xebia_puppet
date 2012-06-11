@@ -1,0 +1,6 @@
+#!/bin/sh
+# simple wrapper around cli.sh wich will import a config file located in the config dir
+set -x 
+. <%= confdir %>/deployit_config.sh.txt
+
+<%= homedir %>/bin/cli.sh -host $deployit_hostname  -port $deployit_port -username $deployit_user -password $deployit_password $@
