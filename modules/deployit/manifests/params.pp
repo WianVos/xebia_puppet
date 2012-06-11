@@ -3,7 +3,7 @@ class deployit::params{
 	
 	
 	$packages 					= 	['openjdk-6-jdk', 'unzip']
-	$version 					= 	'3.7.0'
+	$version 					= 	'3.7.3'
 	$basedir 					= 	'/opt/deployit_base'
 	$homedir 					= 	'/opt/deployit'
 	$tmpdir						= 	'/var/tmp/deployit'
