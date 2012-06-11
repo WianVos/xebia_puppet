@@ -1,6 +1,6 @@
 define deployit_cli::types::overthere_ssh(
 	$hostname		= "${::hostname}",
-	$environments	= "general",
+	$environments	= "${::environments}",
 	$fqdn			= "${::fqdn}"
 ){
 	
