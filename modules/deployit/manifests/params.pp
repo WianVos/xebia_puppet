@@ -22,7 +22,12 @@ class deployit::params{
 		'' => "puppet:///modules/deployit",
 		default => $::deployit_install_filesource
 	}
-	
+
+	#install plungins
+	$plugin_install = $::deployit_plugin_install ?{
+		'' 	=> "true",
+		default	=> $::deployit_plugin_install
+	}
 	
 	#the deployit version which we will install
 	$version = $::deployit_version ? {

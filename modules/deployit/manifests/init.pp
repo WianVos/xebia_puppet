@@ -22,7 +22,8 @@ class deployit(
 	$http_context_root			= $deployit::params::http_context_root,
 	$http_port					= $deployit::params::http_port,
 	$importable_packages_path	= $deployit::params::importable_packages_path,
-	$xebia_universe				= $deployit::params::xebia_universe
+	$xebia_universe				= $deployit::params::xebia_universe,
+	$plugin_install				= $deployit::params::plugin_install
 		
 ) inherits deployit::params{
 	
@@ -268,7 +269,20 @@ file{
 		notify		=> Service["deployit"],
 		replace		=> false
 }
+if $plugin_install == "true" {
 
+	file{ "plugin install":
+		require 	=> Exec["unpack deployit-server"],
+	        source 		=> "puppet:///modules/deployit/plugins/",
+		sourceselect	=> all,
+		recurse 	=> remote,
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		ensure		=> "${manage_files}",
+		path		=> "${homedir}/server/plugins",
+		notify		=> Service["deployit"]
+		}							
+}
 
 
 exec{
