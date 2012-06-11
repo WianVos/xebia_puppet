@@ -19,7 +19,8 @@
 define deployit_cli::features::execute(
 	$source,
 	$params = "",
-	$homedir = "${deployit_cli::params::homedir}/cli"
+	$homedir = "${deployit_cli::params::homedir}/cli",
+	$confdir = "/etc/xebia_puppet/config"
 ) {
 
 	if ! defined(Class["deployit_cli"]){
@@ -36,8 +37,9 @@ define deployit_cli::features::execute(
 	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
-			command => "${homedir}/bin/cli.sh -host ${host} -port ${port} -username ${username} -password ${password} -f ${source} -- ${params}",
-			require => Class["deployit_cli"]
+			command => "bash -c set -x ; . .${confdir}/deployit_config.sh.txt ; ${homedir}/bin/cli.sh -host $deployit_host -port $deployit_port -username $deployit_username -password $deployit_password -f ${source} -- ${params}",
+			require => Class["deployit_cli"],
+			path => ["/usr/bin","/bin","/sbin","/usr/sbin"]
 			}
 
 #	if ("${username}" == "" ) or ("${password}" == "" ) or ("${host}" == "" ) or ("${port}" == "") {
