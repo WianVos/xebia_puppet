@@ -1,0 +1,45 @@
+#===========================================================
+# Jetty start.jar arguments
+#===========================================================
+
+--exec
+-Xmx<%= max_heap %>m
+-Xms<%= initial_heap %>m
+-Dcom.sun.management.jmxremote
+-Dcom.sun.management.jmxremote.port=<%= Integer(port)+9 %>
+-Dcom.sun.management.jmxremote.ssl=false
+-Dcom.sun.management.jmxremote.authenticate=false
+-Djava.security.auth.login.config=etc/ldap-loginModule.conf
+-XX:MaxPermSize=256M
+
+#===========================================================
+# Start classpath OPTIONS.
+# These control what classes are on the classpath
+# for a full listing do
+#   java -jar start.jar --list-options
+#-----------------------------------------------------------
+OPTIONS=Server,jsp,jmx,resources,websocket,ext,plus,annotations,jta
+#-----------------------------------------------------------
+
+#===========================================================
+# Configuration files.
+# For a full list of available configuration files do
+#   java -jar start.jar --help
+#-----------------------------------------------------------
+# etc/jetty-jmx.xml
+etc/jetty.xml
+etc/jetty-annotations.xml
+# etc/jetty-ssl.xml
+# etc/jetty-requestlog.xml
+etc/jetty-deploy.xml
+# etc/jetty-overlay.xml
+# etc/jetty-webapps.xml
+etc/jetty-contexts.xml
+# etc/jetty-testrealm.xml
+etc/jetty-jndi.xml
+#===========================================================
+
+#===========================================================
+# Custom additions
+#===========================================================
+etc/jetty-resources.xml

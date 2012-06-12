@@ -1,0 +1,15 @@
+<configuration>
+  <!-- always a good activate OnConsoleStatusListener -->
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+<% if accesslog -%>
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file><%= installdir %>/logs/server-access.log</file>
+    <encoder>
+      <pattern>combined</pattern>
+    </encoder>
+  </appender>
+
+  <appender-ref ref="FILE" />
+<% end -%>
+</configuration>

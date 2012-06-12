@@ -1,0 +1,11 @@
+numproc=`ps -fU <%= runtime_user %> | grep jetty | grep -v grep | wc -l`
+
+if [ $numproc -gt 0 ]; then
+  echo "Jetty is running..."
+elif [ -f <%= installdir %>/blocked ]; then
+  echo "Jetty is blocked..."
+else
+  echo "Jetty is stopped..."
+fi
+
+
