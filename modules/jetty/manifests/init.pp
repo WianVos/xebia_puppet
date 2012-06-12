@@ -1,22 +1,29 @@
 #
 #
 class jetty(
-	$packages 				= $jetty::params::packages, 
-	$version 				= $jetty::params::version,
-	$basedir 				= $jetty::params::basedir,
-	$homedir 				= $jetty::params::homedir,
-	$tmpdir					= $jetty::params::tmpdir,
-	$absent 				= $jetty::params::absent,
-	$disabled 				= $jetty::params::disabled,
-	$ensure					= $jetty::params::ensure,
-	$install				= $jetty::params::install,
-	$install_filesource		= $jetty::params::install_filesource,
-	$install_owner			= $jetty::params::install_owner,
-	$install_group			= $jetty::params::install_group,
-	$install_source_url		= $jetty::params::install_source_url,
-	$intergrate				= $jetty::params::intergrate,
-	$intergration_classes	= $jetty::params::intergration_classes,
-	$xebia_universe			= $jetty::params::xebia_universe
+	$packages 				= params_lookup('packages'), 
+	$version 				= params_lookup('version'),
+	$basedir 				= params_lookup('basedir'),
+	$homedir 				= params_lookup('homedir'),
+	$tmpdir					= params_lookup('tmpdir'),
+	$config_dir				= params_lookup('config_dir'),
+	$script_dir				= params_lookup('script_dir'),
+	$marker_dir				= params_lookup('marker_dir'),
+	$absent 				= params_lookup('absent'),
+	$disabled 				= params_lookup('disabled'),
+	$ensure					= params_lookup('ensure'),
+	$install				= params_lookup('install'),
+	$install_filesource		= params_lookup('install_filesource'),
+	$install_owner			= params_lookup('install_owner'),
+	$install_group			= params_lookup('install_group'),
+	$install_source_url		= params_lookup('install_source_url'),
+	$export_facts			= params_lookup('export_facts'),
+	$export_config			= params_lookup('export_configs'),
+	$import_facts			= params_lookup('import_facts'),
+	$import_config			= params_lookup('import_config'),
+	$xebia_universe			= params_lookup('xebia_universe'),
+	$customer			= params_lookup('customer'),
+	$application			= params_lookup('application'),
 		
 ) inherits jetty::params{
 	
@@ -77,14 +84,7 @@ class jetty(
 			system 		=> true,
 			
 	}
-	#create the needed directory structures
 	
-	#tmpdir
-	file {"${tmpdir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
 	#basedir
 	file {"${basedir}":
 		ensure 	=> "${manage_directory}",
@@ -92,19 +92,29 @@ class jetty(
 		group	=> "${install_group}"
 	}
 	
-	if $intergrate == true {
+	if ! defined('xebia_common::regdir'){
 		
-		if $intergration_classes != '' {
-			class{$intergration_classes:}
-					}
+		class{'xebia_common::regdir':
+			absent 		=> "${absent}",
+			config_dir	=> "${confdir}",
+			script_dir	=> "${scriptdir}",
+			marker_dir	=> "${markerdir}",
+			
+		}
+	} 
+	
+	
+	if $import_facts == true {
 		
 		#import the 
-		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-jetty-service" |>>
-		
-		
-			
+		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service" |>>
 	}
 	
+	if $import_config == true {
+		
+		#import the 
+		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service-config" |>>
+	}
 	
 	
 	

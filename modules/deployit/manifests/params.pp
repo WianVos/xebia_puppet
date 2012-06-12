@@ -1,19 +1,14 @@
 class deployit::params{
 	
-	
-	
-	$packages 					= 	['openjdk-6-jdk', 'unzip']
 	$version 					= 	'3.7.3'
 	$basedir 					= 	'/opt/deployit_base'
 	$homedir 					= 	'/opt/deployit'
-	$tmpdir						= 	'/var/tmp/deployit'
-	$absent 					=	false
-	$disabled 					= 	false
-	$ensure						= 	'running'
-	$install					= 	'files'
 	$install_filesource			= 	'puppet:///modules/deployit'
 	$install_owner				= 	'deployit'
 	$install_group				= 	'deployit'
+	$plugin_install				= 	true
+
+	#deployit config settings
 	$admin_password				= 	'admin'
 	$jcr_repository_path		= 	'repository'
 	$threads_min				= 	'4'
@@ -23,14 +18,24 @@ class deployit::params{
 	$http_context_root			= 	'/'
 	$http_port					=   '4516'
 	$importable_packages_path	= 	"importablePackages"
+
+	#universe settings
 	$universe					= 	'general'
-	$plugin_install				= 	true
-	$export_facts				= 	true
-	$export_config				= 	true
-	$confdir					= 	'/etc/xebia_puppet/config'
-	$scriptdir					= 	'/etc/xebia_puppet/scriptsdir'
-	$markerdir					= 	'/etc/xebia_puppet/marker'
+
+	#module management settings
+	$packages 					= 	['openjdk-6-jdk', 'unzip']
+	$tmpdir						= 	'/var/tmp/deployit'
+	$absent 					=	false
+	$disabled 					= 	false
+	$ensure						= 	'running'
 	$import_facts				= 	false
 	$import_config				= 	false
+	$confdir					= 	'/etc/xebia_puppet/config'
+	$scriptdir					= 	'/etc/xebia_puppet/script'
+	$markerdir					= 	'/etc/xebia_puppet/marker'
+	$export_facts				= 	true
+	$export_config				= 	true
+	$install					= 	'files'
+	$facts_to_export
 			
 }

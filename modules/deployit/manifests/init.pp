@@ -69,7 +69,7 @@ class deployit(
 		default	=> "running"
 	}
 	
-	if ! defined('xebia_common::regdir'){
+	if ! defined(Class['xebia_common::regdir']){
 		class{'xebia_common::regdir':
 			absent 		=> "${absent}",
 			config_dir	=> "${confdir}",
