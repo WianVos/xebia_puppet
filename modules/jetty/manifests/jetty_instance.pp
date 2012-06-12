@@ -1,7 +1,7 @@
 define jetty::instance (
+  $basedir,
   $ensure = "present",
   $disabled = false,
-  $basedir,
   $port = "8080",
   $version = "8.1.4.v20120524",
   $runtime_user ="${name}_jetty",
