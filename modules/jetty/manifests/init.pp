@@ -123,84 +123,10 @@ class jetty(
 # server in downloaded only if installation type is set to server
 
 	
-if $install == "files" {
-	  
-    file {"jetty-${version}.zip":
-   		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/jetty-${version}.zip",
-      	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/jetty-${version}.zip",
-      	   before => Exec["unpack jetty"]
-        }
-        
-    exec{
-	"unpack_jetty":
-		command 	=> "/usr/bin/unzip ${tmpdir}/jetty-${version}.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/jetty-${version}",
-		require 	=> File["${basedir}","jetty-${version}.zip"],
-		user		=> "${install_owner}",
-		}
-    $basetarget = "${basedir}/jetty-${version}"
-}
-
-if $install == "source" {
-	
-	xebia_common::source{"unpack_jetty":
-		source_url 	=>  "${install_source_url}",
-        target 		=>	"${basedir}",
-		type		=>	"targz",
-		owner		=> 	"${install_owner}",	
-		group		=>	"${install_group}"			
+	jetty::instance {"test1":
+		
+		
 	}
-	
-	$basetarget = "${basedir}/jetty-distribution-${version}"
-}
-
-
-  file{
-	"${homedir}":
-		ensure 		=> $manage_link,
-		target 		=> "${basetarget}",
-		require		=> $install ? {
-				files	=>	Exec["unpack_jetty"],
-				source	=> 	Xebia_common::Source["unpack_jetty"],
-				default =>	Exec["unpack_jetty"],
-				},
-		owner		=> "${install_owner}",
-		group		=> "${install_group}"
-	}	
-
-
- 
-
-  file { "/var/log/jetty":
-    ensure 		=> $manage_link,
-    target 		=>"${homedir}/logs",
-    require => File["${homedir}"],
-    owner		=> "${install_owner}",
-  	group		=> "${install_group}"
-  	}
-  
-  file {"/etc/default/jetty":
-  	ensure		=> $manage_files,
-  	content		=> "JETTY_HOME=\"${$homedir}\"",
-  	owner		=> "${install_owner}",
-  	group		=> "${install_group}"
-  }
-  
-  file { "/etc/init.d/jetty":
-  	ensure 		=> $manage_link,
-    target 		=>"${homedir}/bin/jetty.sh",
-    require => File["${homedir}"],
-  	}
-  
-  service{
-	'jetty':
-		require 	=> File["${homedir}","/etc/init.d/jetty","/etc/default/jetty","/var/log/jetty" ],
-		ensure		=> "${ensure_service}",
-		hasrestart	=> true,
-  	}	
   	
   deployit_cli::types::jetty_ssh{"jetty instance":
 				environments => "general",

@@ -36,6 +36,6 @@ class deployit::params{
 	$export_facts				= 	true
 	$export_config				= 	true
 	$install					= 	'files'
-	$facts_to_export
+	
 			
 }
