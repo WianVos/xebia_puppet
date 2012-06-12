@@ -124,10 +124,11 @@ class jetty(
 
 	
 	jetty::instance {"test1":
-		
-		
+		basedir => ${basedir}	
 	}
-  	
+  	jetty::instance {"test2":
+  		basedir => ${basedir}
+  	}
   deployit_cli::types::jetty_ssh{"jetty instance":
 				environments => "general",
 				require => Service["jetty"]
