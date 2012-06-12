@@ -1,7 +1,7 @@
 define jetty::instance (
   $ensure = "present",
   $disabled = false,
-  $installdir,
+  $basedir,
   $port = "8080",
   $version = "8.1.4.v20120524",
   $runtime_user ="${name}_jetty",
@@ -14,14 +14,18 @@ define jetty::instance (
   $db2_libs=false,
   $mq_libs=false,
   $activemq_libs=false,
-  $accesslog,
+  $accesslog = true,
   $appname = "default_application",
   $customer = "default_customer"
 ) {
 	
   #set download_url depening on version
   $download_url ="http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
-
+	
+  #set the installdir in accordance to the name and the basedir
+  $installpath = "${basedir}/${name}"
+  
+  
   $ensure_user = $ensure ? {
     absent  => absent,
     default => present,
