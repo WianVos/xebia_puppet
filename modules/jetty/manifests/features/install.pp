@@ -1,21 +1,24 @@
 define jetty::install (
-  $ensure,
+  $ensure = "present",
+  $disabled = false,
   $installdir,
   $port,
   $version = "8.1.4.v20120524",
-  $download_url ="http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz",
-  $runtime_user "$name_jetty",
+  $runtime_user ="${name}_jetty",
   $install = "source",
   $java_home="/usr/lib/jvm/java-6-openjdk",
   $initial_heap='512',
   $max_heap='1024',
   $min_threads='4',
   $max_threads='32',
-  $db2_libs='false',
-  $mq_libs='false',
-  $activemq_libs='false',
+  $db2_libs=false,
+  $mq_libs=false,
+  $activemq_libs=false,
   $accesslog
 ) {
+	
+  #set download_url depening on version
+  $download_url ="http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
 
   $ensure_user = $ensure ? {
     absent  => absent,
@@ -29,12 +32,14 @@ define jetty::install (
 
   $manage_files = $ensure ? {
     absent	=> absent,
-    present     => present,
+    present => present,
+    default	=> present
   }
   
  $manage_directory = $ensure ? {
     absent	=> absent,
-    present     => directory,
+    present => directory,
+    default => present
   }
 
  $manage_service = $disabled ? {
@@ -55,40 +60,39 @@ define jetty::install (
 
   if $ensure != 'absent' {
 	
-	file{"$installdir",
+	file{"$installdir":
         	ensure  => directory,
         	owner   => "${runtime_user}",
         	group   => "${runtime_user}",
         	require => [User["$runtime_user"],Group["$runtime_user"]]
   		}
 
-	$install ? {
-
-		'files' :	{ file {"${name}_jetty-${version}.zip":
-               		    		ensure => $manage_files,
-               		    		path => "/var/tmp/jetty-${version}.zip",
-           				require => User['$runtime_user'],
-           				source => "puppet:///modules/jetty/jetty-${version}.zip",
-           				before => Exec["unpack jetty"]
+	 case $install {
+		'files':	{ file {"${name}_jetty-${version}.zip":
+               		    	ensure => $manage_files,
+               		   	 	path => "/var/tmp/jetty-${version}.zip",
+           					require => User['$runtime_user'],
+           					source => "puppet:///modules/jetty/jetty-${version}.zip",
+           					before => Exec["unpack jetty"]
         				}
 	
     				  exec{"${name}_unpack_jetty":
-       		         		command         => "/usr/bin/unzip ${tmpdir}/jetty-${version}.zip",
+       		         		command         => "/usr/bin/unzip /var/tmp/jetty-${version}.zip",
        		         		cwd             => "${installdir}",
        		         		creates         => "${installdir}/bin",
        		         		require         => File["${installdir}","jetty-${version}.zip"],
        		         		user            => "${runtime_user}",
        		         		}
-				},
-		'source' :	{ xebia_common::source{"${name}_unpack_jetty":
+					}
+		'source':	{ xebia_common::source{"${name}_unpack_jetty":
        		         		source_url      =>  "${download_url}",
-       		 			target          =>      "${installdir}",
+       		 				target          =>      "${installdir}",
        		         		type            =>      "targz",
        		         		owner           =>      "${runtime_user}",
        		         		group           =>      "${runtime_user}",
-					require		=> [User['$runtime_user'],File["${installdir}"]]
-					}
-        			},
+							require		=> [User['$runtime_user'],File["${installdir}"]]
+							}
+        			}
 		default :	{ notice("unsupported install method entered") }
 	}
 
@@ -99,7 +103,7 @@ define jetty::install (
 			'files' 	=> Exec["unpack_jetty"],
 			'source' 	=> Xebia_common::Source["unpack_jetty"],
 			default 	=> Xebia_common::Source["unpack_jetty"],
-			}
+			},
 	  owner		=> "${runtime_user}",
 	  group		=> "${runtime_user}",
    	 }
@@ -220,7 +224,7 @@ define jetty::install (
         stop       => "${installdir}/server/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
     		}
-    file{"$installdir",
+    file{"$installdir":
    	ensure  => directory,
         owner   => "${runtime_user}",
         group   => "${runtime_user}",
