@@ -5,15 +5,9 @@ define xebia_common::source(
 		$owner	=	"root",
 		$group 	=	"system", 
 		$mode	=	"700",
-		$regdir	=	"/etc/xebia_puppet_reg"
+		$regdir	=	""
 	)
 {
-	if !defined(File["${regdir}"]) {
-		file {"${regdir}":
-				ensure 	=> directory,
-				owner 	=> "root",
-		}
-	}
 	
 	
 	case $type {
