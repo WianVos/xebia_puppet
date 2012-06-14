@@ -139,14 +139,14 @@ class jetty(
     		group => "${install_group}"
     }
     
-#	jetty::instance {"test1":
-#		basedir => "${basedir}",
-#		require => File["jetty source ${version}"]	
-#	}
-#  	jetty::instance {"test2":
-#  		basedir => "${basedir}",
-#  		require => File["jetty source ${version}"]	
-#  	}
+	jetty::instance {"test1":
+		basedir => "${basedir}",
+		require => File["jetty source ${version}"]	
+	}
+  	jetty::instance {"test2":
+  		basedir => "${basedir}",
+  		require => File["jetty source ${version}"]	
+  	}
   	#deployit_cli::types::jetty_ssh{"jetty instance":
 	#			environments => "general",
 	#			require => Service["jetty"]
