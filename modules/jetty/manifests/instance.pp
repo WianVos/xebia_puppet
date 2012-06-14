@@ -69,7 +69,7 @@ define jetty::instance(
   exec {
   	"${name}-clone-basedir" :
   		command =>
-  		"/bin/cp -rp ${source_dir} ${installdir} && /bin/chown ${runtime_user}:${runtime_user} && /bin/chmod -R 775 ${installdir} ",
+  		"/bin/cp -rp ${source_dir} ${installdir} && /bin/chown ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
   		logoutput => true,
   		creates => "${installdir}/bin",
   		require => File["${installdir}"]
@@ -96,46 +96,46 @@ file {
 # Static files
 file {
 	"${installdir}/etc/jetty-resources.xml" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		replace => no ;
 
 	"${installdir}/etc/jetty-jndi.xml" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		source => 'puppet:///modules/jetty/jetty-jndi.xml' ;
 }
 
 # Templates
 file {
 	"${installdir}/etc/jetty-logging.xml" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/jetty-logging.xml.erb') ;
 
 	"${installdir}/etc/jetty.xml" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/jetty.xml.erb') ;
 
 	"${installdir}/etc/logback-access.xml" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/logback-access.xml.erb'),
 		mode => 0644 ;
 
 	"${installdir}/bin/start.sh" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/start.sh.erb'),
 		mode => 0755 ;
 
 	"${installdir}/bin/status.sh" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/status.sh.erb'),
 		mode => 0755 ;
 
 	"${installdir}/bin/stop.sh" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/stop.sh.erb'),
 		mode => 0755 ;
 
 	"${installdir}/start.ini" :
-		require => File["${installdir}"],
+		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/start.ini.erb'),
 		mode => 0644 ;
 }
@@ -143,7 +143,7 @@ file {
     # Optional files - DB2
     if $db2_libs {
       file { "${installdir}/lib/ext/db2" :
-      	require => File["${installdir}"],
+      	require => Exec["${name}-clone-basedir"],
         ensure  => present,
         source  => 'puppet:///jetty/db2',
         recurse => true,
@@ -161,7 +161,7 @@ file {
     # Optional files - Websphere MQ
     if $mq_libs {
       file { "${installdir}/lib/ext/mq" :
-      	require => File["${installdir}"],
+      	require => Exec["${name}-clone-basedir"],
         ensure  => present,
         source  => 'puppet:///jetty/mq',
         recurse => true,
@@ -179,7 +179,7 @@ file {
     # Optional files - Active MQ
     if $activemq_libs {
       file { "${installdir}/lib/ext/activemq" :
-      	require => File["${installdir}"],
+      	require => Exec["${name}-clone-basedir"],
         ensure  => present,
         source  => 'puppet:///jetty/activemq',
         recurse => true,
