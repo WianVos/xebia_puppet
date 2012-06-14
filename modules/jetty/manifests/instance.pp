@@ -22,10 +22,7 @@ define jetty::instance(
 
   #figuring out the source_dir
   $source_dir="${basedir}/${version}"
-  	
-  #set download_url depening on version
-  $download_url ="http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
-	
+  		
   #set the installdir in accordance to the name and the basedir
   $installdir = "${basedir}/${name}"
   
@@ -58,85 +55,91 @@ define jetty::instance(
     default	=> running 
   }
 
-  user { $runtime_user:
-    ensure => $ensure_user,
-    gid    => $runtime_user,
+  user {
+  	$runtime_user :
+  		ensure => $ensure_user,
+  		gid => $runtime_user,
   }
-
-  group { $runtime_user:
-    ensure => $ensure_group,
+  
+  group {
+  	$runtime_user :
+  		ensure => $ensure_group,
   }
+  
+  exec {
+  	"${name}-clone-basedir" :
+  		command =>
+  		"cp -rp ${source_dir} ${installdir} && chown ${runtime_user}:${runtime_user} && chmod -R 775 ${installdir} ",
+  		logoutput => true,
+  		creates => "${installdir}/bin",
+  		require => File["${installdir}"]
+  }  
 
+File {
+	ensure => "${manage_files}",
+	owner => "${runtime_user}",
+	group => "${runtime_user}",
+}
 
-  if $ensure != 'absent' {
-	
+file {
+	"${installdir}" :
+		ensure => "${manage_directory}",
+}
+file {
+	["${installdir}/webapps", "${installdir}/contexts", "${installdir}/resources",
+	"${installdir}/etc"] :
+		ensure => directory,
+		mode => 2775,
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+}
 
-	
-        			
+# Static files
+file {
+	"${installdir}/etc/jetty-resources.xml" :
+		source => 'puppet:///modules/jetty/jetty-resources.xml',
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		replace => no ;
 
+	"${installdir}/etc/jetty-jndi.xml" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		source => 'puppet:///modules/jetty/jetty-jndi.xml' ;
+}
 
-    	File {
-    	  	ensure 	=> present,
-	  		owner		=> "${runtime_user}",
-	  		group		=> "${runtime_user}",
-   	 		}
+# Templates
+file {
+	"${installdir}/etc/jetty-logging.xml" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/jetty-logging.xml.erb') ;
 
-    	file {["${installdir}/webapps",
-             "${installdir}/contexts",
-             "${installdir}/resources",
-             "${installdir}/etc" ]:
-      	     ensure  => directory,
-      	     mode    => 2775,
-	     require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-    	}
-    	
-	# Static files
-    	file {
-      		"${installdir}/etc/jetty-resources.xml":
-      		  source  => 'puppet:///modules/jetty/jetty-resources.xml',
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-       		  replace => no;
+	"${installdir}/etc/jetty.xml" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/jetty.xml.erb') ;
 
-      		"${installdir}/etc/jetty-jndi.xml":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  source  => 'puppet:///modules/jetty/jetty-jndi.xml';
-        }
+	"${installdir}/etc/logback-access.xml" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/logback-access.xml.erb'),
+		mode => 0644 ;
 
-    	# Templates
-        file {
-      		"${installdir}/etc/jetty-logging.xml":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  content => template('jetty/jetty-logging.xml.erb');
+	"${installdir}/bin/start.sh" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/start.sh.erb'),
+		mode => 0755 ;
 
-      		"${installdir}/etc/jetty.xml":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	   content => template('jetty/jetty.xml.erb');
+	"${installdir}/bin/status.sh" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/status.sh.erb'),
+		mode => 0755 ;
 
-      		"${installdir}/etc/logback-access.xml":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-       		   content => template('jetty/logback-access.xml.erb'),
-        	   mode    => 0644;
+	"${installdir}/bin/stop.sh" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/stop.sh.erb'),
+		mode => 0755 ;
 
-      		"${installdir}/bin/start.sh":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  content => template('jetty/start.sh.erb'),
-        	  mode    => 0755;
-
-      		"${installdir}/bin/status.sh":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  content => template('jetty/status.sh.erb'),
-        	  mode    => 0755;
-
-      		"${installdir}/bin/stop.sh":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  content => template('jetty/stop.sh.erb'),
-        	  mode    => 0755;
-
-      		"${installdir}/start.ini":
-	          require 	=> Xebia_common::Source["${name}_unpack_jetty"],
-        	  content => template('jetty/start.ini.erb'),
-        	  mode    => 0644;
-      }
+	"${installdir}/start.ini" :
+		require => Xebia_common::Source["${name}_unpack_jetty"],
+		content => template('jetty/start.ini.erb'),
+		mode => 0644 ;
+}
 
     # Optional files - DB2
     if $db2_libs {
@@ -193,11 +196,12 @@ define jetty::instance(
         ensure     => "${manage_service}",
         hasstatus  => false,
         hasrestart => false,
-	require	   => File["${installdir}/bin/start.sh"],
+		require	   => File["${installdir}/bin/start.sh"],
         start      => "${installdir}/server/start.sh > /dev/null 2>&1",
         stop       => "${installdir}/server/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
        }
+ }      
 #}else{
 #
 #    service { "${installdir}/server/bin/jetty":
@@ -214,6 +218,6 @@ define jetty::instance(
 #        group   => "${runtime_user}",
 #        require => Service["${installdir}/server/bin/jetty"]
 #        }	
-  } #if
+ #if
 
-} #define
+ #define
