@@ -69,7 +69,7 @@ define jetty::instance(
   exec {
   	"${name}-clone-basedir" :
   		command =>
-  		"/bin/cp -rp ${source_dir} ${installdir} && /bin/chown ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
+  		"/bin/cp -rp ${source_dir}/*  ${installdir} && /bin/chown ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
   		logoutput => true,
   		creates => "${installdir}/bin",
   		require => File["${installdir}"]
