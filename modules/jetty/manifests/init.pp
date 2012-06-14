@@ -134,7 +134,7 @@ class jetty(
     		path => "${basedir}/${version}",
     		ensure => "${manage_directory}",
     		mode => "750",
-    		require => Xebia_common::Source["${name}_unpack_jetty ${version}"],
+    		require => Xebia_common::Source["${name}_unpack_jetty-${version}"],
     		owner => "${install_owner}",
     		group => "${install_group}"
     }
