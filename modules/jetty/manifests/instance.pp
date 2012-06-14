@@ -21,7 +21,7 @@ define jetty::instance(
 ) {
 
   #figuring out the source_dir
-  $source_dir="${basedir}/${version}"
+  $source_dir="${basedir}/jetty-distribution-${version}"
   		
   #set the installdir in accordance to the name and the basedir
   $installdir = "${basedir}/${name}"
