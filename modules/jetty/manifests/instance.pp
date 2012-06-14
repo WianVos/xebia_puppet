@@ -199,8 +199,8 @@ file {
         hasstatus  => false,
         hasrestart => false,
 		require	   => File["${installdir}/bin/start.sh"],
-        start      => "${installdir}/server/start.sh > /dev/null 2>&1",
-        stop       => "${installdir}/server/stop.sh > /dev/null 2>&1",
+        start      => "${installdir}/bin/start.sh > /dev/null 2>&1",
+        stop       => "${installdir}/bin/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
        }
  }      
