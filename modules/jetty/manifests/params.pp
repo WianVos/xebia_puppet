@@ -102,5 +102,9 @@ class jetty::params{
 		''			=> 'general',
 		default		=> $::jetty_xebia_universe
 	}
+	$marker_dir = "/etc/xebia_puppet/marker"
+	$script_dir = "/etc/xebia_puppet/marker"
+	$config_dir = "/etc/xebia_puppet/marker"
+
 	
 }

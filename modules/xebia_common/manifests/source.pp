@@ -5,10 +5,9 @@ define xebia_common::source(
 		$owner	=	"root",
 		$group 	=	"system", 
 		$mode	=	"700",
-		$regdir	=	""
+		$regdir	=	"/etc/xebia_puppet/regdir"
 	)
 {
-	
 	
 	case $type {
 		zip : { xebia_common::archive::zip{"$name":

@@ -35,7 +35,6 @@ define xebia_common::archive::zip (
     		path 		=> ["/bin","/usr/bin", "/usr/sbin"],
     		timeout 	=> "${timeout}",
     		logoutput 	=> true,
-    
 		}
 }
 

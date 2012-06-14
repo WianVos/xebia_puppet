@@ -22,20 +22,20 @@ define xebia_common::archive::targz (
 
   require xebia_common::packages
  
-  if !defined(File[$target]) {
-  	file {"$target":
-		ensure => directory,
-		}
-	}
+  
+  file {"${name}_${target}":
+     path	=> "${target}",	
+     ensure 	=> directory,
+     before	=> Exec["$name download and unpack"],
+     }
 
   exec {"$name download and unpack":
     command 	=> "/usr/bin/curl ${source_url} | tar -xzf - -C ${target} && chown -R ${owner}:${group} ${target} && chmod -R ${mode} ${target} && touch ${regdir}/${name}",
     creates 	=> "$regdir/$name",
-    require 	=> [Package["curl"],File["${target}"]],
-    path 		=> ["/bin","/usr/bin", "/usr/sbin"],
+    path 	=> ["/bin","/usr/bin", "/usr/sbin"],
     timeout 	=> "$timeout",
     logoutput 	=> true,
-		}
+	}
 
   
 }

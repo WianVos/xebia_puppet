@@ -66,7 +66,7 @@ class jetty(
 	#install packages as needed by jetty	
 	package{$packages:
 		ensure => $manage_package,
-		before => File["$tmpdir","$basedir"]
+		before => File["$basedir"]
 	}
 	
 	#create the needed users
@@ -124,14 +124,14 @@ class jetty(
 
 	
 	jetty::instance {"test1":
-		basedir => ${basedir}	
+		basedir => "${basedir}"	
 	}
   	jetty::instance {"test2":
-  		basedir => ${basedir}
+  		basedir => "${basedir}"
   	}
-  deployit_cli::types::jetty_ssh{"jetty instance":
-				environments => "general",
-				require => Service["jetty"]
-	}
+  	#deployit_cli::types::jetty_ssh{"jetty instance":
+	#			environments => "general",
+	#			require => Service["jetty"]
+	#}
   	
 }
