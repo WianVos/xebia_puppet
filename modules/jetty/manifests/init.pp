@@ -126,12 +126,12 @@ class jetty(
        	  type            =>  "targz",
        	}
      
-    file{"jetty source ${version}":
-    	path 		=> "${basedir}/${version}",
-    	ensure 		=> "${manage_directory}",
-    	mode		=> "750",
-    	require		=> Xebia_common::Source["${name}_unpack_jetty ${version}"]
-    }
+#    file{"jetty source ${version}":
+#    	path 		=> "${basedir}/${version}",
+#    	ensure 		=> "${manage_directory}",
+#    	mode		=> "750",
+#    	require		=> Xebia_common::Source["${name}_unpack_jetty ${version}"]
+#    }
     
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
