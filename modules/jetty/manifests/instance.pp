@@ -16,10 +16,13 @@ define jetty::instance(
   $activemq_libs=false,
   $accesslog = true,
   $appname = "default_application",
-  $customer = "default_customer",
-  $regdir   = "${jetty::params::marker_dir}"
+  $customer = "default_customer"
+  
 ) {
-	
+
+  #figuring out the source_dir
+  $source_dir="${basedir}/${version}"
+  	
   #set download_url depening on version
   $download_url ="http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
 	
@@ -68,23 +71,15 @@ define jetty::instance(
   if $ensure != 'absent' {
 	
 
-	xebia_common::source{"${name}_unpack_jetty":
-       	  source_url      =>  "${download_url}",
-       	  target          =>  "${installdir}",
-	  regdir	  =>  "${regdir}",
-       	  type            =>  "targz",
-       	  owner           =>  "${runtime_user}",
-       	  group           =>  "${runtime_user}",
-	  require	 =>  [User["${runtime_user}"]] 
-		}
+	
         			
 
 
     	File {
-    	  ensure 	=> present,
-	  owner		=> "${runtime_user}",
-	  group		=> "${runtime_user}",
-   	 }
+    	  	ensure 	=> present,
+	  		owner		=> "${runtime_user}",
+	  		group		=> "${runtime_user}",
+   	 		}
 
     	file {["${installdir}/webapps",
              "${installdir}/contexts",

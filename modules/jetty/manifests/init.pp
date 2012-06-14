@@ -22,8 +22,8 @@ class jetty(
 	$import_facts			= params_lookup('import_facts'),
 	$import_config			= params_lookup('import_config'),
 	$xebia_universe			= params_lookup('xebia_universe'),
-	$customer			= params_lookup('customer'),
-	$application			= params_lookup('application'),
+	$customer				= params_lookup('customer'),
+	$application			= params_lookup('application')
 		
 ) inherits jetty::params{
 	
@@ -64,7 +64,7 @@ class jetty(
 	}
 	
 	#install packages as needed by jetty	
-	package{$packages:
+	package{ $packages:
 		ensure => $manage_package,
 		before => File["$basedir"]
 	}
@@ -96,9 +96,9 @@ class jetty(
 		
 		class{'xebia_common::regdir':
 			absent 		=> "${absent}",
-			config_dir	=> "${confdir}",
-			script_dir	=> "${scriptdir}",
-			marker_dir	=> "${markerdir}",
+			config_dir	=> "${config_dir}",
+			script_dir	=> "${script_dir}",
+			marker_dir	=> "${marker_dir}",
 			
 		}
 	} 
@@ -118,17 +118,33 @@ class jetty(
 	
 	
 	
-#download and unpack the needed files into the temporary directory in accordance with the installation type
+#populate the basedir with the appropriate source
+	xebia_common::source{"${name}_unpack_jetty ${version}":
+       	  source_url      =>  "${install_source_url}",
+       	  target          =>  "${basedir}",
+	  	  regdir	 	  =>  "${marker_dir}",
+       	  type            =>  "targz",
+       	}
+     
+    file{"jetty source ${version}":
+    	path 		=> "${basedir}/${version}",
+    	ensure 		=> "${manage_directory}",
+    	mode		=> "750",
+    	require		=> Xebia_common::Source["${name}_unpack_jetty ${version}"]
+    }
+    
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
 
 	
-	jetty::instance {"test1":
-		basedir => "${basedir}"	
-	}
-  	jetty::instance {"test2":
-  		basedir => "${basedir}"
-  	}
+#	jetty::instance {"test1":
+#		basedir => "${basedir}",
+#		require => File["jetty source ${version}"]	
+#	}
+#  	jetty::instance {"test2":
+#  		basedir => "${basedir}",
+#  		require => File["jetty source ${version}"]	
+#  	}
   	#deployit_cli::types::jetty_ssh{"jetty instance":
 	#			environments => "general",
 	#			require => Service["jetty"]
