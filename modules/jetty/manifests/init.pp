@@ -119,7 +119,7 @@ class jetty(
 	
 	
 #populate the basedir with the appropriate source
-	xebia_common::source{"${name}_unpack_jetty ${version}":
+	xebia_common::source{"${name}_unpack_jetty-${version}":
        	  source_url      =>  "${install_source_url}",
        	  target          =>  "${basedir}",
 	  	  regdir	 	  =>  "${marker_dir}",
