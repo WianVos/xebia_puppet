@@ -79,12 +79,16 @@
     <Set name="dumpAfterStart">false</Set>
     <Set name="dumpBeforeStop">false</Set>
 
-    <Ref id="RequestLog">
-      <Set name="requestLog">
-        <New id="requestLogImpl"
-          class="ch.qos.logback.access.jetty.v7.RequestLogImpl">
-        </New>
-      </Set>
-    </Ref>
+  <Ref id="RequestLog">
+  <Set name="requestLog">
+    <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
+      <Arg><SystemProperty name="jetty.logs" default="./logs"/>/yyyy_mm_dd.request.log</Arg>
+      <Set name="retainDays">90</Set>
+      <Set name="append">true</Set>
+      <Set name="extended">false</Set>
+      <Set name="LogTimeZone">GMT</Set>
+    </New>
+  </Set>
+</Ref>
 
 </Configure>
