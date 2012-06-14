@@ -3,7 +3,7 @@ define xebia_common::source(
         $target,
 		$type	=	"zip",
 		$owner	=	"root",
-		$group 	=	"system", 
+		$group 	=	"root", 
 		$mode	=	"700",
 		$regdir	=	"/etc/xebia_puppet/regdir"
 	)

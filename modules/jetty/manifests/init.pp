@@ -124,6 +124,8 @@ class jetty(
        	  target          =>  "${basedir}",
 	  	  regdir	 	  =>  "${marker_dir}",
        	  type            =>  "targz",
+       	  owner			  =>  "${install_owner}",
+       	  group			  =>  "${install_group}"
        	}
      
 #    file{"jetty source ${version}":
