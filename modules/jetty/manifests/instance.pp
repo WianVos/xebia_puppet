@@ -207,23 +207,13 @@ file {
         stop       => "${installdir}/bin/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
        }
- }      
-#}else{
-#
-#    service { "${installdir}/server/bin/jetty":
-#        ensure     => "stopped",
-#        hasstatus  => false,
-#        hasrestart => false,
-#        start      => "${installdir}/server/start.sh > /dev/null 2>&1",
-#        stop       => "${installdir}/server/stop.sh > /dev/null 2>&1",
-#        status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
-#    		}
-#    file{"$installdir":
-#   	ensure  => directory,
-#        owner   => "${runtime_user}",
-#        group   => "${runtime_user}",
-#        require => Service["${installdir}/server/bin/jetty"]
-#        }	
- #if
+ # deployit intergration
+ deployit_cli::types::jetty_ssh {
+	"${name}" :
+		environments => "general",
+		require => Service["${installdir}/server/bin/jetty"],
+		homedir => "${installdir}",
+		instanceName => "${name}"
+	} 
+}      
 
- #define

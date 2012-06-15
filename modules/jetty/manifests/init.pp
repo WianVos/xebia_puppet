@@ -142,6 +142,7 @@ class jetty(
     
 	jetty::instance {"test1":
 		basedir => "${basedir}",
+		port	=> "8080",
 		require => File["jetty-source-${version}"]	
 	}
   	jetty::instance {"test2":
