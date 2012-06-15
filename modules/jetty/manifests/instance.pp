@@ -95,29 +95,29 @@ file {
 
 # Static files
 file {
-	"${installdir}/etc/jetty-resources.xml" :
-		require => Exec["${name}-clone-basedir"],
-		replace => no ;
-
-	"${installdir}/etc/jetty-jndi.xml" :
-		require => Exec["${name}-clone-basedir"],
-		source => 'puppet:///modules/jetty/jetty-jndi.xml' ;
+#	"${installdir}/etc/jetty-resources.xml" :
+#		require => Exec["${name}-clone-basedir"],
+#		replace => no ;
+#
+#	"${installdir}/etc/jetty-jndi.xml" :
+#		require => Exec["${name}-clone-basedir"],
+#		source => 'puppet:///modules/jetty/jetty-jndi.xml' ;
 }
 
 # Templates
 file {
-	"${installdir}/etc/jetty-logging.xml" :
-		require => Exec["${name}-clone-basedir"],
-		content => template('jetty/jetty-logging.xml.erb') ;
-
-	"${installdir}/etc/jetty.xml" :
-		require => Exec["${name}-clone-basedir"],
-		content => template('jetty/jetty.xml.erb') ;
-
-	"${installdir}/etc/logback-access.xml" :
-		require => Exec["${name}-clone-basedir"],
-		content => template('jetty/logback-access.xml.erb'),
-		mode => 0644 ;
+#	"${installdir}/etc/jetty-logging.xml" :
+#		require => Exec["${name}-clone-basedir"],
+#		content => template('jetty/jetty-logging.xml.erb') ;
+#
+#	"${installdir}/etc/jetty.xml" :
+#		require => Exec["${name}-clone-basedir"],
+#		content => template('jetty/jetty.xml.erb') ;
+#
+#	"${installdir}/etc/logback-access.xml" :
+#		require => Exec["${name}-clone-basedir"],
+#		content => template('jetty/logback-access.xml.erb'),
+#		mode => 0644 ;
 
 	"${installdir}/bin/start.sh" :
 		require => Exec["${name}-clone-basedir"],

@@ -69,17 +69,8 @@
       </New>
     </Set>
 
-    <!-- =========================================================== -->
-    <!-- extra options                                               -->
-    <!-- =========================================================== -->
-    <Set name="stopAtShutdown">true</Set>
-    <Set name="sendServerVersion">false</Set>
-    <Set name="sendDateHeader">true</Set>
-    <Set name="gracefulShutdown">1000</Set>
-    <Set name="dumpAfterStart">false</Set>
-    <Set name="dumpBeforeStop">false</Set>
-
-  <Ref id="RequestLog">
+    
+ <Ref id="RequestLog">
   <Set name="requestLog">
     <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
       <Arg><SystemProperty name="jetty.logs" default="./logs"/>/yyyy_mm_dd.request.log</Arg>
@@ -90,5 +81,15 @@
     </New>
   </Set>
 </Ref>
+<!-- =========================================================== -->
+    <!-- extra options                                               -->
+    <!-- =========================================================== -->
+    <Set name="stopAtShutdown">true</Set>
+    <Set name="sendServerVersion">false</Set>
+    <Set name="sendDateHeader">true</Set>
+    <Set name="gracefulShutdown">1000</Set>
+    <Set name="dumpAfterStart">false</Set>
+    <Set name="dumpBeforeStop">false</Set>
+
 
 </Configure>
