@@ -100,6 +100,7 @@ file {
 file {
 	"${installdir}/etc/jetty-resources.xml" :
 		require => Exec["${name}-clone-basedir"],
+		source => 'puppet:///modules/jetty/jetty-resource.xml',
 		replace => no ;
 
 	"${installdir}/etc/jetty-jndi.xml" :
