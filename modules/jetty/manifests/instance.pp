@@ -79,7 +79,9 @@ File {
 	ensure => "${manage_files}",
 	owner => "${runtime_user}",
 	group => "${runtime_user}",
-	before => Service["${installdir}/server/bin/jetty"]
+	before => Service["${installdir}/server/bin/jetty"],
+	notify => Service["${installdir}/server/bin/jetty"],
+	
 }
 
 file {
