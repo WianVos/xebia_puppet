@@ -95,10 +95,10 @@ file {
 
 # Static files
 file {
-#	"${installdir}/etc/jetty-resources.xml" :
-#		require => Exec["${name}-clone-basedir"],
-#		replace => no ;
-#
+	"${installdir}/etc/jetty-resources.xml" :
+		require => Exec["${name}-clone-basedir"],
+		replace => no ;
+
 	"${installdir}/etc/jetty-jndi.xml" :
 		require => Exec["${name}-clone-basedir"],
 		source => 'puppet:///modules/jetty/jetty-jndi.xml' ;

@@ -89,7 +89,8 @@ class jetty(
 	file {"${basedir}":
 		ensure 	=> "${manage_directory}",
 		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
+		group	=> "${install_group}",
+		mode	=> "775",
 	}
 	
 	if ! defined('xebia_common::regdir'){

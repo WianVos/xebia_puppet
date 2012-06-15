@@ -5,6 +5,6 @@ export JETTY_HOME=<%= installdir %>
 export JETTY_RUN=$JETTY_HOME
 
 # Start the jetty server ...
-/bin/su  <%= runtime_user %> -c '/bin/sh <%= installdir %>/bin/jetty.sh start' > /dev/null 2>&1
+/bin/su  <%= runtime_user %> -c '<%= installdir %>/bin/jetty.sh start' > /dev/null 2>&1
 
 exit $?
