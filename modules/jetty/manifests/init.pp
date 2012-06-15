@@ -146,6 +146,7 @@ class jetty(
 	}
   	jetty::instance {"test2":
   		basedir => "${basedir}",
+  		port	=> "8090",
   		require => File["jetty-source-${version}"]	
   	}
   	#deployit_cli::types::jetty_ssh{"jetty instance":
