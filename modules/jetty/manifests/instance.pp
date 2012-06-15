@@ -211,7 +211,6 @@ file {
  deployit_cli::types::jetty_ssh {
 	"${name}" :
 		environments => "general",
-		require => Service["${installdir}/server/bin/jetty"],
 		homedir => "${installdir}",
 		instanceName => "${name}"
 	} 
