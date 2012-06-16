@@ -105,13 +105,13 @@ class jetty(
 	} 
 	
 	
-	if $import_facts == true {
+	if $import_facts {
 		
 		#import the 
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service" |>>
 	}
 	
-	if $import_config == true {
+	if $import_config {
 		
 		#import the 
 		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service-config" |>>
