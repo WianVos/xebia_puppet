@@ -13,7 +13,7 @@ define xebia_common::features::export_facts(
 		file{"${factsdir}":
 			ensure 	=> directory,
 			owner	=> root,
-			group	=> group,
+			group	=> root,
 		}
 	}
 	
