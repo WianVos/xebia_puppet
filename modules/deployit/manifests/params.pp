@@ -28,8 +28,8 @@ class deployit::params{
 	$absent 					=	false
 	$disabled 					= 	false
 	$ensure						= 	'running'
-	$import_facts				= 	false
-	$import_config				= 	false
+	$import_facts				= 	true
+	$import_config				= 	true
 	$confdir					= 	'/etc/xebia_puppet/config'
 	$scriptdir					= 	'/etc/xebia_puppet/script'
 	$markerdir					= 	'/etc/xebia_puppet/marker'
