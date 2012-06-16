@@ -1,8 +1,8 @@
 class jetty::params{
 	
 	$marker_dir 			= "/etc/xebia_puppet/marker"
-	$script_dir 			= "/etc/xebia_puppet/marker"
-	$config_dir 			= "/etc/xebia_puppet/marker"
+	$script_dir 			= "/etc/xebia_puppet/scripts"
+	$config_dir 			= "/etc/xebia_puppet/config"
 	$packages 				= ['openjdk-6-jdk']
 	$version 				= '8.1.4.v20120524'
 	$basedir 				= "/opt/jetty_base"

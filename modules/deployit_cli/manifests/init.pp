@@ -115,6 +115,15 @@ class deployit_cli(
 		owner 	=> "${install_owner}",
 		group	=> "${install_group}"
 	}
+	if !defined(Class["xebia_common::regdir"]){
+	class{
+	"xebia_common::regdir":
+		require		=>	File["${homedir}/cli"],
+		script_dir	=>	"${script_dir}",
+		config_dir	=> "${conf_dir}"
+		}
+
+	}
 	
 	
 #download and unpack the needed files into the temporary directory in accordance with the installation type
@@ -177,12 +186,7 @@ file{
 		group		=> "${install_group}"
 	}
 	
-class{
-	"xebia_common::regdir":
-		require		=>	File["${homedir}/cli"],
-		script_dir	=>	"${script_dir}",
-		config_dir	=> "${conf_dir}"
-}
+
 
 file {"${script_dir}/$name":
 			require 		=> Class["xebia_common::regdir"],

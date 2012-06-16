@@ -93,16 +93,15 @@ class jetty(
 		mode	=> "2775",
 	}
 	
-	if ! defined('xebia_common::regdir'){
-		
-		class{'xebia_common::regdir':
+
+	class{'xebia_common::regdir':
 			absent 		=> "${absent}",
 			config_dir	=> "${config_dir}",
 			script_dir	=> "${script_dir}",
 			marker_dir	=> "${marker_dir}",
 			
 		}
-	} 
+	 
 	
 	
 	if $import_facts {
