@@ -9,6 +9,13 @@ define xebia_common::features::export_facts(
 	# check age of facts ..
 	$age = inline_template("<%= require 'time'; Time.now - Time.parse(timestamp) %>")
 	
+	if !defined(File[${factsdir}]){
+		file{"${factsdir}":
+			ensure 	=> directory,
+			owner	=> root,
+			group	=> group,
+		}
+	}
 	
 	file{"${name}":
 			path 	=> "${factsdir}/$name.txt",
