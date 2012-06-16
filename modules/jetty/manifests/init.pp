@@ -127,7 +127,7 @@ class jetty(
 		type => "targz",
 		owner => "${install_owner}",
 		group => "${install_group}",
-		require => Class["Xebia_common::Regdir"]
+		require => Class["xebia_common::regdir"]
 	}
      
     file {
@@ -143,12 +143,12 @@ class jetty(
 	jetty::instance {"test1":
 		basedir => "${basedir}",
 		port	=> "8080",
-		require => File["jetty-source-${version}"]	
+		require => [File["jetty-source-${version}"],Class["Xebia_common::Regdir"]]	
 	}
   	jetty::instance {"test2":
   		basedir => "${basedir}",
   		port	=> "8090",
-  		require => File["jetty-source-${version}"]	
+  		require =>  [File["jetty-source-${version}"],Class["Xebia_common::Regdir"]]	
   	}
   	#deployit_cli::types::jetty_ssh{"jetty instance":
 	#			environments => "general",
