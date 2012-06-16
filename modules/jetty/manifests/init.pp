@@ -6,6 +6,7 @@ class jetty(
 	$basedir 				= params_lookup('basedir'),
 	$homedir 				= params_lookup('homedir'),
 	$tmpdir					= params_lookup('tmpdir'),
+	$infra_dir				= params_lookup('infra_dir'),
 	$config_dir				= params_lookup('config_dir'),
 	$script_dir				= params_lookup('script_dir'),
 	$marker_dir				= params_lookup('marker_dir'),
@@ -94,13 +95,13 @@ class jetty(
 	}
 	
 
-	class{'xebia_common::regdir':
-			absent 		=> "${absent}",
-			config_dir	=> "${config_dir}",
-			script_dir	=> "${script_dir}",
-			marker_dir	=> "${marker_dir}",
-			
-		}
+	#setup infra 
+	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]:
+		ensure 	=> "${manage_directory}",
+		owner  	=> root,
+		group	=> root,
+		mode	=> 770,
+	}
 	 
 	
 	
@@ -127,7 +128,7 @@ class jetty(
 		type => "targz",
 		owner => "${install_owner}",
 		group => "${install_group}",
-		require => Class["xebia_common::regdir"]
+		require => File["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]
 	}
      
     file {
@@ -143,12 +144,12 @@ class jetty(
 	jetty::instance {"test1":
 		basedir => "${basedir}",
 		port	=> "8080",
-		require => [File["jetty-source-${version}"],Class["Xebia_common::Regdir"]]	
+		require => [File["jetty-source-${version}"]]	
 	}
   	jetty::instance {"test2":
   		basedir => "${basedir}",
   		port	=> "8090",
-  		require =>  [File["jetty-source-${version}"],Class["Xebia_common::Regdir"]]	
+  		require =>  [File["jetty-source-${version}"]]	
   	}
   	#deployit_cli::types::jetty_ssh{"jetty instance":
 	#			environments => "general",
