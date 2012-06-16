@@ -126,7 +126,8 @@ class jetty(
 		regdir => "${marker_dir}",
 		type => "targz",
 		owner => "${install_owner}",
-		group => "${install_group}"
+		group => "${install_group}",
+		require => Class["Xebia_common::Regdir"]
 	}
      
     file {
