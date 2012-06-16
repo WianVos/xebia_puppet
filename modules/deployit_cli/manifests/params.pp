@@ -10,7 +10,7 @@ class deployit_cli::params{
 	
 	#setting script_dir 
 	$script_dir = $::deployit_script_dir ? {
-		''	=>	'/etc/xebia_puppet/scripts',
+		''	=>	'/etc/xebia_puppet/script',
 		default	=> $::deployit_script_dir
 	}
 	#setting conf_dir 
