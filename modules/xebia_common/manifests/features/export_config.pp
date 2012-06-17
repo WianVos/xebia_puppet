@@ -1,4 +1,5 @@
 define xebia_common::features::export_config(
+	$filename	= $name,
 	$confdir 	= 	'',
 	$options 	=	'',
 	$tag		= 	'',
@@ -9,11 +10,14 @@ define xebia_common::features::export_config(
 	# check age of facts ..
 	$age = inline_template("<%= require 'time'; Time.now - Time.parse(timestamp) %>")
 	
-	
-	file{"${name}":
-			path 	=> "${confdir}/$name.txt",
-			require => File["${confdir}"],
-			tag => $tag,
-			content => inline_template("<% options.sort_by {|key, value| key}.each do |key, value| %><%= key %>='<%= value %>' \n<% end %>")
-	}	
+	if $age < $maxage {
+		file {
+			"${filename}" :
+				path => "${confdir}/$name.txt",
+				require => File["${confdir}"],
+				tag => $tag,
+				content =>
+				inline_template("<% options.sort_by {|key, value| key}.each do |key, value| %><%= key %>='<%= value %>' \n<% end %>")
+		}
+	}
 }
