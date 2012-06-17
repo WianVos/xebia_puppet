@@ -83,7 +83,7 @@ class deployit(
 	#xebia_puppet intergration stuff
 	
 	if $export_facts {
-		@@xebia_common::features::export_facts{"${hostname}_deployit_facts_${::hostname}":
+		@@xebia_common::features::export_facts{"${::hostname}_deployit_facts_${::hostname}":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
 						 "deployit_user"		=> "admin",
@@ -95,7 +95,7 @@ class deployit(
 	}
 	
 	if $export_config {
-		@@xebia_common::features::export_config{"${hostname}_deployit_config.sh":
+		@@xebia_common::features::export_config{"${::hostname}_deployit_config.sh":
 			options => { "deployit_hostname" 	=> "${::fqdn}",
 						 "deployit_ipaddress" 	=> "${::ipaddress}",
 						 "deployit_user"		=> "admin",
