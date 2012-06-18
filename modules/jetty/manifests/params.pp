@@ -4,6 +4,7 @@ class jetty::params{
 	$marker_dir 			= "${infra_dir}/marker"
 	$script_dir 			= "${infra_dir}/script"
 	$config_dir 			= "${infra_dir}/config"
+	$source_dir				= "/opt/jetty_source"
 	$packages 				= ['openjdk-6-jdk']
 	$version 				= '8.1.4.v20120524'
 	$basedir 				= "/opt/jetty_base"

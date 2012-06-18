@@ -6,6 +6,7 @@ class jetty(
 	$basedir 				= params_lookup('basedir'),
 	$homedir 				= params_lookup('homedir'),
 	$tmpdir					= params_lookup('tmpdir'),
+	$source_dir				= params_lookup('source_dir'),
 	$infra_dir				= params_lookup('infra_dir'),
 	$config_dir				= params_lookup('config_dir'),
 	$script_dir				= params_lookup('script_dir'),
@@ -89,10 +90,18 @@ class jetty(
 	#basedir
 	file {"${basedir}":
 		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}",
+		owner 	=> "root",
+		group	=> "root",
 		mode	=> "2775",
 	}
+	
+	file {"${source_dir}":
+		ensure 	=> "${manage_directory}",
+		owner	=> root,
+		group	=> root,
+		mode	=> "2770"
+	}
+	
 	
 
 	#setup infra 
@@ -123,17 +132,17 @@ class jetty(
 	xebia_common::source {
 	"${name}_unpack_jetty-${version}" :
 		source_url => "${install_source_url}",
-		target => "${basedir}",
+		target => "${source_dir}",
 		regdir => "${marker_dir}",
 		type => "targz",
 		owner => "${install_owner}",
 		group => "${install_group}",
-		require => File["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]
+		require => File["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}","${source_dir}"]
 	}
      
     file {
     	"jetty-source-${version}" :
-    		path => "${basedir}/jetty-distribution-${version}",
+    		path => "${source_dir}/jetty-distribution-${version}",
     		ensure => "${manage_directory}",
     		mode => "750",
     		require => Xebia_common::Source["${name}_unpack_jetty-${version}"],

@@ -1,5 +1,6 @@
 define jetty::instance(
   $basedir,
+  $source_dir,
   $ensure = "present",
   $disabled = false,
   $port = "8080",
@@ -21,7 +22,7 @@ define jetty::instance(
 ) {
 
   #figuring out the source_dir
-  $source_dir="${basedir}/jetty-distribution-${version}"
+  $download_source_dir="${source_dir}/jetty-distribution-${version}"
   		
   #set the installdir in accordance to the name and the basedir
   $installdir = "${basedir}/${name}"
@@ -69,7 +70,7 @@ define jetty::instance(
   exec {
   	"${name}-clone-basedir" :
   		command =>
-  		"/bin/cp -rp ${source_dir}/*  ${installdir} && /bin/chown -R ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
+  		"/bin/cp -rp ${download_source_dir}/*  ${installdir} && /bin/chown -R ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
   		logoutput => true,
   		creates => "${installdir}/bin",
   		require => File["${installdir}"]
