@@ -1,5 +1,5 @@
 define xebia_common::features::extra_package (
-		$package_name,
+		$package_name   = $name,
 		$ensure  		= "latest"
 ){
 
