@@ -74,10 +74,9 @@ class deployit_cli(
 			
 	}
 	
-	#install packages as needed by deployit_cli	
-	#	ensure => $manage_package,
-	#	before => File["$tmpdir","$basedir"]
-	#}
+	xebia_common::features::extra_package{$packages:
+		ensure	=> "${manage_package}"
+	}
 	
 	#create the needed users
 	group {
