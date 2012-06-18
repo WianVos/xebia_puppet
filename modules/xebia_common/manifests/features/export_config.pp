@@ -12,8 +12,8 @@ define xebia_common::features::export_config(
 	
 	if $age < $maxage {
 		file {
-			"${filename}" :
-				path => "${confdir}/$name.txt",
+			"${name}" :
+				path => "${confdir}/$filename.txt",
 				require => File["${confdir}"],
 				tag => $tag,
 				content =>
