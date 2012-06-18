@@ -24,6 +24,7 @@ define deployit_cli::types::jetty_ssh(
 			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
 			stopScript => "${homedir}/bin/stop.sh"},
 			ciEnvironments => "Environments/${environments}",
+			require		=> Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"],
 			ensure => present,
 	}
 }
