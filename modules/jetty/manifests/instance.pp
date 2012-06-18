@@ -1,6 +1,6 @@
 define jetty::instance(
   $basedir,
-  $source_dir,
+  $source_dir = "${jetty::params::source_dir}",
   $ensure = "present",
   $disabled = false,
   $port = "8080",

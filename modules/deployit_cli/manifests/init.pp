@@ -95,6 +95,8 @@ class deployit_cli(
 			password	=> sha1("deployit")
 			
 	}
+	
+	
 	#create the needed directory structures
 	
 	#tmpdir
