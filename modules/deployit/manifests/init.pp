@@ -22,6 +22,7 @@ class deployit(
 	$importable_packages_path	= params_lookup('importable_packages_path'),
 	$universe				= params_lookup('universe'),
 	$plugin_install				= params_lookup('plugin_install'),
+	$key_install				= params_lookup('key_install'),
 	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
 	$confdir					= params_lookup('confdir'),
@@ -273,6 +274,28 @@ if $plugin_install == true {
 		notify		=> Service["deployit"]
 		}							
 }
+
+if $key_install == true {
+	file{ "key dir":
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		ensure		=> "${manage_directory}",
+		path		=> "${homedir}/keys",
+		
+	}
+	file{ "key install":
+		require 	=> [Exec["unpack deployit-server"],File["key dir"]],
+	        source 		=> "puppet:///modules/deployit/keys/",
+		sourceselect	=> all,
+		recurse 	=> remote,
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		ensure		=> "${manage_files}",
+		path		=> "${homedir}/keys/",
+		mode		=> "700"
+		}							
+}
+
 
 
 exec{

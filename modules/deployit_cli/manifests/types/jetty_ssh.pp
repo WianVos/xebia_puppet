@@ -31,7 +31,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
  				 ciId => "Infrastructure/${hostname}",
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
-                 sudoUsername => 'root', address => "${fqdn}" },
+                 sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa.pub" },
                  ciEnvironments => "${ciEnv}",
   				 ensure => present,
 		}

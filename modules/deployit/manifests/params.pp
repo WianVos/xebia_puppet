@@ -7,6 +7,7 @@ class deployit::params{
 	$install_owner				= 	'deployit'
 	$install_group				= 	'deployit'
 	$plugin_install				= 	true
+	$key_install				= 	true
 
 	#deployit config settings
 	$admin_password				= 	'admin'

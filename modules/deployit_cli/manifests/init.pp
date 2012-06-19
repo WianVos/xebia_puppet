@@ -104,6 +104,14 @@ class deployit_cli(
 			type		=> rsa
 	}
 	
+	file { "deployit sudo":
+		path => "/etc/sudoers.d/deployit",
+		content => "${install_owner} ALL=(ALL) NOPASSWD:ALL",
+		mode 	=> 744,
+		owner	=> root,
+		group 	=> root,
+		ensure	=> "${manage_files}"
+	}
 	
 	#create the needed directory structures
 	
