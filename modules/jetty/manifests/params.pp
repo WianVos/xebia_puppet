@@ -23,6 +23,8 @@ class jetty::params{
 	$xebia_universe			= "general"
 	$customer				= "default"
 	$application			= "default_app"
-		
+	$instances 				= { 'test1' => {port => 8080 ,basedir => "${basedir}"},
+								'test2' => {port => 8090 ,basedir => "${basedir}"},
+								'test3' => {port => 8100 ,basedir => "${basedir}"}}
 	
 }

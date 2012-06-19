@@ -25,7 +25,8 @@ class jetty(
 	$import_config			= params_lookup('import_config'),
 	$xebia_universe			= params_lookup('xebia_universe'),
 	$customer				= params_lookup('customer'),
-	$application			= params_lookup('application')
+	$application			= params_lookup('application'),
+	$instances				= params_lookup('instances')
 		
 ) inherits jetty::params{
 	
@@ -151,16 +152,7 @@ class jetty(
     		group => "${install_group}"
     }
     
-	jetty::instance {"test1":
-		basedir => "${basedir}",
-		port	=> "8080",
-		require => [File["jetty-source-${version}"]]	
-	}
-  	jetty::instance {"test2":
-  		basedir => "${basedir}",
-  		port	=> "8090",
-  		require =>  [File["jetty-source-${version}"]]	
-  	}
+	create_resources(jetty::instance, $instances )
   	#deployit_cli::types::jetty_ssh{"jetty instance":
 	#			environments => "general",
 	#			require => Service["jetty"]
