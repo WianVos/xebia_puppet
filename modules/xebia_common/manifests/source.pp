@@ -5,7 +5,8 @@ define xebia_common::source(
 		$owner	=	"root",
 		$group 	=	"root", 
 		$mode	=	"700",
-		$regdir	=	"/etc/xebia_puppet/regdir"
+		$regdir	=	"/etc/xebia_puppet/regdir",
+		$timeout	=	'360'
 	)
 {
 	
@@ -16,7 +17,8 @@ define xebia_common::source(
 						owner 		=> "${owner}",
 						group		=> "${group}",
 						mode		=> "${mode}",
-						regdir		=> "${regdir}"
+						regdir		=> "${regdir}",
+						timeout		=> "${timeout}"
 					}
 				}
 		targz : { xebia_common::archive::targz{"$name":
@@ -25,7 +27,8 @@ define xebia_common::source(
 						owner 		=> "${owner}",
 						group		=> "${group}",
 						mode		=> "${mode}",
-						regdir		=> "${regdir}"
+						regdir		=> "${regdir}",
+						timeout		=> "${timeout}"
 						
 					}
 				}

@@ -135,6 +135,7 @@ class jetty(
 		target => "${source_dir}",
 		regdir => "${marker_dir}",
 		type => "targz",
+		timeout => "1280",
 		owner => "${install_owner}",
 		group => "${install_group}",
 		require => File["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}","${source_dir}"]
