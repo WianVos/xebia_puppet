@@ -89,7 +89,7 @@ class deployit_cli(
 		"$install_owner":
 			ensure 		=> $manage_user,
 			gid 		=> "${install_group}",
-			managehome 	=> false,
+			managehome 	=> true,
 			home 		=> "${homedir}",
 			system 		=> true,
 			password	=> sha1("deployit")			
@@ -100,7 +100,8 @@ class deployit_cli(
 			ensure		=> $manage_user,
 			key 		=> "${user_key}",
 			user 		=> "${install_owner}",
-			require		=> User["${install_owner}"]
+			require		=> User["${install_owner}"],
+			type		=> rsa
 	}
 	
 	
