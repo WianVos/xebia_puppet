@@ -216,7 +216,7 @@ file {
 		homedir	 		=> "${installdir}",
 		instanceName 	=> "${name}",
 		application		=> "${application}",
-		customer		=> "${customer}"
+		customer		=> "${customer}",
 	} 
 }      
 

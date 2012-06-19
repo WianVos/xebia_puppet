@@ -1,8 +1,8 @@
 define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
+	$homedir	,
+	$instanceName ,
 	$environments 	= "${::environment}",
 	$fqdn 			= "${::fqdn}",
-	$homedir 		= "/opt/jetty",
-	$instanceName 	= "default_jetty",
 	$customer		= undef,
 	$application	= undef
 	){
@@ -31,7 +31,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
  				 ciId => "Infrastructure/${hostname}",
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
-                 sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa.pub" },
+                 sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
                  ciEnvironments => "${ciEnv}",
   				 ensure => present,
 		}
@@ -41,7 +41,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 		"jetty_server_${hostname}_${instanceName} " :
 			ciId => "Infrastructure/${hostname}/${instanceName}",
 			ciType => 'jetty.Server',
-			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
+			ciValues => {home => "$homedir", startScript => "${homedir}/bin/start.sh",
 			stopScript => "${homedir}/bin/stop.sh"},
 			ciEnvironments => "${ciEnv}",
 			require =>
