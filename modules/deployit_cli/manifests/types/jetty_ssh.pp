@@ -7,12 +7,14 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 	
 	
 	
-	if !defined(Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"]){
-		deployit_cli::types::overthere_ssh {
-			"${hostname} jetty overthere_ssh" :
-				hostname => "${::hostname}",
-				environments => "${environments}",
-				fqdn => "${fqdn}"
+	if ! defined(Deployit_cli::Features::Ci["${hostname} ssh-host"]){
+	deployit_cli::features::ci{ "${hostname} ssh-host":
+ 				 ciId => "Infrastructure/${hostname}",
+  				 ciType => 'overthere.SshHost',
+  				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
+                 sudoUsername => 'root', address => "${fqdn}" },
+                 ciEnvironments => "Environments/${environments}",
+  				 ensure => present,
 		}
 	}
 	
@@ -24,7 +26,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 			stopScript => "${homedir}/bin/stop.sh"},
 			ciEnvironments => "${environments}",
 			require =>
-			Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"],
+			Deployit_cli::Features::Ci["${hostname} ssh-host"],
 			ensure => present,
 	}
 }
