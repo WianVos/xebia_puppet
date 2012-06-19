@@ -10,18 +10,18 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 	case $customer {
 		undef : {
 			if $application == undef {
-				$ciEnv = "Environments/${environments}"
+				$ciEnv = "Environments/"
 			}
 			else {
-				$ciEnv = "Environments/${environments}/${application}"
+				$ciEnv = "Environments/${application}"
 			}
 		}
 		default : {
 			if $application == undef {
-				$ciEnv = "Environments/${environments}/${customer}"
+				$ciEnv = "Environments/${customer}"
 			}
 			else {
-				$ciEnv = "Environments/${environments}/${customer}/${application}"
+				$ciEnv = "Environments/${customer}/${application}"
 			}
 		}
 	}
