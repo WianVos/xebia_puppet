@@ -27,24 +27,23 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 		}
 	}
 	
-	if !defined(Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"]){
+	if ! defined(Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"]){
 		deployit_cli::types::overthere_ssh {
 			"${hostname} jetty overthere_ssh" :
-				hostname => "${::hostname}",
+				hostname 	 => "${::hostname}",
 				environments => "${ciEnv}",
-				fqdn => "${fqdn}"
+				fqdn 		 => "${fqdn}"
 		}
 	}
 	
 	deployit_cli::features::ci {
 		"jetty_server_${hostname}_${instanceName} " :
-			ciId => "Infrastructure/${hostname}/${instanceName}",
-			ciType => 'jetty.Server',
-			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
-			stopScript => "${homedir}/bin/stop.sh"},
-			ciEnvironments => "${ciEnv}",
-			require =>
-			Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"],
-			ensure => present,
+			ciId 			=> "Infrastructure/${hostname}/${instanceName}",
+			ciType 			=> 'jetty.Server',
+			ciValues 		=> {home => "$homedir", startScript => "${homedir}/start.sh",
+			stopScript 		=> "${homedir}/bin/stop.sh"},
+			ciEnvironments 	=> "${ciEnv}",
+			require 		=> Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"],
+			ensure 			=> present,
 	}
 }
