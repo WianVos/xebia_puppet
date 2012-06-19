@@ -15,7 +15,7 @@ class jetty::params{
 	$install_filesource		= undef
 	$install_owner			= "jetty"
 	$install_group			= "jetty"
-	$install_source_url		= "http://download.eclipse.org/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
+	$install_source_url		= "http://ftp.osuosl.org/pub/eclipse/jetty/${version}/dist/jetty-distribution-${version}.tar.gz"
 	$export_facts			= false
 	$export_config			= false
 	$import_facts			= true
