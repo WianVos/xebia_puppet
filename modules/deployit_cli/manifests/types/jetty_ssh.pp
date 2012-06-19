@@ -9,7 +9,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 	
 	case $customer {
 		undef : {
-			if $application = undef {
+			if $application != undef {
 				$ciEnv = "Environments/${environments}"
 			}
 			else {

@@ -17,7 +17,8 @@ class deployit_cli(
 	$intergration_classes		= $deployit_cli::params::intergration_classes,
 	$xebia_universe				= $deployit_cli::params::xebia_universe,
 	$script_dir					= $deployit_cli::params::script_dir,
-	$conf_dir					= $deployit_cli::params::conf_dir
+	$conf_dir					= $deployit_cli::params::conf_dir,
+	$user_key					= $deployit_cli::params::user_key
 	
 	
 		
@@ -91,8 +92,15 @@ class deployit_cli(
 			managehome 	=> false,
 			home 		=> "${homedir}",
 			system 		=> true,
-			password	=> sha1("deployit")
-			
+			password	=> sha1("deployit")			
+	}
+	
+	ssh_authorized_key {
+		"$install_owner key":
+			ensure		=> $manage_user,
+			key 		=> "${user_key}",
+			user 		=> "${install_owner}",
+			require		=> User["${install_owner}"]
 	}
 	
 	
