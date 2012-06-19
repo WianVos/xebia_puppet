@@ -214,8 +214,7 @@ file {
 		environments => "general",
 		homedir => "${installdir}",
 		instanceName => "${name}",
-		customer	=> "${customer}",
-		application	=> "${application}"
+		require	=> Service["${installdir}/server/bin/jetty"]
 	} 
 }      
 
