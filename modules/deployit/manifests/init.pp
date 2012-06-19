@@ -276,15 +276,15 @@ if $plugin_install == true {
 }
 
 if $key_install == true {
-	file{ "key dir":
-		owner		=> "${install_owner}",
-		group		=> "${install_group}",
-		ensure		=> "${manage_directory}",
-		path		=> "${homedir}/keys",
-		
-	}
+#	file{ "key dir":
+#		owner		=> "${install_owner}",
+#		group		=> "${install_group}",
+#		ensure		=> "${manage_directory}",
+#		path		=> "${homedir}/keys",
+#		
+#	}
 	file{ "key install":
-		require 	=> [Exec["unpack deployit-server"],File["key dir"]],
+		require 	=> [Exec["unpack deployit-server"]],
 	        source 		=> "puppet:///modules/deployit/keys/",
 		sourceselect	=> all,
 		recurse 	=> remote,
