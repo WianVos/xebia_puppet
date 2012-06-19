@@ -211,9 +211,11 @@ file {
  # deployit intergration
  deployit_cli::types::jetty_ssh {
 	"${name}" :
-		environments => "general",
-		homedir => "${installdir}",
-		instanceName => "${name}",
+		environments 	=> "general",
+		homedir	 		=> "${installdir}",
+		instanceName 	=> "${name}",
+		application		=> "${application}",
+		customer		=> "${customer}"
 	} 
 }      
 
