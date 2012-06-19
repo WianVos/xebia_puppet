@@ -16,8 +16,8 @@ define jetty::instance(
   $mq_libs=false,
   $activemq_libs=false,
   $accesslog = true,
-  $application = "xebiaPuppet",
-  $customer = "xebia"
+  $application = undef,
+  $customer = undef
   
 ) {
 
