@@ -204,8 +204,8 @@ file {
         hasstatus  => false,
         hasrestart => false,
 		require	   => File["${installdir}/bin/start.sh"],
-        start      => "${installdir}/bin/start.sh > /dev/null 2>&1",
-        stop       => "${installdir}/bin/stop.sh > /dev/null 2>&1",
+        start      => "${installdir}/start.sh > /dev/null 2>&1",
+        stop       => "${installdir}/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
        }
  # deployit intergration
