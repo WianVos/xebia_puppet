@@ -16,8 +16,8 @@ define jetty::instance(
   $mq_libs=false,
   $activemq_libs=false,
   $accesslog = true,
-  $appname = "default_application",
-  $customer = "default_customer"
+  $application = "xebiaPuppet",
+  $customer = "xebia"
   
 ) {
 
@@ -213,7 +213,9 @@ file {
 	"${name}" :
 		environments => "general",
 		homedir => "${installdir}",
-		instanceName => "${name}"
+		instanceName => "${name}",
+		customer	=> "${customer}",
+		application	=> "${application}"
 	} 
 }      
 
