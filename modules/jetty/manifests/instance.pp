@@ -133,7 +133,7 @@ file {
 		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/status.sh.erb'),
 		mode => 0755 ;
-
+	
 	"${installdir}/stop.sh" :
 		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/stop.sh.erb'),
@@ -143,6 +143,14 @@ file {
 		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/start.ini.erb'),
 		mode => 0644 ;
+	"${installdir}/bin/start.sh" :
+		require => Exec["${name}-clone-basedir"],
+		content => template('jetty/start.sh.erb'),
+		mode => 0755 ;
+	"${installdir}/bin/stop.sh" :
+		require => Exec["${name}-clone-basedir"],
+		content => template('jetty/stop.sh.erb'),
+		mode => 0755 ;
 }
 
     # Optional files - DB2
