@@ -124,7 +124,7 @@ file {
 		content => template('jetty/logback-access.xml.erb'),
 		mode => 0644 ;
 
-	"${installdir}/bin/start.sh" :
+	"${installdir}/start.sh" :
 		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/start.sh.erb'),
 		mode => 0755 ;
@@ -134,7 +134,7 @@ file {
 		content => template('jetty/status.sh.erb'),
 		mode => 0755 ;
 
-	"${installdir}/bin/stop.sh" :
+	"${installdir}/stop.sh" :
 		require => Exec["${name}-clone-basedir"],
 		content => template('jetty/stop.sh.erb'),
 		mode => 0755 ;

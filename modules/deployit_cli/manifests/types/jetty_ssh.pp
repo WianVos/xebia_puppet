@@ -41,8 +41,8 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 		"jetty_server_${hostname}_${instanceName} " :
 			ciId => "Infrastructure/${hostname}/${instanceName}",
 			ciType => 'jetty.Server',
-			ciValues => {home => "$homedir", startScript => "${homedir}/bin/start.sh",
-			stopScript => "${homedir}/bin/stop.sh"},
+			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
+			stopScript => "${homedir}/stop.sh"},
 			ciEnvironments => "${ciEnv}",
 			require =>
 			Deployit_cli::Features::Ci["${hostname} ssh-host"],
