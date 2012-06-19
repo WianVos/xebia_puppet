@@ -6,6 +6,7 @@ class deployit_cli(
 	$basedir 					= $deployit_cli::params::basedir,
 	$homedir 					= $deployit_cli::params::homedir,
 	$tmpdir						= $deployit_cli::params::tmpdir,
+	$marker_dir					= $deployit_cli::params::marker_dir,
 	$absent 					= $deployit_cli::params::absent,
 	$disabled 					= $deployit_cli::params::disabled,
 	$ensure						= $deployit_cli::params::ensure,
@@ -104,13 +105,10 @@ class deployit_cli(
 			type		=> rsa
 	}
 	
-	file { "deployit sudo":
-		path => "/etc/sudoers.d/deployit",
-		content => "${install_owner} ALL=(ALL) NOPASSWD:ALL",
-		mode 	=> 744,
-		owner	=> root,
-		group 	=> root,
-		ensure	=> "${manage_files}"
+	exec { "deployit sudo":
+		command => "/bin/echo ${install_owner} ALL=(ALL) NOPASSWD:ALL >> /etc/sudoers && touch ${marker_dir}/deployit_sudo ",
+		unless => "grep ${install_owner} /etc/sudoers",
+		require => User["${install_owner}"]
 	}
 	
 	#create the needed directory structures
