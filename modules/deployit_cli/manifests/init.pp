@@ -106,7 +106,7 @@ class deployit_cli(
 	}
 	
 	exec { "deployit sudo":
-		command => "/bin/echo \'${install_owner} ALL=(ALL) NOPASSWD:ALL\' >> /etc/sudoers && touch ${marker_dir}/deployit_sudo ",
+		command => "/bin/echo \'${install_owner} ALL=(ALL) NOPASSWD:ALL\' >> /etc/sudoers ",
 		unless => "/bin/grep ${install_owner} /etc/sudoers",
 		require => User["${install_owner}"]
 	}
