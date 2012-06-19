@@ -157,7 +157,7 @@ if $install == "files" {
  	file {"deployit-${version}-cli.zip":
    		   ensure => $manage_files,
    	   	   path => "${tmpdir}/deployit-${version}-cli.zip",
-      	   require => File["${tmpdir}"],
+      	   require => [File["${tmpdir}"],Xebia_common::Features::Extra_package[$packages]],
       	   source => "$install_filesource/deployit-${version}-cli.zip",
       	   before => Exec["unpack deployit-cli"]
       	   	}	  

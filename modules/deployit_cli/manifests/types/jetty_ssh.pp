@@ -27,8 +27,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 		}
 	}
 	
-	if !defined(Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"])
-	{
+	if !defined(Deployit_cli::Types::Overthere_ssh["${hostname} jetty overthere_ssh"]){
 		deployit_cli::types::overthere_ssh {
 			"${hostname} jetty overthere_ssh" :
 				hostname => "${::hostname}",
@@ -36,6 +35,7 @@ define deployit_cli::types::jetty_ssh ($hostname = "${::hostname}",
 				fqdn => "${fqdn}"
 		}
 	}
+	
 	deployit_cli::features::ci {
 		"jetty_server_${hostname}_${instanceName} " :
 			ciId => "Infrastructure/${hostname}/${instanceName}",
