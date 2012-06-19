@@ -209,6 +209,7 @@ file {
         status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
        }
  # deployit intergration
+ 
  deployit_cli::types::jetty_ssh {
 	"${name}" :
 		environments 	=> "general",
