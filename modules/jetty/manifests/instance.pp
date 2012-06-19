@@ -73,7 +73,7 @@ define jetty::instance(
   		"/bin/cp -rp ${download_source_dir}/*  ${installdir} && /bin/chown -R ${runtime_user}:${runtime_user} ${installdir} && /bin/chmod -R 775 ${installdir} ",
   		logoutput => true,
   		creates => "${installdir}/bin",
-  		require => File["${installdir}"]
+  		require => File["${installdir}","jetty-source-${version}"] 
   }  
 
 File {
