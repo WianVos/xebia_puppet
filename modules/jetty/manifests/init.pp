@@ -23,9 +23,9 @@ class jetty(
 	$export_config			= params_lookup('export_configs'),
 	$import_facts			= params_lookup('import_facts'),
 	$import_config			= params_lookup('import_config'),
-	$xebia_universe			= params_lookup('xebia_universe'),
-	$customer				= params_lookup('customer'),
-	$application			= params_lookup('application'),
+	$universe				= params_lookup('universe', global),
+	$customer				= params_lookup('customer', global),
+	$application			= params_lookup('application', global),
 	$instances				= params_lookup('instances')
 		
 ) inherits jetty::params{
@@ -118,13 +118,13 @@ class jetty(
 	if $import_facts {
 		
 		#import the 
-		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service" |>>
+		Xebia_common::Features::Export_facts <<| tag == "${universe}-deployit-service" |>>
 	}
 	
 	if $import_config {
 		
 		#import the 
-		Xebia_common::Features::Export_facts <<| tag == "${xebia_universe}-deployit-service-config" |>>
+		Xebia_common::Features::Export_facts <<| tag == "${universe}-deployit-service-config" |>>
 	}
 	
 	

@@ -20,7 +20,7 @@ class jetty::params{
 	$export_config			= false
 	$import_facts			= true
 	$import_config			= true
-	$xebia_universe			= "general"
+	$universe				= "general"
 	$customer				= "default"
 	$application			= "default_app"
 	$instances 				= { 'test1' => {port => 8080 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet"},

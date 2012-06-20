@@ -1,31 +1,38 @@
 define jetty::instance(
-  $basedir,
-  $source_dir = "${jetty::params::source_dir}",
-  $ensure = "present",
-  $disabled = false,
-  $port = "8080",
-  $version = "8.1.4.v20120524",
-  $runtime_user ="${name}_jetty",
-  $install = "source",
-  $java_home="/usr/lib/jvm/java-6-openjdk",
-  $initial_heap='512',
-  $max_heap='1024',
-  $min_threads='4',
-  $max_threads='32',
-  $db2_libs=false,
-  $mq_libs=false,
-  $activemq_libs=false,
-  $accesslog = true,
-  $application = undef,
-  $customer = undef
+  $basedir			= params_lookup('basedir'),
+  $source_dir 		= "${jetty::params::source_dir}",
+  $ensure 			= "present",
+  $disabled 		= false,
+  $port 			= "8080",
+  $version 			= "8.1.4.v20120524",
+  $install 			= "source",
+  $java_home		= "/usr/lib/jvm/java-6-openjdk",
+  $initial_heap		= '512',
+  $max_heap			= '1024',
+  $min_threads		= '4',
+  $max_threads		= '32',
+  $db2_libs			= false,
+  $mq_libs			= false,
+  $activemq_libs	= false,
+  $accesslog 		= true,
+  $application 		= params_lookup('application', global),
+  $customer 		= params_lookup('customer', global)
   
 ) {
 
   #figuring out the source_dir
   $download_source_dir="${source_dir}/jetty-distribution-${version}"
   		
+  
+  
+  # set the instancename on disk
+  $instance_name="${customer}-${application}-${name}"
+  
+  #create runtime user
+  $runtime_user="${customer}_jetty"
+  
   #set the installdir in accordance to the name and the basedir
-  $installdir = "${basedir}/${name}"
+  $installdir = "${basedir}/${instance_name}"
   
   
   $ensure_user = $ensure ? {
@@ -214,15 +221,15 @@ file {
 		require	   => File["${installdir}/bin/start.sh"],
         start      => "${installdir}/start.sh > /dev/null 2>&1",
         stop       => "${installdir}/stop.sh > /dev/null 2>&1",
-        status     => "ps -fU ${name} | grep jetty > /dev/null 2>&1",
+        status     => "ps -fU ${instance_name} | grep jetty > /dev/null 2>&1",
        }
  # deployit intergration
  
  deployit_cli::types::jetty_ssh {
-	"${name}" :
+	"${instance_name}" :
 		environments 	=> "general",
 		homedir	 		=> "${installdir}",
-		instanceName 	=> "${name}",
+		instanceName 	=> "${instance_name}",
 		application		=> "${application}",
 		customer		=> "${customer}",
 	} 

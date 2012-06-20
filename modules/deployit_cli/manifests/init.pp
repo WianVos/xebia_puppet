@@ -16,7 +16,7 @@ class deployit_cli(
 	$install_group				= $deployit_cli::params::install_group,
 	$intergrate					= $deployit_cli::params::intergrate,
 	$intergration_classes		= $deployit_cli::params::intergration_classes,
-	$xebia_universe				= $deployit_cli::params::xebia_universe,
+	$universe				= $deployit_cli::params::universe,
 	$script_dir					= $deployit_cli::params::script_dir,
 	$conf_dir					= $deployit_cli::params::conf_dir,
 	$user_key					= $deployit_cli::params::user_key
@@ -69,7 +69,7 @@ class deployit_cli(
 		}
 		
 		#import deployit settings 
-		Xebia_common::Features::Export_config <<| tag == "${xebia_universe}-deployit-service-config" |>> { confdir => "${conf_dir}"}
+		Xebia_common::Features::Export_config <<| tag == "${universe}-deployit-service-config" |>> { confdir => "${conf_dir}"}
 		
 		#import deployit settings 
 		
