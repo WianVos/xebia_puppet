@@ -9,6 +9,7 @@ customer="xx"
 application="xx"
 configfile="xx"
 tmpfile=`tempfile`
+hiera_data_dir="/var/xebia_puppet/hieradata/"
 
 
 # parse commandline options
@@ -24,6 +25,7 @@ do case "$o" in
 		echo "	-c <customer> "
 		echo "	-a <application> "
 		echo "	-C <configfile> "
+		exit 0 
 esac
 done
 
@@ -45,7 +47,14 @@ puppet node_aws create --group $aws_sec_group --image $aws_ami --type $aws_ami_t
 host=`tail -1 $tmpfile`
 
 #setup the hiera classification for the host
-
+if [ -f ../etc/nodeTypes/${node_group}.yaml ] 
+	then 
+	cp ../etc/nodeTypes/${node_group}.yaml /tmp/${node_group}.yaml
+        cat /tmp/${node_group}.yaml | sed -e 's|<application>|'$application'|g' |  sed -e 's|<customer>|'$customer'|g' |  sed -e 's|<universe>|'$universe'|g'  >> ${hiera_data_dir}/hosts/${host}.yaml
+else
+	echo "unable to further classify ${host}"
+fi 
+ 
 
 puppet node classify --enc-server $dashboard_server  --enc-ssl --enc-auth-user $dashboard_auth_user --enc-auth-passwd $dashboard_auth_passwd --enc-port 443 --node-group $node_group ${host} 1>$tmpfile 2>&1
 
