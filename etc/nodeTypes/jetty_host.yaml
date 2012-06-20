@@ -2,7 +2,7 @@
 universe : <universe>
 customer : <customer>
 application : <application>
-instance :
+jetty_instances :
  <customer>-<application>-1 :
     port : 8080
     application : <application>
