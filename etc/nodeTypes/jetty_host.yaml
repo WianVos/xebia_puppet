@@ -1,0 +1,14 @@
+---
+universe : <universe>
+customer : <customer>
+application : <application>
+instance :
+ <customer>-<application>-1 :
+    port : 8080
+    application : <application>
+    customer : <customer>
+ <customer>-<application>-2 :
+    port : 8090
+    application : <application>
+    customer : <customer>
+
