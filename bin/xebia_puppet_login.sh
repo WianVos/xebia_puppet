@@ -27,10 +27,11 @@ do
     case $choice in
             # Check for digits
     [0-9] )   aws_host=$(sed -n "$choice"p "$tmpfile")
-	      if [ $aws_host != "" ] then
-              ssh -i ${image_keyfile} ${image_login}@$aws_host 
+	      if [ $aws_host != "" ]
+	       then
+              	ssh -i ${image_keyfile} ${image_login}@$aws_host 
 	      else 
-	      echo "Invalid choice"
+	      	echo "Invalid choice"
 	      fi 
 	      ;;
      q|Q)
