@@ -2,9 +2,12 @@
 puppet_url="https://pm.puppetlabs.com/puppet-enterprise/latest/puppet-enterprise-latest-all.tar.gz"
 target_puppet_sourcedir="/opt/puppet_source" 
 puppet_conf_file="/etc/puppetlabs/puppet/puppet.conf"
+puppet_hiera_conf_file="/etc/puppetlabs/puppet/hiera.yaml"
 tmp_dir="/var/tmp"
 xebia_puppet_base="/opt/xebia_puppet"
+hiera_data_dir="/var/xebia_puppet/hieradata"
 
+#download and install puppet
 #mkdir -p $target_puppet_sourcedir
 #/usr/bin/curl $puppet_url |tar -xzf - -C $target_puppet_sourcedir  
 
@@ -19,5 +22,9 @@ xebia_puppet_base="/opt/xebia_puppet"
 #cat $tmp_dir/puppet.conf | sed -e ' s|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules:'$xebia_puppet_base'/modules:'$xebia_puppet_base'/wrappers|g' >> $puppet_conf_file
 
 #setup fog
-cp ../etc/fog.conf ~/.fog
+#cp ../etc/fog.conf ~/.fog
 
+#setup hiera
+mkdir -p $hiera_data_dir
+mkdir -p $hiera_data_dir/hosts
+cp ../etc/hiera.yaml $puppet_hiera_conf_file 

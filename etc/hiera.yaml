@@ -1,0 +1,7 @@
+:hierarchy:
+   - hosts/%{ec2_public_hostname}
+:backends: 
+   - yaml
+:yaml:
+   :datadir: '/var/xebia_puppet/hieradata'
+
