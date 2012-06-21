@@ -8,6 +8,8 @@ puppet_hiera_conf_file="/etc/puppetlabs/puppet/hiera.yaml"
 tmp_dir="/var/tmp"
 xebia_puppet_base="/opt/xebia_puppet"
 hiera_data_dir="/var/xebia_puppet/hieradata"
+puppetdb_terminus_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb-terminus_0.9.1-1puppet1_all.deb"
+puppetdb_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb_0.9.1-1puppet1_all.deb"
 
 #download and install puppet
 mkdir -p $target_puppet_sourcedir
@@ -37,4 +39,23 @@ cp ../etc/hiera.yaml $puppet_hiera_conf_file
 outfile=`echo $puppet_lucid_url|nawk -F "/" '{print $(NF)}'`
 /usr/bin/curl $puppet_lucid_url -o /root/${outfile}
 
+puppetdb_terminus_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb-terminus_0.9.1-1puppet1_all.deb"
+puppetdb_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb_0.9.1-1puppet1_all.deb"
 
+puppetdb_deb=`echo $puppetdb_url|nawk -F "/" '{print $(NF)}'`
+puppetdb_terminus_deb=`echo $puppetdb_terminus_url|nawk -F "/" '{print $(NF)}'`
+
+/usr/bin/curl $puppetdb_url -o /var/tmp/$puppetdb_deb
+/usr/bin/curl $puppetdb_terminus_url -o /var/tmp/$puppetdb_terminus_deb
+
+dpkg -i /var/tmp/$puppetdb_deb
+dpkg -i /var/tmp/$puppetdb_terminus_deb
+
+cp ../etc/puppetdb.conf /etc/puppetlabs/puppet/puppetdb.conf
+cp ../etc/routes.yaml /etc/puppetlabs/puppet/routes.yaml
+
+#add puppetdb and autosign to puppet.conf
+puppetdb_inserts="#xebia_puppet_install \n    autosign = true\n    storeconfigs = true\n    storeconfigs_backend = puppetdb\n #xebia_puppet_install"
+mv $puppet_conf_file $tmp_dir/puppet.conf
+
+sed "/\[master\]/a $puppetdb_inserts"  $tmp_dir/puppet.conf > $puppet_conf_file
