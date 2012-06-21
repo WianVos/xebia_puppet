@@ -1,22 +1,22 @@
 #
 #
-class skeleton(
-	$packages 			= $skeleton::params::packages, 
-	$version 			= $skeleton::params::version,
-	$basedir 			= $skeleton::params::basedir,
-	$homedir 			= $skeleton::params::homedir,
-	$tmpdir				= $skeleton::params::tmpdir,
-	$absent 			= $skeleton::params::absent,
-	$disabled 			= $skeleton::params::disabled,
-	$ensure				= $skeleton::params::ensure,
-	$install			= $skeleton::params::install,
-	$install_filesource	= $skeleton::params::install_filesource,
-	$install_owner		= $skeleton::params::install_owner,
-	$install_group		= $skeleton::params::install_group,
-	$install_source_url	= $skeleton::params::install_source_url,
-	$facts_import_tags		= $skeleton::params::facts_import_tags
+class postgresql(
+	$packages 			= $postgresql::params::packages, 
+	$version 			= $postgresql::params::version,
+	$basedir 			= $postgresql::params::basedir,
+	$homedir 			= $postgresql::params::homedir,
+	$tmpdir				= $postgresql::params::tmpdir,
+	$absent 			= $postgresql::params::absent,
+	$disabled 			= $postgresql::params::disabled,
+	$ensure				= $postgresql::params::ensure,
+	$install			= $postgresql::params::install,
+	$install_filesource	= $postgresql::params::install_filesource,
+	$install_owner		= $postgresql::params::install_owner,
+	$install_group		= $postgresql::params::install_group,
+	$install_source_url	= $postgresql::params::install_source_url,
+	$facts_import_tags		= $postgresql::params::facts_import_tags
 		
-) inherits skeleton::params{
+) inherits postgresql::params{
 	
 	#set various manage parameters in accordance to the $absent directive
 	$manage_package = $absent ? {
@@ -54,7 +54,7 @@ class skeleton(
 		default	=> "running"
 	}
 	
-	#install packages as needed by skeleton	
+	#install packages as needed by postgresql	
 	package{$packages:
 		ensure => $manage_package,
 		before => File["$tmpdir","$basedir"]
@@ -80,11 +80,11 @@ class skeleton(
 	if $intergrate == true {
 		class{$intergration_classes:}
 		
-		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
-			options => { "skeleton_hostname" 	=> "${::fqdn}",
-						 "skeleton_ipaddress" => "${::ipaddress}"
+		@@xebia_common::features::export_facts{"postgresql_facts_${::hostname}":
+			options => { "postgresql_hostname" 	=> "${::fqdn}",
+						 "postgresql_ipaddress" => "${::ipaddress}"
 						},
-			tag		=> "skeleton"
+			tag		=> "postgresql"
 		}
 		
 		#Xebia_common::Features::Export_facts <<| |>>	
@@ -117,29 +117,29 @@ class skeleton(
 if $install == "nexus" {	
     class {
 		'nexus' :
-			url => "${skeleton::params::nexus_url}",
-			username => "${skeleton::params::nexus_user}",
-			password => "${skeleton::params::nexus_password}"
+			url => "${postgresql::params::nexus_url}",
+			username => "${postgresql::params::nexus_user}",
+			password => "${postgresql::params::nexus_password}"
 	}
 	
 		
     nexus::artifact {
-		'skeleton' :
-			gav 		=> "com.xebialabs.skeleton:skeleton:${version}",
+		'postgresql' :
+			gav 		=> "com.xebialabs.postgresql:postgresql:${version}",
 			classifier 	=> 'server',
 			packaging 	=> 'zip',
 			repository 	=> "releases",
-			output 		=> "${tmpdir}/skeleton-${version}-server.zip",
+			output 		=> "${tmpdir}/postgresql-${version}-server.zip",
 			ensure 		=> $manage_files,
 			require 	=> [Class["nexus"],File["${tmpdir}"]]
 		}
 	
 	exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+	"unpack postgresql":
+		command 	=> "/usr/bin/unzip ${tmpdir}/postgresql-${version}.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> [File["${basedir}"], Nexus::Artifact["skeleton"]],		
+		creates 	=> "${basedir}/postgresql-${version}",
+		require 	=> [File["${basedir}"], Nexus::Artifact["postgresql"]],		
 		user		=> "${install_owner}",
 		}
 	
@@ -147,20 +147,20 @@ if $install == "nexus" {
 	
 if $install == "files" {
 	  
-    file {"skeleton-${version}.zip":
+    file {"postgresql-${version}.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/skeleton-${version}.zip",
+   	   	   path => "${tmpdir}/postgresql-${version}.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/skeleton-${version}.zip",
-      	   before => Exec["unpack skeleton"]
+      	   source => "$install_filesource/postgresql-${version}.zip",
+      	   before => Exec["unpack postgresql"]
         }
         
     exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+	"unpack postgresql":
+		command 	=> "/usr/bin/unzip ${tmpdir}/postgresql-${version}.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> File["${basedir}","skeleton-${version}.zip"],
+		creates 	=> "${basedir}/postgresql-${version}",
+		require 	=> File["${basedir}","postgresql-${version}.zip"],
 		user		=> "${install_owner}",
 		}
     
@@ -168,7 +168,7 @@ if $install == "files" {
 
 if $install == "source" {
 	
-	common::source{"skeleton-${version}.zip":
+	common::source{"postgresql-${version}.zip":
 		source_url 	=>  "${install_source_url}",
         target 		=>	"${basedir}",
 		type		=>	"zip",
@@ -185,14 +185,14 @@ if $install == "source" {
 
 
 file{
-	"${homedir}/skeleton":
+	"${homedir}/postgresql":
 		ensure 		=> $manage_link,
-		target 		=> "${basedir}/skeleton-${version}-server",
+		target 		=> "${basedir}/postgresql-${version}-server",
 		require		=> $install ? {
-				nexus	=>	Exec["unpack skeleton"],
-				files	=>	Exec["unpack skeleton"],
-				source	=> 	Common::Source["skeleton-${version}.zip"],
-				default =>	Exec["unpack skeleton"],
+				nexus	=>	Exec["unpack postgresql"],
+				files	=>	Exec["unpack postgresql"],
+				source	=> 	Common::Source["postgresql-${version}.zip"],
+				default =>	Exec["unpack postgresql"],
 				},
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
@@ -204,38 +204,38 @@ file{
 #	"init script":
 #		ensure 		=> $manage_files,
 #		source 		=> "",
-#		path		=> "/etc/init.d/skeleton",
+#		path		=> "/etc/init.d/postgresql",
 #		owner		=> root,
 #		group		=> root,
 #		mode		=> 700,
 #}
 
 #file{
-#	"skeleton config file":
+#	"postgresql config file":
 #		ensure 		=> $manage_files,
-#		source 		=> "$install_filesource/skeleton.conf",
-#		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
+#		source 		=> "$install_filesource/postgresql.conf",
+#		path		=> "${basedir}/postgresql-${version}-server/conf/postgresql.conf",
 #		owner		=> "${install_owner}",
 #		group		=> "${install_group}",
-#		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		require 	=> [Exec["unpack postgresql-server"],File["${homedir}/server"]],
 #		mode		=> 700,
-#		notify		=> Service["skeleton"]
+#		notify		=> Service["postgresql"]
 #}
 #
 #
 #exec{
-#	"init skeleton":
+#	"init postgresql":
 #		creates		=> "${homedir}/server/repository",
 #		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
 #		user		=> "${install_owner}",
-#		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+#		require		=> [Exec["unpack postgresql-server"],File["${homedir}/server"]],
 #		logoutput	=> true,
 #		 
 #}
 
 service{
-	'skeleton':
-		require 	=> [File["${homedir}/server","skeleton config file"],Exec["init skeleton"]],
+	'postgresql':
+		require 	=> [File["${homedir}/server","postgresql config file"],Exec["init postgresql"]],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
 	}		

@@ -1,97 +1,97 @@
-class skeleton::params{
+class postgresql::params{
 	
 	$nexus_url = ""
 	$nexus_user = ""
 	$nexus_password = ""
 	$nexus_tmpDir = "/var/tmp"
 	
-	#prerequisite packages wich will be installed before the installation of skeleton
-	$packages = $::skeleton_packages ? {
+	#prerequisite packages wich will be installed before the installation of postgresql
+	$packages = $::postgresql_packages ? {
 		'' => ['openjdk-6-jdk','unzip'], # Default value
-		default => $::skeleton_installed_packages,
+		default => $::postgresql_installed_packages,
 	}
 	
 	#install method . Possible options files or nexus 
-	$install = $::skeleton_install ? {
+	$install = $::postgresql_install ? {
 		'' => "files", # Default value
-		default => $::skeleton_install,
+		default => $::postgresql_install,
 	}
 	
 	# install_filesource . only needed if install is files
-	$install_filesource = $::skeleton_install_filesource ? {
-		'' => "puppet:///modules/skeleton",
-		default => $::skeleton_install_filesource
+	$install_filesource = $::postgresql_install_filesource ? {
+		'' => "puppet:///modules/postgresql",
+		default => $::postgresql_install_filesource
 	}
 	
 	# install_source_url . only needed if install is source
-	$install_source_url = $::skeleton_install_source_url ? {
+	$install_source_url = $::postgresql_install_source_url ? {
 		'' => "http://",
-		default => $::skeleton_install_source_url
+		default => $::postgresql_install_source_url
 	}
 	
-	#the skeleton version which we will install
-	$version = $::skeleton_version ? {
+	#the postgresql version which we will install
+	$version = $::postgresql_version ? {
 		'' => '3.7.0',
-		default => $::skeleton_version
+		default => $::postgresql_version
 	}
 	
-	#the basedir where the perticular version of skeleton will be installed
-	$basedir = $::skeleton_basedir ? {
-		'' => "/opt/skeleton_base", # Default value
-		default => $::skeleton_basedir,
+	#the basedir where the perticular version of postgresql will be installed
+	$basedir = $::postgresql_basedir ? {
+		'' => "/opt/postgresql_base", # Default value
+		default => $::postgresql_basedir,
 	} 
 	
-	#the skeleton homedir . this is a link to the perticular versioned basedir of skeleton	
-	$homedir = $::skeleton_homedir ? {
-		'' => "/opt/skeleton", # Default value
-		default => $::skeleton_homedir,
+	#the postgresql homedir . this is a link to the perticular versioned basedir of postgresql	
+	$homedir = $::postgresql_homedir ? {
+		'' => "/opt/postgresql", # Default value
+		default => $::postgresql_homedir,
 	}
 	
-	#the skeleton tmpdir. this is the directory that will be used for all kinds of temporary storage
-	$tmpdir = $::skeleton_tmpdir ? {
-		'' => '/var/tmp/skeleton', # Default value
-		default => $::skeleton_tmpdir,
+	#the postgresql tmpdir. this is the directory that will be used for all kinds of temporary storage
+	$tmpdir = $::postgresql_tmpdir ? {
+		'' => '/var/tmp/postgresql', # Default value
+		default => $::postgresql_tmpdir,
 	}
 	#Module management peritcular variables
 	#kudos to example 42 for the inspiration
 	
-	#setting $skeleton_absent to true will result in skeleton being removed
-	$absent = $::skeleton_absent ? {
+	#setting $postgresql_absent to true will result in postgresql being removed
+	$absent = $::postgresql_absent ? {
 		'' => false,
-		default => $::skeleton_absent
+		default => $::postgresql_absent
 	}
 	
-	# setting skeleton_disabled to true wil result in skeleton being installed but no started
-	$disabled = $::skeleton_disabled ? {
+	# setting postgresql_disabled to true wil result in postgresql being installed but no started
+	$disabled = $::postgresql_disabled ? {
 		'' => false,
-		default => $::skeleton_disabled
+		default => $::postgresql_disabled
 	}
 	
-	# setting skeleton_ensure to false wil result in the service not being started
-	$ensure = $::skeleton_ensure ? {
+	# setting postgresql_ensure to false wil result in the service not being started
+	$ensure = $::postgresql_ensure ? {
 		'' => running,
-		default => $::skeleton_ensure
+		default => $::postgresql_ensure
 	}
 	
 	# setting the install owner
-	$install_owner = $::skeleton_install_owner ? {
-		'' => "skeleton",
-		default => $::skeleton_install_owner 
+	$install_owner = $::postgresql_install_owner ? {
+		'' => "postgresql",
+		default => $::postgresql_install_owner 
 	}
 	
 	#setting the install group
-	$install_group = $::skeleton_install_group ? {
-		'' => "skeleton",
-		default => $::skeleton_install_group
+	$install_group = $::postgresql_install_group ? {
+		'' => "postgresql",
+		default => $::postgresql_install_group
 	}	
 	
-	$intergrate = $::skeleton_intergrate ? {
+	$intergrate = $::postgresql_intergrate ? {
 		''	=> false,
-		default	=> $::skeleton_intergrate 
+		default	=> $::postgresql_intergrate 
 	}
 	
-	$facts_import_tags = $::skeleton_facts_import_tags ? {
+	$facts_import_tags = $::postgresql_facts_import_tags ? {
 		''	=> 'none',
-		default => $::skeleton_facts_import_tags
+		default => $::postgresql_facts_import_tags
 	}
 }

@@ -23,7 +23,7 @@ $installer_command -a ../etc/xebia_puppet_install.conf
 
 #modify puppet.conf
 mv $puppet_conf_file $tmp_dir/puppet.conf
-cat $tmp_dir/puppet.conf | sed -e ' s|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules:'$xebia_puppet_base'/modules:'$xebia_puppet_base'/wrappers|g' >> $puppet_conf_file
+cat $tmp_dir/puppet.conf | sed -e ' s|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules|modulepath = /etc/puppetlabs/puppet/modules:/opt/puppet/share/puppet/modules:'$xebia_puppet_base'/modules:'$xebia_puppet_base'/wrappers:'$xebia_puppet_base'/borrowed|g' >> $puppet_conf_file
 
 #setup fog
 cp ../etc/fog.conf ~/.fog
