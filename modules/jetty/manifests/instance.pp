@@ -14,6 +14,7 @@ define jetty::instance(
   $db2_libs			= false,
   $mq_libs			= false,
   $activemq_libs	= false,
+  $postgresql_libs	= false,
   $accesslog 		= true,
   $application 		= params_lookup('application', global),
   $customer 		= params_lookup('customer', global)
@@ -207,6 +208,23 @@ file {
       }
     } else {
       file { "${installdir}/lib/ext/activemq":
+        ensure  => absent,
+        recurse => true,
+        purge   => true,
+        force   => true,
+      }
+    }
+    # Optional files - postgresql
+    if $postgresql_libs {
+      file { "${installdir}/lib/ext/postgresql" :
+      	require => Exec["${name}-clone-basedir"],
+        ensure  => present,
+        source  => 'puppet:///jetty/postgresql',
+        recurse => true,
+        purge   => true,
+      }
+    } else {
+      file { "${installdir}/lib/ext/postgresql":
         ensure  => absent,
         recurse => true,
         purge   => true,
