@@ -1,20 +1,21 @@
 #
 #
 class postgresql(
-	$packages 			= $postgresql::params::packages, 
-	$version 			= $postgresql::params::version,
-	$basedir 			= $postgresql::params::basedir,
-	$homedir 			= $postgresql::params::homedir,
-	$tmpdir				= $postgresql::params::tmpdir,
-	$absent 			= $postgresql::params::absent,
-	$disabled 			= $postgresql::params::disabled,
-	$ensure				= $postgresql::params::ensure,
-	$install			= $postgresql::params::install,
-	$install_filesource	= $postgresql::params::install_filesource,
-	$install_owner		= $postgresql::params::install_owner,
-	$install_group		= $postgresql::params::install_group,
-	$install_source_url	= $postgresql::params::install_source_url,
-	$facts_import_tags		= $postgresql::params::facts_import_tags
+	$packages 			= params_lookup('packages'), 
+	$version 			= params_lookup('version'),
+	$basedir 			= params_lookup('basedir'),
+	$homedir 			= params_lookup('homedir'),
+	$tmpdir				= params_lookup('tmpdir'),
+	$absent 			= params_lookup('absent'),
+	$disabled 			= params_lookup('disabled'),
+	$ensure				= params_lookup('ensure,'),
+	$install			= params_lookup('install'),
+	$install_filesource		= params_lookup('install_filesource'),
+	$install_owner			= params_lookup('install_owner'),
+	$install_group			= params_lookup('install_group'),
+	$install_source_url		= params_lookup('install_source_url'),
+	$facts_import_tags		= params_lookup('facts_import_tags')
+	
 		
 ) inherits postgresql::params{
 	
