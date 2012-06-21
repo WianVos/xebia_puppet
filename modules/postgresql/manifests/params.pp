@@ -94,4 +94,21 @@ class postgresql::params{
 		''	=> 'none',
 		default => $::postgresql_facts_import_tags
 	}
+	
+	$infra_dir				= "/etc/xebia_puppet"
+	$marker_dir 			= "${infra_dir}/marker"
+	$script_dir 			= "${infra_dir}/script"
+	$config_dir 			= "${infra_dir}/config"
+	$tmpdir						= 	'/var/tmp/deployit'
+	$absent 					=	false
+	$disabled 					= 	false
+	$ensure						= 	'running'
+	$import_facts				= 	true
+	$import_config				= 	true
+	$export_facts				= 	true
+	$export_config				= 	true
+	$install					= 	'files'
+	$universe					=   'default'
+	$customer					=	'default'
+	$application				=	'defautl'
 }
