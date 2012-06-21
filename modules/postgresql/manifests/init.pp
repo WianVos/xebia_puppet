@@ -14,7 +14,14 @@ class postgresql(
 	$install_owner			= params_lookup('install_owner'),
 	$install_group			= params_lookup('install_group'),
 	$install_source_url		= params_lookup('install_source_url'),
-	$facts_import_tags		= params_lookup('facts_import_tags')
+	$facts_import_tags		= params_lookup('facts_import_tags'),
+	$confdir					= params_lookup('confdir'),
+	$scriptdir					= params_lookup('scriptdir'),
+	$markerdir					= params_lookup('markerdir'),
+	$import_facts				= params_lookup('import_facts'),
+	$import_config				= params_lookup('import_config'),
+	$universe				= params_lookup('universe')
+	
 	
 		
 ) inherits postgresql::params{
@@ -76,20 +83,50 @@ class postgresql(
 			system 		=> true,
 			
 	}
+	#setup infra 
+	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]:
+		ensure 	=> "${manage_directory}",
+		owner  	=> root,
+		group	=> root,
+		mode	=> 770,
+	}
+	 
+	#extra packages
+	xebia_common::features::extra_package{$packages:
+		ensure	=> "${manage_package}"
+	}
 	
 	#Setup the xebia_puppet infrstructure when intergrate is set to true
-	if $intergrate == true {
-		class{$intergration_classes:}
-		
+	if $export_facts {
 		@@xebia_common::features::export_facts{"postgresql_facts_${::hostname}":
 			options => { "postgresql_hostname" 	=> "${::fqdn}",
-						 "postgresql_ipaddress" => "${::ipaddress}"
-						},
-			tag		=> "postgresql"
+						 "postgresql_ipaddress" => "${::ipaddress}",
+						 },
+			tag		=> ["${universe}-postgresql-db-service"]
 		}
-		
-		#Xebia_common::Features::Export_facts <<| |>>	
 	}
+	
+	if $export_config {
+		@@xebia_common::features::export_config{"postgresql_facts_${::hostname}":
+			options => { "postgresql_hostname" 	=> "${::fqdn}",
+						 "postgresql_ipaddress" => "${::ipaddress}",
+						 },
+			confdir =>	"${config_dir}",
+			tag		=> ["${universe}-postgresql-db-service-config"]
+		}
+	}
+	
+	if $import_facts {
+		Xebia_common::Features::Export_facts <<| |>> 
+	}
+	if $import_config {
+		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
+		
+	}
+	
+		
+	
+	
 	#create the needed directory structures
 	
 	#tmpdir
