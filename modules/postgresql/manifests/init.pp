@@ -3,24 +3,25 @@
 class postgresql(
 	$packages 			= params_lookup('packages'), 
 	$version 			= params_lookup('version'),
-	$basedir 			= params_lookup('basedir'),
-	$homedir 			= params_lookup('homedir'),
-	$tmpdir				= params_lookup('tmpdir'),
+	#$basedir 			= params_lookup('basedir'),
+	#$homedir 			= params_lookup('homedir'),
+	#$tmpdir				= params_lookup('tmpdir'),
 	$absent 			= params_lookup('absent'),
+	$ensure				= params_lookup('ensure'),
 	$disabled 			= params_lookup('disabled'),
 	$ensure				= params_lookup('ensure,'),
 	$install			= params_lookup('install'),
-	$install_filesource		= params_lookup('install_filesource'),
 	$install_owner			= params_lookup('install_owner'),
 	$install_group			= params_lookup('install_group'),
-	$install_source_url		= params_lookup('install_source_url'),
-	$facts_import_tags		= params_lookup('facts_import_tags'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
 	$markerdir					= params_lookup('markerdir'),
 	$import_facts				= params_lookup('import_facts'),
 	$import_config				= params_lookup('import_config'),
-	$universe				= params_lookup('universe')
+	$export_facts				= params_lookup('export_facts'),
+	$export_config				= params_lookup('export_config'),
+	$universe				= params_lookup('universe'),
+	$facts_import_tags		= params_lookup('facts_import_tags')
 	
 	
 		
@@ -56,7 +57,7 @@ class postgresql(
 	}
 	
 
-	$ensure_service = $ensure ? {
+	$manage_service = $ensure ? {
 		true	=> "running",
 		false 	=> "stoppped",
 		default	=> "running"
