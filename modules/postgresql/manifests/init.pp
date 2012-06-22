@@ -3,9 +3,10 @@
 class postgresql(
 	$packages 			= params_lookup('packages'), 
 	$version 			= params_lookup('version'),
-	#$basedir 			= params_lookup('basedir'),
-	#$homedir 			= params_lookup('homedir'),
-	#$tmpdir				= params_lookup('tmpdir'),
+	$basedir 			= params_lookup('basedir'),
+	$homedir 			= params_lookup('homedir'),
+	$tmpdir				= params_lookup('tmpdir'),
+	$datadir			= params_lookup('datadir'),
 	$absent 			= params_lookup('absent'),
 	$ensure				= params_lookup('ensure'),
 	$disabled 			= params_lookup('disabled'),
@@ -63,6 +64,8 @@ class postgresql(
 		default	=> "running"
 	}
 	
+	
+	
 	#install packages as needed by postgresql	
 	package{$packages:
 		ensure => $manage_package,
@@ -79,13 +82,13 @@ class postgresql(
 		"$install_owner":
 			ensure 		=> $manage_user,
 			gid 		=> "${install_group}",
-			managehome 	=> false,
-			home 		=> "${homedir}",
+			managehome 	=> true,
 			system 		=> true,
-			
 	}
+	
 	#setup infra 
-	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]:
+	# all these directory's should be owned by root
+	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}","{$tmpdir}"]:
 		ensure 	=> "${manage_directory}",
 		owner  	=> root,
 		group	=> root,
@@ -153,129 +156,60 @@ class postgresql(
 #download and unpack the needed files into the temporary directory in accordance with the installation type
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
-if $install == "nexus" {	
-    class {
-		'nexus' :
-			url => "${postgresql::params::nexus_url}",
-			username => "${postgresql::params::nexus_user}",
-			password => "${postgresql::params::nexus_password}"
-	}
+
 	
-		
-    nexus::artifact {
-		'postgresql' :
-			gav 		=> "com.xebialabs.postgresql:postgresql:${version}",
-			classifier 	=> 'server',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/postgresql-${version}-server.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-		}
-	
-	exec{
-	"unpack postgresql":
-		command 	=> "/usr/bin/unzip ${tmpdir}/postgresql-${version}.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/postgresql-${version}",
-		require 	=> [File["${basedir}"], Nexus::Artifact["postgresql"]],		
-		user		=> "${install_owner}",
-		}
-	
-}
-	
-if $install == "files" {
+if $install == "puppetfiles" {
 	  
-    file {"postgresql-${version}.zip":
+    file {"postgresql-${version}_ubuntu.tar.gz":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/postgresql-${version}.zip",
+   	   	   path => "${tmpdir}/postgresql-${version}_ubuntu.tar.gz",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/postgresql-${version}.zip",
+      	   source => "puppet:///modules/postgresql/install_tar/postgresql-${version}.tar.gz",
       	   before => Exec["unpack postgresql"]
         }
         
     exec{
 	"unpack postgresql":
-		command 	=> "/usr/bin/unzip ${tmpdir}/postgresql-${version}.zip",
+		command 	=> "/usr/bin/tar -xzf ${tmpdir}/postgresql-${version}_ubuntu.tar.gz ",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/postgresql-${version}",
-		require 	=> File["${basedir}","postgresql-${version}.zip"],
+		creates 	=> "${basedir}/postgresql",
+		require 	=> File["${basedir}","postgresql-${version}.tar.gz"],
 		user		=> "${install_owner}",
 		}
-    
-}
-
-if $install == "source" {
-	
-	common::source{"postgresql-${version}.zip":
-		source_url 	=>  "${install_source_url}",
-        target 		=>	"${basedir}",
-		type		=>	"zip",
-		owner		=> 	"${install_owner}",				
+		
+	file{"${homedir}/etc":
+		ensure => $manage_files,
+		owner	=> "${install_owner}",
+		group	=> "${install_group}",
+		require => Exec["unpack postgresql"]
+		}
 	}
-	
-}
-
-	
-	
-	
-
-	
+    
 
 
-file{
-	"${homedir}/postgresql":
-		ensure 		=> $manage_link,
-		target 		=> "${basedir}/postgresql-${version}-server",
-		require		=> $install ? {
-				nexus	=>	Exec["unpack postgresql"],
-				files	=>	Exec["unpack postgresql"],
-				source	=> 	Common::Source["postgresql-${version}.zip"],
-				default =>	Exec["unpack postgresql"],
-				},
-		owner		=> "${install_owner}",
-		group		=> "${install_group}"
-	}	
+file {"postgresql init script":
+			path => "/etc/init.d/postgresql",
+			source => template('postgresql.erb'),
+			owner	=> "${install_owner}",
+			group	=> "${install_group}",
+			ensure	=> "${manage_files}",
+			mode	=> 0755,
+			require => Exec["unpack postgresql"]
+			}
+
+Exec {"initdb ${datadir}":
+			cmd => "${homedir}/bin/initdb -D ${datadir}",
+			user =>	"${install_owner}",
+		}
 
 
 
-#file{
-#	"init script":
-#		ensure 		=> $manage_files,
-#		source 		=> "",
-#		path		=> "/etc/init.d/postgresql",
-#		owner		=> root,
-#		group		=> root,
-#		mode		=> 700,
-#}
 
-#file{
-#	"postgresql config file":
-#		ensure 		=> $manage_files,
-#		source 		=> "$install_filesource/postgresql.conf",
-#		path		=> "${basedir}/postgresql-${version}-server/conf/postgresql.conf",
-#		owner		=> "${install_owner}",
-#		group		=> "${install_group}",
-#		require 	=> [Exec["unpack postgresql-server"],File["${homedir}/server"]],
-#		mode		=> 700,
-#		notify		=> Service["postgresql"]
-#}
-#
-#
-#exec{
-#	"init postgresql":
-#		creates		=> "${homedir}/server/repository",
-#		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
-#		user		=> "${install_owner}",
-#		require		=> [Exec["unpack postgresql-server"],File["${homedir}/server"]],
-#		logoutput	=> true,
-#		 
-#}
 
 service{
 	'postgresql':
-		require 	=> [File["${homedir}/server","postgresql config file"],Exec["init postgresql"]],
-		ensure		=> "${ensure_service}",
+		require 	=> [File["postgresql init script"],Exec["initdb ${datadir}"]],
+		ensure		=> "${manage_service}",
 		hasrestart	=> true,
 	}		
 }

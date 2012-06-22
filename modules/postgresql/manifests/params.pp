@@ -5,7 +5,10 @@ class postgresql::params{
 	$marker_dir 			= "${infra_dir}/marker"
 	$script_dir 			= "${infra_dir}/script"
 	$config_dir 			= "${infra_dir}/config"
-	$tmpdir						= 	'/var/tmp/deployit'
+	$tmpdir						= 	'/var/tmp/postgresql'
+	$basedir					=	'/opt'
+	$homedir					=	"${basedir}/postgresql"
+	$datadir					=	'/data/'
 	$absent 					=	false
 	$ensure						= 	false
 	$disabled 					= 	false
@@ -17,6 +20,12 @@ class postgresql::params{
 	$universe					=   'default'
 	$customer					=	'default'
 	$application				=	'default'
-	$install					=	'package'
+	$install					=	'puppetfiles'
+	$install_owner				=	'postgresql'
+	$install_group				=	'postgresql'
 	$packages					=	''
+	
+	# postgresql specific settings
+	$version					= "9.1.2"
+	
 }
