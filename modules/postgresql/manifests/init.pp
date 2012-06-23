@@ -197,6 +197,12 @@ service {
 		ensure => "${manage_service}",
 		hasrestart => true,
 	}
+	
+#export the servers settings 
+# check if where doing a cluser 
+# check if the machine is a master . 
+# check if the machine is a slave
+	
 }
 	
 	
