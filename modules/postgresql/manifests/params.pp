@@ -5,7 +5,7 @@ class postgresql::params{
 	$marker_dir 			= "${infra_dir}/marker"
 	$script_dir 			= "${infra_dir}/script"
 	$config_dir 			= "${infra_dir}/config"
-	$tmpdir						= 	'/var/tmp/postgresql'
+	$tmpdir						= 	"/var/tmp/postgresql"
 	$basedir					=	'/opt'
 	$homedir					=	"${basedir}/postgresql"
 	$datadir					=	'/data/'

@@ -154,8 +154,6 @@ file {
 	"postgresql init script" :
 		path => "/etc/init.d/postgresql",
 		source => template('postgresql/postgresql.erb'),
-		owner => "${install_owner}",
-		group => "${install_group}",
 		ensure => "${manage_files}",
 		mode => 0755,
 		require => Exec["unpack postgresql"]
