@@ -18,8 +18,13 @@ mkdir -p $target_puppet_sourcedir
 # find the puppet enterprise installer
 installer_command=`find /opt -name puppet-enterprise-installer`
 hostname=`hostname`
+
 # modify the answerfile
 cat ../etc/xebia_puppet_install.conf.temp | sed "s/<hostname>/$hostname/g" >> ../etc/xebia_puppet_install.conf
+
+# modify the client_answerfile
+cat ../etc/client_answer.txt.temp | sed "s/<hostname>/$hostname/g" >> ../etc/client_answer.txt
+
 #install puppet using the silent installfile in the ../etc dir
 $installer_command -a ../etc/xebia_puppet_install.conf
 
@@ -39,21 +44,23 @@ cp ../etc/hiera.yaml $puppet_hiera_conf_file
 outfile=`echo $puppet_lucid_url|nawk -F "/" '{print $(NF)}'`
 /usr/bin/curl $puppet_lucid_url -o /root/${outfile}
 
-puppetdb_terminus_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb-terminus_0.9.1-1puppet1_all.deb"
-puppetdb_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb_0.9.1-1puppet1_all.deb"
+#for now let's disable the puppetdb installation
+#puppetdb_terminus_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb-terminus_0.9.1-1puppet1_all.deb"
+#puppetdb_url="http://apt-enterprise.puppetlabs.com/pool/lucid/extras/p/pe-puppetdb/pe-puppetdb_0.9.1-1puppet1_all.deb"
 
-puppetdb_deb=`echo $puppetdb_url|nawk -F "/" '{print $(NF)}'`
-puppetdb_terminus_deb=`echo $puppetdb_terminus_url|nawk -F "/" '{print $(NF)}'`
+#puppetdb_deb=`echo $puppetdb_url|nawk -F "/" '{print $(NF)}'`
+#puppetdb_terminus_deb=`echo $puppetdb_terminus_url|nawk -F "/" '{print $(NF)}'`
 
-/usr/bin/curl $puppetdb_url -o /var/tmp/$puppetdb_deb
-/usr/bin/curl $puppetdb_terminus_url -o /var/tmp/$puppetdb_terminus_deb
+#/usr/bin/curl $puppetdb_url -o /var/tmp/$puppetdb_deb
+#/usr/bin/curl $puppetdb_terminus_url -o /var/tmp/$puppetdb_terminus_deb
 
-dpkg -i /var/tmp/$puppetdb_deb
-dpkg -i /var/tmp/$puppetdb_terminus_deb
-
-cp ../etc/puppetdb.conf /etc/puppetlabs/puppet/puppetdb.conf
-cp ../etc/routes.yaml /etc/puppetlabs/puppet/routes.yaml
-
+#dpkg -i /var/tmp/$puppetdb_deb
+#dpkg -i /var/tmp/$puppetdb_terminus_deb
+#
+#cp ../etc/puppetdb.conf /etc/puppetlabs/puppet/puppetdb.conf
+#cp ../etc/routes.yaml /etc/puppetlabs/puppet/routes.yaml
+#
 #add puppetdb and autosign to puppet.conf
-puppetdb_inserts="#xebia_puppet_install \n    autosign = true\n    storeconfigs = true\n    storeconfigs_backend = puppetdb\n #xebia_puppet_install"
-mv $puppet_conf_file $tmp_dir/puppet.conf
+#puppetdb_inserts="#xebia_puppet_install \n    autosign = true\n    storeconfigs = true\n    storeconfigs_backend = puppetdb\n #xebia_puppet_install"
+#mv $puppet_conf_file $tmp_dir/puppet.conf
+#cat $tmp_dir/puppet.conf | sed "/\[master\]/a test" >> $puppet_conf_file
