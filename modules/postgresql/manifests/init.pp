@@ -189,7 +189,7 @@ if $install == "puppetfiles" {
 file {
 	"postgresql init script" :
 		path => "/etc/init.d/postgresql",
-		source => template('postgresql.erb'),
+		source => template('postgresql/postgresql.erb'),
 		owner => "${install_owner}",
 		group => "${install_group}",
 		ensure => "${manage_files}",
