@@ -1,9 +1,9 @@
 #!/bin/sh
-prefix=<% homedir %>
+prefix=<%= homedir %>
 
-PGDATA="<% datadir %>"
+PGDATA="<%= datadir %>"
 
-PGUSER=<% install_owner %>
+PGUSER=<%= install_owner %>
 
 PGLOG="$PGDATA/serverlog"
 
