@@ -22,7 +22,7 @@ class postgresql::params{
 	$install					=	'puppetfiles'
 	$install_owner				=	'postgresql'
 	$install_group				=	'postgresql'
-	$packages					=	''
+	$packages					=	['unzip']
 	
 	# postgresql specific settings
 	$version					= "9.1.2"
