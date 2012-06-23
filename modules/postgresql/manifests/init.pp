@@ -94,39 +94,6 @@ class postgresql(
 		group	=> root,
 		mode	=> 770,
 	}
-	 
-	
-	
-	#Setup the xebia_puppet infrstructure when intergrate is set to true
-	if $export_facts {
-		@@xebia_common::features::export_facts{"postgresql_facts_${::hostname}":
-			options => { "postgresql_hostname" 	=> "${::fqdn}",
-						 "postgresql_ipaddress" => "${::ipaddress}",
-						 },
-			tag		=> ["${universe}-postgresql-db-service"]
-		}
-	}
-	
-	if $export_config {
-		@@xebia_common::features::export_config{"postgresql_facts_${::hostname}":
-			options => { "postgresql_hostname" 	=> "${::fqdn}",
-						 "postgresql_ipaddress" => "${::ipaddress}",
-						 },
-			confdir =>	"${config_dir}",
-			tag		=> ["${universe}-postgresql-db-service-config"]
-		}
-	}
-	
-	if $import_facts {
-		Xebia_common::Features::Export_facts <<| |>> 
-	}
-	if $import_config {
-		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
-		
-	}
-	
-		
-	
 	
 	#create the needed directory structures
 	
