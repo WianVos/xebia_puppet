@@ -67,9 +67,9 @@ class postgresql(
 	
 	
 	#install packages as needed by postgresql	
-	package{$packages:
-		ensure => $manage_package,
-		before => File["$tmpdir","$basedir"]
+	#we user extra packages from xebia_common
+	xebia_common::features::extra_package{$packages:
+		ensure	=> "${manage_package}"
 	}
 	
 	#create the needed users
@@ -95,10 +95,7 @@ class postgresql(
 		mode	=> 770,
 	}
 	 
-	#extra packages
-	xebia_common::features::extra_package{$packages:
-		ensure	=> "${manage_package}"
-	}
+	
 	
 	#Setup the xebia_puppet infrstructure when intergrate is set to true
 	if $export_facts {
