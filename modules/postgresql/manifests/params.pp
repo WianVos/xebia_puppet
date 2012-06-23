@@ -12,7 +12,6 @@ class postgresql::params{
 	$absent 					=	false
 	$ensure						= 	false
 	$disabled 					= 	false
-	$ensure						= 	'running'
 	$import_facts				= 	true
 	$import_config				= 	true
 	$export_facts				= 	true
