@@ -29,7 +29,7 @@ class postgresql::params{
 	$server_type				= "standalone"
 	
 	$postgresConfBaseOptions	= { port => "5432",
-									listen_addresses => "0.0.0.0",
+									listen_addresses => "'0.0.0.0'",
 									max_connections	=> "100",
 									shared_buffers => "24MB"
 									}

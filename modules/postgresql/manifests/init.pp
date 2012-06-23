@@ -176,12 +176,11 @@ file {'postgresql service script':
 		path	=> "/etc/init.d/postgresql"
 	}
 
-#setup config 
+#setup config
 concat{"${datadir}/postgresql.conf":
 	owner => "${install_owner}",
 	group => "${install_group}",
 	mode  => "0770",
-	ensure => "${manage_files}",
 	notify => Service["postgresql"]
 }	
 
