@@ -150,7 +150,7 @@ if $install == "puppetfiles" {
 	}
 	file {
 		"${homedir}/etc" :
-			ensure => $manage_files,
+			ensure => $manage_directory,
 			owner => "${install_owner}",
 			group => "${install_group}",
 			require => Exec["unpack postgresql"]
@@ -164,11 +164,18 @@ exec {
 		require	=> [Exec["unpack postgresql"],File["${datadir}"]],
 		creates => "${datadir}/PG_VERSION"
 }
+file {'postgresql service script':
+		ensure => "${manage_files}",
+		content => template('postgresql/postgresql.sh.erb'),
+		mode	=> "0750",
+		require => Exec["unpack postgresql"],
+		path	=> "/etc/init.d/postgresql"
+	}
 
 #setup the service
 service {
 	'postgresql' :
-		require => Exec["initdb ${datadir}"],
+		require => [Exec["initdb ${datadir}"],File['postgresql service script']],
 		ensure => "${manage_service}",
 		hasrestart => true,
 	}
