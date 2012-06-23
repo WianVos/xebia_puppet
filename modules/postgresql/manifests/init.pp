@@ -28,6 +28,9 @@ class postgresql(
 		
 ) inherits postgresql::params{
 	
+	# setup the concat module for later use
+	include concat::setup
+	
 	#set various manage parameters in accordance to the $absent directive
 	$manage_package = $absent ? {
 		true 	=> "absent",
@@ -164,6 +167,7 @@ exec {
 		require	=> [Exec["unpack postgresql"],File["${datadir}"]],
 		creates => "${datadir}/PG_VERSION"
 }
+#install service script in /etc/init.d
 file {'postgresql service script':
 		ensure => "${manage_files}",
 		content => template('postgresql/postgresql.sh.erb'),
@@ -172,7 +176,22 @@ file {'postgresql service script':
 		path	=> "/etc/init.d/postgresql"
 	}
 
-#setup the service
+#setup config 
+concat{"${datadir}/postgresql.conf":
+	owner => "${install_owner}",
+	group => "${install_group}",
+	mode  => "0770",
+	ensure => "${manage_files}",
+	notify => Service["postgresql"]
+}	
+
+concat::fragment{"baseconfig":
+      target => "${datadir}/postgresql.conf",
+      content => inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+      order   => 01,
+   }
+
+#run the service
 service {
 	'postgresql' :
 		require => [Exec["initdb ${datadir}"],File['postgresql service script']],
