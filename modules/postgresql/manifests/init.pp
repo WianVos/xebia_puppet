@@ -88,7 +88,7 @@ class postgresql(
 	
 	#setup infra 
 	# all these directory's should be owned by root
-	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}","{$tmpdir}"]:
+	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]:
 		ensure 	=> "${manage_directory}",
 		owner  	=> root,
 		group	=> root,
@@ -115,6 +115,12 @@ class postgresql(
 		owner 	=> "${install_owner}",
 		group	=> "${install_group}"
 	}
+	#datadir
+	file {"${datadir}":
+		ensure 	=> "${manage_directory}",
+		owner 	=> "${install_owner}",
+		group	=> "${install_group}"
+	}
 	
 	
 #download and unpack the needed files into the temporary directory in accordance with the installation type
@@ -124,22 +130,23 @@ class postgresql(
 # puppetfiles . installation based on files included in the module	
 if $install == "puppetfiles" {
 	file {
-		"postgresql-${version}_ubuntu.tar.gz" :
+		"postgresql_${version}_ubuntu.tar.gz" :
 			ensure => $manage_files,
-			path => "${tmpdir}/postgresql-${version}_ubuntu.tar.gz",
+			path => "${tmpdir}/postgresql_${version}_ubuntu.tar.gz",
 			require => File["${tmpdir}"],
 			source =>
-			"puppet:///modules/postgresql/install_tar/postgresql-${version}.tar.gz",
+			"puppet:///modules/postgresql/install_tar/postgresql_9_1_2_ubuntu.tar.gz", 
 			before => Exec["unpack postgresql"]
 	}
 	exec {
 		"unpack postgresql" :
 			command =>
-			"/usr/bin/tar -xzf ${tmpdir}/postgresql-${version}_ubuntu.tar.gz ",
+			"/bin/tar -xzf ${tmpdir}/postgresql_${version}_ubuntu.tar.gz ",
 			cwd => "${basedir}",
-			creates => "${basedir}/postgresql",
-			require => File["${basedir}", "postgresql-${version}.tar.gz"],
+			creates => "${basedir}/postgresql/bin",
+			require => File["${basedir}", "postgresql_${version}_ubuntu.tar.gz"],
 			user => "${install_owner}",
+			logoutput => true,
 	}
 	file {
 		"${homedir}/etc" :
@@ -149,27 +156,19 @@ if $install == "puppetfiles" {
 			require => Exec["unpack postgresql"]
 	}
 }
-#setup the init script
-file {
-	"postgresql init script" :
-		path => "/etc/init.d/postgresql",
-		source => template('postgresql/postgresql.erb'),
-		ensure => "${manage_files}",
-		mode => 0755,
-		require => Exec["unpack postgresql"]
-}
-
 #initialize the database_cluster
 exec {
 	"initdb ${datadir}" :
 		command => "${homedir}/bin/initdb -D ${datadir}",
 		user => "${install_owner}",
+		require	=> [Exec["unpack postgresql"],File["${datadir}"]],
+		creates => "${datadir}/PG_VERSION"
 }
 
 #setup the service
 service {
 	'postgresql' :
-		require => [File["postgresql init script"], Exec["initdb ${datadir}"]],
+		require => Exec["initdb ${datadir}"],
 		ensure => "${manage_service}",
 		hasrestart => true,
 	}
