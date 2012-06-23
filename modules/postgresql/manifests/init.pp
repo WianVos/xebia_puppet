@@ -157,7 +157,7 @@ class postgresql(
 # cli is downloaded always 
 # server in downloaded only if installation type is set to server
 
-	
+# puppetfiles . installation based on files included in the module	
 if $install == "puppetfiles" {
 	file {
 		"postgresql-${version}_ubuntu.tar.gz" :
@@ -185,6 +185,7 @@ if $install == "puppetfiles" {
 			require => Exec["unpack postgresql"]
 	}
 }
+#setup the init script
 file {
 	"postgresql init script" :
 		path => "/etc/init.d/postgresql",
@@ -195,17 +196,21 @@ file {
 		mode => 0755,
 		require => Exec["unpack postgresql"]
 }
+
+#initialize the database_cluster
 exec {
 	"initdb ${datadir}" :
 		command => "${homedir}/bin/initdb -D ${datadir}",
 		user => "${install_owner}",
 }
+
+#setup the service
 service {
 	'postgresql' :
 		require => [File["postgresql init script"], Exec["initdb ${datadir}"]],
 		ensure => "${manage_service}",
 		hasrestart => true,
-}
+	}
 }
 	
 	
