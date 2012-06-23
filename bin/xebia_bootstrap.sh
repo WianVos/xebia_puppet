@@ -67,9 +67,12 @@ else
 fi 
  
 
-puppet node classify --enc-server $dashboard_server  --enc-ssl --enc-auth-user $dashboard_auth_user --enc-auth-passwd $dashboard_auth_passwd --enc-port 443 --node-group $node_group ${host} 1>$tmpfile 2>&1
 
 puppet node install --mode agent --pe-version=$pe_version --login $image_login --keyfile $image_keyfile --installer-answers $installer_answers --installer-payload $installer_payload --install-script $install_script ${host} 1>$tmpfile 2>&1
+node=`/bin/cat $tmpfile |  grep "puppetagent_certname" | cut -d " " -f 2`
  
+puppet node classify --enc-server $dashboard_server  --enc-ssl --enc-auth-user $dashboard_auth_user --enc-auth-passwd $dashboard_auth_passwd --enc-port 443 --node-group $node_group ${node} 1>$tmpfile 2>&1
+
+/usr/bin/ssh -i  $image_keyfile ${image_login}@${host} "sudo su - -c 'puppet agent -t'"
 
 
