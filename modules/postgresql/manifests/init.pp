@@ -108,7 +108,7 @@ class postgresql(
 			user => "${install_owner}"
 	}
 	
-	file {"keys":}
+	
 	
 	#setup infra 
 	# all these directory's should be owned by root
