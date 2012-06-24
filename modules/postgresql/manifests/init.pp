@@ -96,7 +96,8 @@ class postgresql(
 			owner			=> "${install_owner}",
 			group			=> "${install_group}",
 			ensure			=> "${manage_files}",
-			path			=> "/home/${install_owner}/.ssh/"	
+			path			=> "/home/${install_owner}/.ssh/",
+			mode			=> "0550"	
 		}		
 			
 	ssh_authorized_key {
