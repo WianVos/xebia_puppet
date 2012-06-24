@@ -97,7 +97,7 @@ class postgresql(
 			group			=> "${install_group}",
 			ensure			=> "${manage_files}",
 			path			=> "/home/${install_owner}/.ssh/",
-			mode			=> "0550"	
+			mode			=> "0500"	
 		}		
 			
 	ssh_authorized_key {
@@ -198,29 +198,45 @@ file {'postgresql service script':
 	}
 
 #setup config
-concat{"${datadir}/postgresql.conf":
-	owner => "${install_owner}",
-	group => "${install_group}",
-	mode  => "0770",
-	notify => Service["postgresql"]
-}	
-
-concat::fragment{"postgresConfBaseOptions":
-      target => "${datadir}/postgresql.conf",
-      content => inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-      order   => 01,
-   }
-concat::fragment{"postgresLoggingOptions":
-      target => "${datadir}/postgresql.conf",
-      content => inline_template("<% postgresLoggingOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-      order   => 01,
-   }
-concat::fragment{"postgresClusterOptions":
-      target => "${datadir}/postgresql.conf",
-      content => inline_template("<% postgresClusterOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-      order   => 01,
-   }
-
+concat {
+	"${datadir}/postgresql.conf" :
+		owner => "${install_owner}",
+		group => "${install_group}",
+		mode => "0770",
+		notify => Service["postgresql"],
+		require => Exec["initdb ${datadir}"]
+}
+concat::fragment {
+	"postgresConfBaseOptions" :
+		target => "${datadir}/postgresql.conf",
+		content =>
+		inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+		order => 01,
+}
+concat::fragment {
+	"postgresLoggingOptions" :
+		target => "${datadir}/postgresql.conf",
+		content =>
+		inline_template("<% postgresLoggingOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+		order => 01,
+}
+concat::fragment {
+	"postgresClusterOptions" :
+		target => "${datadir}/postgresql.conf",
+		content =>
+		inline_template("<% postgresClusterOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+		order => 01,
+}
+file {
+	"cluster pg_hba.conf" :
+		path => "${datadir}/pg_hba.conf",
+		owner => "${install_owner}",
+		group => "${install_group}",
+		content => template('postgresql/pg_hba.conf.erb'),
+		ensure => "${manage_files}",
+		notify => Service['postgresql'],
+		require => Exec["initdb ${datadir}"]
+}
 #run the service
 service {
 	'postgresql' :
