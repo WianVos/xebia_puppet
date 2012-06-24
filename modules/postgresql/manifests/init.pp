@@ -237,6 +237,23 @@ file {
 		notify => Service['postgresql'],
 		require => Exec["initdb ${datadir}"]
 }
+file {
+	"basebackup.sh" :
+		path => "${datadir}/basebackup.sh",
+		owner => "${install_owner}",
+		group => "${install_group}",
+		ensure => "${manage_files}",
+		require => Exec["initdb ${datadir}"],
+		content => template('postgresql/basebackup.sh.erb')
+}
+file {"pgpool_remote_start":
+		path => "${datadir}/pgpool_remote_start",
+		owner => "${install_owner}",
+		group => "${install_group}",
+		ensure => "${manage_files}",
+		require => Exec["initdb ${datadir}"],
+		content => template('postgresql/pgpool_remote_start.erb')
+}
 #run the service
 service {
 	'postgresql' :
