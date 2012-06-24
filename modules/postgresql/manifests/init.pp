@@ -184,9 +184,19 @@ concat{"${datadir}/postgresql.conf":
 	notify => Service["postgresql"]
 }	
 
-concat::fragment{"baseconfig":
+concat::fragment{"postgresConfBaseOptions":
       target => "${datadir}/postgresql.conf",
-      content => inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+      content => inline_template("<% ${name}.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+      order   => 01,
+   }
+concat::fragment{"postgresLoggingOptions":
+      target => "${datadir}/postgresql.conf",
+      content => inline_template("<% ${name}.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+      order   => 01,
+   }
+concat::fragment{"postgresClusterOptions":
+      target => "${datadir}/postgresql.conf",
+      content => inline_template("<% ${name}.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
       order   => 01,
    }
 
