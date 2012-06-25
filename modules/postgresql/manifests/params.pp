@@ -25,7 +25,9 @@ class postgresql::params{
 	$packages					=	['unzip']
 	
 	# postgresql specific settings
-	$version					= "9.1.2"
+	$version					= "9.1.4"
+	$puppetfiles_tarfile				= "postgresql-${version}-lucid.tar.gz"
+	$puppetfiles_source			= "puppet:///modules/postgresql/install_tar/${puppetfiles_tarfile}"
 	$server_type				= "standalone"
 	$port						= "5432"
 	$listen_addresses			= "'0.0.0.0'"

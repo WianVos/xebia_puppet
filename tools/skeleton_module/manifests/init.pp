@@ -1,20 +1,37 @@
-#
-#
 class skeleton(
-	$packages 			= $skeleton::params::packages, 
-	$version 			= $skeleton::params::version,
-	$basedir 			= $skeleton::params::basedir,
-	$homedir 			= $skeleton::params::homedir,
-	$tmpdir				= $skeleton::params::tmpdir,
-	$absent 			= $skeleton::params::absent,
-	$disabled 			= $skeleton::params::disabled,
-	$ensure				= $skeleton::params::ensure,
-	$install			= $skeleton::params::install,
-	$install_filesource	= $skeleton::params::install_filesource,
-	$install_owner		= $skeleton::params::install_owner,
-	$install_group		= $skeleton::params::install_group,
-	$install_source_url	= $skeleton::params::install_source_url,
-	$facts_import_tags		= $skeleton::params::facts_import_tags
+	$packages 					= params_lookup('packages'), 
+	$version 					= params_lookup('version'),
+	$basedir 					= params_lookup('basedir'),
+	$homedir 					= params_lookup('homedir'),
+	$tmpdir						= params_lookup('tmpdir'),
+	$absent 					= params_lookup('absent'),
+	$disabled 					= params_lookup('disabled'),
+	$ensure						= params_lookup('ensure'),
+	$install					= params_lookup('install'),
+	$install_filesource			= params_lookup('install_filesource'),
+	$install_owner				= params_lookup('install_owner'),
+	$install_group				= params_lookup('install_group'),
+	$admin_password				= params_lookup('admin_password'),
+	$jcr_repository_path		= params_lookup('jcr_repository_path'),
+	$threads_min				= params_lookup('threads_min'),
+	$threads_max				= params_lookup('threads_max'),
+	$ssl						= params_lookup('ssl'),
+	$http_bind_address			= params_lookup('http_bind_address'),
+	$http_context_root			= params_lookup('http_context_root'),
+	$http_port					= params_lookup('http_port'),
+	$importable_packages_path	= params_lookup('importable_packages_path'),
+	$universe				= params_lookup('universe'),
+	$plugin_install				= params_lookup('plugin_install'),
+	$key_install				= params_lookup('key_install'),
+	$export_facts				= params_lookup('export_facts'),
+	$export_config				= params_lookup('export_config'),
+	$baseconfdir					= params_lookup('confdir'),
+	$confdir					= params_lookup('confdir'),
+	$scriptdir					= params_lookup('scriptdir'),
+	$markerdir					= params_lookup('markerdir'),
+	$import_facts				= params_lookup('import_facts'),
+	$import_config				= params_lookup('import_config')
+		
 		
 ) inherits skeleton::params{
 	
@@ -23,7 +40,7 @@ class skeleton(
 		true 	=> "absent",
 		false 	=> "installed",
 		default => "installed"
-	}
+	}	
 	
 	$manage_directory = $absent ? {
 		true 	=> "absent",
@@ -54,11 +71,79 @@ class skeleton(
 		default	=> "running"
 	}
 	
-	#install packages as needed by skeleton	
-	package{$packages:
-		ensure => $manage_package,
-		before => File["$tmpdir","$basedir"]
+	# create puppet module config dirs
+	# these can be shared between modules so do a check for existance first
+	if ! defined(File["${baseconfdir}"]) {
+ 		file { "${baseconfdir}" :
+			ensure  => $manage_directory,
+			owner	=> root,
+			group   => root,
+			mode    => 770,
+		}		
 	}
+
+	if ! defined(File["${confdir}"]) {
+                file { "${confdir}" :
+                        ensure  => $manage_directory,
+                        owner   => root,
+                        group   => root,
+                        mode    => 770,
+                }
+        }	
+
+	if ! defined(File["${markerdir}"]) {
+                file { "${markerdir}" :
+                        ensure  => $manage_directory,
+                        owner   => root,
+                        group   => root,
+                        mode    => 770,
+                }
+        }
+
+	if ! defined(File["${scriptdir}"]) {
+                file { "${scriptdir}" :
+                        ensure  => $manage_directory,
+                        owner   => root,
+                        group   => root,
+                        mode    => 770,
+                }
+        }
+	
+	#xebia_puppet intergration stuff
+	
+	if $export_facts {
+		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
+			options => { "skeleton_hostname" 	=> "${::fqdn}",
+				     "skeleton_ipaddress" 	=> "${::ipaddress}",
+				   },
+			tag		=> ["${universe}-skeleton-service"]
+		}
+	}
+	
+	if $export_config {
+		@@xebia_common::features::export_config{"${::hostname}_skeleton_config.sh":
+			filename => "skeleton_config.sh",
+			options => { "skeleton_hostname" 	=> "${::fqdn}",
+						 "skeleton_ipaddress" 	=> "${::ipaddress}",
+				   },
+			confdir  	=> "${confdir}",
+			tag		=> ["${universe}-skeleton-service-config"]
+		}
+	}
+	
+	if $import_facts {
+		Xebia_common::Features::Export_facts <<| |>> 
+	}
+	if $import_config {
+		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
+		
+	}
+	
+	#install packages as needed by skeleton
+	xebia_common::features::extra_package{$packages:
+		ensure	=> "${manage_package}",
+		before  => File["${tmpdir}","${basedir}"]
+	}	
 	
 	#create the needed users
 	group {
@@ -74,20 +159,6 @@ class skeleton(
 			home 		=> "${homedir}",
 			system 		=> true,
 			
-	}
-	
-	#Setup the xebia_puppet infrstructure when intergrate is set to true
-	if $intergrate == true {
-		class{$intergration_classes:}
-		
-		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
-			options => { "skeleton_hostname" 	=> "${::fqdn}",
-						 "skeleton_ipaddress" => "${::ipaddress}"
-						},
-			tag		=> "skeleton"
-		}
-		
-		#Xebia_common::Features::Export_facts <<| |>>	
 	}
 	#create the needed directory structures
 	
@@ -113,132 +184,120 @@ class skeleton(
 	
 #download and unpack the needed files into the temporary directory in accordance with the installation type
 # cli is downloaded always 
-# server in downloaded only if installation type is set to server
-if $install == "nexus" {	
-    class {
-		'nexus' :
-			url => "${skeleton::params::nexus_url}",
-			username => "${skeleton::params::nexus_user}",
-			password => "${skeleton::params::nexus_password}"
-	}
-	
-		
-    nexus::artifact {
-		'skeleton' :
-			gav 		=> "com.xebialabs.skeleton:skeleton:${version}",
-			classifier 	=> 'server',
-			packaging 	=> 'zip',
-			repository 	=> "releases",
-			output 		=> "${tmpdir}/skeleton-${version}-server.zip",
-			ensure 		=> $manage_files,
-			require 	=> [Class["nexus"],File["${tmpdir}"]]
-		}
-	
-	exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
-		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> [File["${basedir}"], Nexus::Artifact["skeleton"]],		
-		user		=> "${install_owner}",
-		}
-	
-}
 	
 if $install == "files" {
 	  
-    file {"skeleton-${version}.zip":
+    	file {"skeleton-${version}-server.zip":
    		   ensure => $manage_files,
-   	   	   path => "${tmpdir}/skeleton-${version}.zip",
+   	   	   path => "${tmpdir}/skeleton-${version}-server.zip",
       	   require => File["${tmpdir}"],
-      	   source => "$install_filesource/skeleton-${version}.zip",
-      	   before => Exec["unpack skeleton"]
+      	   source => "$install_filesource/skeleton-${version}-server.zip",
+      	   before => Exec["unpack skeleton-server"]
         }
-        
-    exec{
-	"unpack skeleton":
-		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}.zip",
+}
+
+exec{
+	"unpack skeleton-server":
+		command 	=> "/usr/bin/unzip ${tmpdir}/skeleton-${version}-server.zip",
 		cwd 		=> "${basedir}",
-		creates 	=> "${basedir}/skeleton-${version}",
-		require 	=> File["${basedir}","skeleton-${version}.zip"],
+		creates 	=> "${basedir}/skeleton-${version}-server",
+		require 	=> $install ? {
+				default => File["${basedir}","skeleton-${version}-server.zip"],
+				},
 		user		=> "${install_owner}",
 		}
-    
-}
-
-if $install == "source" {
-	
-	common::source{"skeleton-${version}.zip":
-		source_url 	=>  "${install_source_url}",
-        target 		=>	"${basedir}",
-		type		=>	"zip",
-		owner		=> 	"${install_owner}",				
-	}
-	
-}
-
-	
-	
-	
-
-	
-
 
 file{
-	"${homedir}/skeleton":
+	"${homedir}/server":
 		ensure 		=> $manage_link,
 		target 		=> "${basedir}/skeleton-${version}-server",
-		require		=> $install ? {
-				nexus	=>	Exec["unpack skeleton"],
-				files	=>	Exec["unpack skeleton"],
-				source	=> 	Common::Source["skeleton-${version}.zip"],
-				default =>	Exec["unpack skeleton"],
-				},
+		require 	=> Exec["unpack skeleton-server"],
 		owner		=> "${install_owner}",
 		group		=> "${install_group}"
 	}	
 
+file{
+	"init functions":
+		ensure 		=> $manage_files,
+		source 		=> "$install_filesource/functions.sh",
+		path		=> "/etc/init.d/functions",
+		owner		=> root,
+		group		=> root,
+		mode		=> 700,
+}
+
+file{
+	"init script":
+		ensure 		=> $manage_files,
+		source 		=> "$install_filesource/skeleton-initd.sh",
+		path		=> "/etc/init.d/skeleton",
+		owner		=> root,
+		group		=> root,
+		mode		=> 700,
+}
+
+file{
+	"skeleton config file":
+		ensure 		=> $manage_files,
+		content 	=> template("skeleton/skeleton.conf.erb"),
+		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
+		mode		=> 700,
+		notify		=> Service["skeleton"],
+		replace		=> false
+}
+if $plugin_install == true {
+
+	file{ "plugin install":
+		require 	=> Exec["unpack skeleton-server"],
+	        source 		=> "puppet:///modules/skeleton/plugins/",
+		sourceselect	=> all,
+		recurse 	=> remote,
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		ensure		=> "${manage_files}",
+		path		=> "${homedir}/server/plugins",
+		notify		=> Service["skeleton"]
+		}							
+}
+
+if $key_install == true {
+	file{ "key install":
+		require 	=> [Exec["unpack skeleton-server"]],
+	        source 		=> "puppet:///modules/skeleton/keys/",
+		sourceselect	=> all,
+		recurse 	=> remote,
+		owner		=> "${install_owner}",
+		group		=> "${install_group}",
+		ensure		=> "${manage_files}",
+		path		=> "${homedir}/keys/",
+		mode		=> "700"
+		}							
+}
 
 
-#file{
-#	"init script":
-#		ensure 		=> $manage_files,
-#		source 		=> "",
-#		path		=> "/etc/init.d/skeleton",
-#		owner		=> root,
-#		group		=> root,
-#		mode		=> 700,
-#}
 
-#file{
-#	"skeleton config file":
-#		ensure 		=> $manage_files,
-#		source 		=> "$install_filesource/skeleton.conf",
-#		path		=> "${basedir}/skeleton-${version}-server/conf/skeleton.conf",
-#		owner		=> "${install_owner}",
-#		group		=> "${install_group}",
-#		require 	=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
-#		mode		=> 700,
-#		notify		=> Service["skeleton"]
-#}
-#
-#
-#exec{
-#	"init skeleton":
-#		creates		=> "${homedir}/server/repository",
-#		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
-#		user		=> "${install_owner}",
-#		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server"]],
-#		logoutput	=> true,
-#		 
-#}
+exec{
+	"init skeleton":
+		creates		=> "${homedir}/server/repository",
+		command		=> "${homedir}/server/bin/server.sh -setup -reinitialize -force",
+		user		=> "${install_owner}",
+		require		=> [Exec["unpack skeleton-server"],File["${homedir}/server","skeleton config file"]],
+		logoutput	=> true,
+		 
+}
+
 
 service{
 	'skeleton':
 		require 	=> [File["${homedir}/server","skeleton config file"],Exec["init skeleton"]],
 		ensure		=> "${ensure_service}",
 		hasrestart	=> true,
-	}		
+	}
+	
+	
 }
 	
 	
