@@ -153,22 +153,24 @@ class postgresql(
 
 # puppetfiles . installation based on files included in the module	
 if $install == "puppetfiles" {
+	 $puppetfiles_tarfile                            = "postgresql-${version}-lucid.tar.gz"
+        $puppetfiles_source
 	file {
-		"postgresql_${version}_ubuntu.tar.gz" :
+		"${puppetfiles_tarfile}":
 			ensure => $manage_files,
-			path => "${tmpdir}/postgresql_${version}_ubuntu.tar.gz",
+			path => "${tmpdir}/${puppetfiles_tarfile}",
 			require => File["${tmpdir}"],
 			source =>
-			"puppet:///modules/postgresql/install_tar/postgresql_9_1_2_ubuntu.tar.gz", 
+			"${puppetfiles_source}",
 			before => Exec["unpack postgresql"]
 	}
 	exec {
 		"unpack postgresql" :
 			command =>
-			"/bin/tar -xzf ${tmpdir}/postgresql_${version}_ubuntu.tar.gz ",
+			"/bin/tar -xzf ${tmpdir}/${puppetfiles_tarfile}",
 			cwd => "${basedir}",
 			creates => "${basedir}/postgresql/bin",
-			require => File["${basedir}", "postgresql_${version}_ubuntu.tar.gz"],
+			require => File["${basedir}", "${puppetfiles_tarfile}"],
 			user => "${install_owner}",
 			logoutput => true,
 	}
