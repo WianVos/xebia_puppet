@@ -40,15 +40,21 @@ class postgresql::params{
 									shared_buffers => "${shared_buffers}"
 								}
 									
-	$postgresClusterOptions		= { hot_standby => "on",
-									wal_level   => "hot_standby",
-									max_wal_senders => "1"}
 									
 	$postgresLoggingOptions		= {	logging_collector => "on",
 									log_filename => "'%A.log'",
 									log_line_prefix => "'%p %t '",
 									log_truncate_on_rotation => "on",
 									log_statement => "'all'"}								
-									
+	
+	#clustering settings
+	$pg_pool					= true								
+	$streaming_replication		= true
+	$sr_role					= "master"
+	$sr_user					= "sruser"
+	$sr_user_password			= "replication"
+	$streaminReplicationMaster	= { hot_standby => "on",
+									wal_level   => "hot_standby",
+									max_wal_senders => "1"}	
 	
 }

@@ -22,8 +22,13 @@ class postgresql(
 	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
 	$universe				= params_lookup('universe'),
-	$facts_import_tags		= params_lookup('facts_import_tags')
-	
+	$facts_import_tags		= params_lookup('facts_import_tags'),
+	$pg_pool				= params_lookup('pg_pool'),
+	$streaming_replication  = params_lookup('streaming_replication'),
+	$sr_role				= params_lookup('sr_role'),
+	$streamingReplicationMaster = params_lookup('streamingReplicationMaster'),
+	$postgresConfBaseOptions	= params_lookup('postgresConfBaseOptions'),
+	$postgresLoggingOptions		= params_lookup('postgresLoggingOptions')
 	
 		
 ) inherits postgresql::params{
@@ -175,7 +180,7 @@ if $install == "puppetfiles" {
 		"unpack postgresql" :
 			command =>
 			"/bin/tar -xzf ${tmpdir}/${puppetfiles_tarfile}",
-			cwd => "${basedir}",
+			cwd => "/",
 			creates => "${basedir}/postgresql/bin",
 			require => File["${basedir}", "${puppetfiles_tarfile}"],
 			user => "${install_owner}",
@@ -229,57 +234,115 @@ concat::fragment {
 		inline_template("<% postgresLoggingOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
 		order => 01,
 }
+
+concat {
+	"${datadir}/pg_hba.conf":
+		owner => "${install_owner}",
+		group => "${install_group}",
+		ensure => "${manage_files}",
+		notify => Service['postgresql'],
+		require => Exec["initdb ${datadir}"],
+		mode	=> "0770"
+}
+
 concat::fragment {
-	"postgresClusterOptions" :
-		target => "${datadir}/postgresql.conf",
-		content =>
-		inline_template("<% postgresClusterOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-		order => 01,
-}
-file {
-	"cluster pg_hba.conf" :
-		path => "${datadir}/pg_hba.conf",
-		owner => "${install_owner}",
-		group => "${install_group}",
+	"base pg_hba.conf":
 		content => template('postgresql/pg_hba.conf.erb'),
-		ensure => "${manage_files}",
-		notify => Service['postgresql'],
-		require => Exec["initdb ${datadir}"]
-}
-file {
-	"basebackup.sh" :
-		path => "${datadir}/basebackup.sh",
-		owner => "${install_owner}",
-		group => "${install_group}",
-		ensure => "${manage_files}",
-		require => Exec["initdb ${datadir}"],
-		content => template('postgresql/basebackup.sh.erb')
-}
-file {
-	"pgpool_remote_start" :
-		path => "${datadir}/pgpool_remote_start",
-		owner => "${install_owner}",
-		group => "${install_group}",
-		ensure => "${manage_files}",
-		require => Exec["initdb ${datadir}"],
-		content => template('postgresql/pgpool_remote_start.erb')
-}
-file {
-	["/var/log/pgpool", "/var/log/pgpool/trigger"] :
-		ensure => "${manage_directory}",
-		owner => "${install_owner}",
-		group => "${install_group}",
-		require => Exec["initdb ${datadir}"],
+		order   => 01,
+		target  => "${datadir}/pg_hba.conf"
 }
 
-exec {
-	"add pgpool_reclass" :
-		command => "${homedir}/bin/psql -f pgpool-regclass.sql template1",
-		user => "${install_owner}",
-		notify => Service['postgresql'],
-		require => Exec["initdb ${datadir}"],
-}	 
+if $streaming_replication == true {
+	user {
+		"$sr_user" :
+			ensure => "${manage_user}",
+			gid => "${install_group}",
+			managehome => true,
+			system => true,
+	}
+	file {
+		"${sr_user} keys" :
+			source => "puppet:///modules/postgresql/keys",
+			sourceselect => all,
+			recurse => remote,
+			owner => "${sr_user}",
+			group => "${install_group}",
+			ensure => "${manage_files}",
+			path => "/home/${sr_user}/.ssh/",
+			mode => "0500"
+	}
+	ssh_authorized_key {
+		"${sr_user} rsa" :
+			key =>
+			"AAAAB3NzaC1yc2EAAAADAQABAAABAQC0PSfqjNe0YZqMvzlFK34K4h5v8o5jpNIw8vYY9Wa7XA8wFUrDARhlt39On0VvQdTuqNZllu8qeFJS29crDJtGKUhOv5xKlUpaxFBnYvxGF+wF0PW6zlPvYQTAFgseA6JamaQ75ragH+0xumXQzQhrP4P4R7Klzz70haD9QVzDNkwpnqiZVtR4PxjtdsUDkTAFtRq5dTU6pfSDbmXJCiLTdCMyqryqYF5HUHbfmrjrzdhyIyDVywe0u4FOF9U/DxcdXBsvO16oWLYbsRrlubRpCnWzA+m0M2UOLamtCSpRL1NAQ1xEZvvcJUKIe8uRwxbcqyhAvMv3u5lnElcekJqf",
+			type => "ssh-rsa",
+			user => "${sr_user}"
+	}
+	file {
+		"${sr_user} profile" :
+			content => template('postgresql/user_profile.erb'),
+			path => "/home/${sr_user}/.profile",
+			mode => "0770",
+			owner => "${sr_user}",
+			group => "${install_group}",
+			ensure => "${manage_files}",
+			require => User["${sr_user}"]
+	}
+	concat::fragment {
+	"base pg_hba.conf":
+		content => "host    all     ${sr_user}        0.0.0.0/0          trust",
+		order   => 01,
+		target  => "${datadir}/pg_hba.conf"
+}
+	
+	if $sr_role == "master" {
+		concat::fragment {
+			"streamingReplicationMaster" :
+				target => "${datadir}/postgresql.conf",
+				content =>
+				inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+				order => 02,
+		}
+	}
+}
 
+
+if $pg_pool == true {
+	exec {
+		"add pgpool_reclass" :
+			command =>
+			"${homedir}/bin/psql -f ${homedir}/share/contrib/pgpool-regclass.sql template1",
+			user => "${install_owner}",
+			notify => Service['postgresql'],
+			require => [Exec["initdb ${datadir}"], Service['postgresql']],
+			creates => "/opt/postgresql/lib/pgpool-regclass.so"
+	}
+	file {
+		"basebackup.sh" :
+			path => "${datadir}/basebackup.sh",
+			owner => "${install_owner}",
+			group => "${install_group}",
+			ensure => "${manage_files}",
+			require => Exec["initdb ${datadir}"],
+			content => template('postgresql/basebackup.sh.erb')
+	}
+	file {
+		"pgpool_remote_start" :
+			path => "${datadir}/pgpool_remote_start",
+			owner => "${install_owner}",
+			group => "${install_group}",
+			ensure => "${manage_files}",
+			require => Exec["initdb ${datadir}"],
+			content => template('postgresql/pgpool_remote_start.erb')
+	}
+	file {
+		["/var/log/pgpool", "/var/log/pgpool/trigger"] :
+			ensure => "${manage_directory}",
+			owner => "${install_owner}",
+			group => "${install_group}",
+			require => Exec["initdb ${datadir}"],
+	}
+}
 
 
 #run the service
