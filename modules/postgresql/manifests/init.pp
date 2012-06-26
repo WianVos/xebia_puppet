@@ -289,7 +289,7 @@ if $streaming_replication == true {
 			require => User["${sr_user}"]
 	}
 	concat::fragment {
-	"base pg_hba.conf":
+	"${sr_user} pg_hba.conf":
 		content => "host    all     ${sr_user}        0.0.0.0/0          trust",
 		order   => 01,
 		target  => "${datadir}/pg_hba.conf"
