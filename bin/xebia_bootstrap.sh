@@ -9,11 +9,12 @@ customer="xx"
 application="xx"
 configfile="xx"
 tmpfile=`tempfile`
+service_fole="xx"
 hiera_data_dir="/var/xebia_puppet/hieradata/"
 
 
 # parse commandline options
-while getopts n:u:c:a:C:S: o
+while getopts n:u:c:a:C:S:R: o
 do case "$o" in
 	n)node_group=$OPTARG;;
 	u)universe=$OPTARG;;
@@ -21,6 +22,7 @@ do case "$o" in
 	a)application=$OPTARG;;
 	C)configfile=$OPTARG;;
 	S)size_parameter=$OPTARG;; 
+	R)service_role=$OPTARG;;
 	?)echo "Useage: -n <nodegroup> " 
 		echo "	-u <universe name> " 
 		echo "	-c <customer> "
@@ -58,10 +60,13 @@ puppet node_aws create --group $aws_sec_group --image $aws_ami --type $instance_
 host=`tail -1 $tmpfile`
 
 #setup the hiera classification for the host
-if [ -f ../etc/nodeTypes/${node_group}.yaml ] 
+template_name="${node_group}"
+if [ service_role == "xx" ] ; then template_name="${node_group}" ; else template_name="${node_group}-${service_role}" ; fi
+
+if [ -f ../etc/nodeTypes/${template_name}.yaml ] 
 	then 
-	cp ../etc/nodeTypes/${node_group}.yaml /tmp/${node_group}.yaml
-        cat /tmp/${node_group}.yaml | sed -e 's|<application>|'$application'|g' |  sed -e 's|<customer>|'$customer'|g' |  sed -e 's|<universe>|'$universe'|g'  >> ${hiera_data_dir}/hosts/${host}.yaml
+	cp ../etc/nodeTypes/${template_name}.yaml /tmp/${template_name}.yaml
+        cat /tmp/${template_name}.yaml | sed -e 's|<application>|'$application'|g' |  sed -e 's|<customer>|'$customer'|g' |  sed -e 's|<universe>|'$universe'|g'  >> ${hiera_data_dir}/hosts/${host}.yaml
 else
 	echo "unable to further classify ${host}"
 fi 
