@@ -7,7 +7,7 @@ define postgresql::database (
 	) 
 	{
 	
-	$dbexists = "${homedir}/binpsql -ltA | grep '^${name}|'"
+	$dbexists = "${homedir}/bin/psql -ltA | grep '^${name}|'"
 	
 	if ! defined(Postgresql::User["${owner}"]) {
 		postgresql::user {
