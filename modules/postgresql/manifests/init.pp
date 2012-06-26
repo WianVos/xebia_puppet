@@ -289,43 +289,42 @@ if $streaming_replication != "standalone" {
 			ensure => "${manage_files}",
 			require => User["${sr_user}"]
 	}
-	
 	concat::fragment {
 		"${sr_user} pg_hba.conf" :
 			content => "host    all     ${sr_user}        0.0.0.0/0          trust",
 			order => 01,
 			target => "${datadir}/pg_hba.conf"
 	}
-	
 	postgresql::user {
 		"${sr_user}" :
 			user_params => "--no-superuser --no-createdb --no-createrole",
 			ensure => "${manage_user}",
-			require => Service['postgresql']
+			notify => Service['postgresql']
 	}
-	
-	if $streaming_replication == "master" {
-		concat::fragment {
-			"streamingReplicationMaster" :
-				target => "${datadir}/postgresql.conf",
-				content =>
-				inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-				order => 02,
+	case $streaming_replication {
+		'master' : {
+			concat::fragment {
+				"streamingReplicationMaster" :
+					target => "${datadir}/postgresql.conf",
+					content =>
+					inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+					order => 02,
+			}
+			@@xebia_common::features::export_service_db {
+				"postgresql_master_${::hostname}" :
+					customer => "${customer}",
+					application => "${application}",
+					universe => "${universe}",
+					use_concat => true,
+					concat_target => "${datadir}/recovery.conf",
+					concat_options => $srSlaveOptions,
+					concat_owner => "${install_owner}",
+					concat_group => "${install_group}",
+					service => "postgresql",
+					role => "master",
+			}
 		}
-		@@xebia_common::features::export_service_db {
-			"postgresql_master_${::hostname}" :
-				customer => "${customer}",
-				application => "${application}",
-				universe => "${universe}",
-				use_concat => true,
-				concat_target => "${datadir}/recovery.conf",
-				concat_options => $srSlaveOptions,
-				concat_owner => "${install_owner}",
-				concat_group => "${install_group}",
-				service => "postgresql",
-				role => "master",
-		}
-		if $streaming_replication == "slave" {
+		'slave' : {
 			concat::fragment {
 				"streamingReplicationSlave" :
 					target => "${datadir}/postgresql.conf",
@@ -339,9 +338,10 @@ if $streaming_replication != "standalone" {
 					group => "${install_owner}",
 					mode => "0770",
 			}
-			Xebia_common::Features::Export_service_db <<|universe == "${universe}" and customer == "${customer}" and application == "${application}" and role == "master"|>>
+			Xebia_common::Features::Export_service_db <<| universe == "${universe}" and
+			customer == "${customer}" and application == "${application}" and role ==
+			"master" |>>
 		}
-	
 	}
 }	
 
