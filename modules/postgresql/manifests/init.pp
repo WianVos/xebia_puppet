@@ -336,7 +336,7 @@ if $streaming_replication == true {
 					group => "${install_owner}",
 					mode => "0770",
 			}
-			Xebia_common::Features::Export_service_db <<|universe == "${universe}" and customer == "${customer}" and application == ${application} and role == "master"|>>
+			Xebia_common::Features::Export_service_db <<|universe == "${universe}" and customer == "${customer}" and application == "${application}" and role == "master"|>>
 		}
 	
 	}
