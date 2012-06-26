@@ -53,7 +53,7 @@ class postgresql::params{
 	$sr_role					= "master"
 	$sr_user					= "sruser"
 	$sr_user_password			= "replication"
-	$streaminReplicationMaster	= { hot_standby => "on",
+	$streamingReplicationMaster	= { hot_standby => "on",
 									wal_level   => "hot_standby",
 									max_wal_senders => "1"}	
 	
