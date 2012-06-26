@@ -4,7 +4,7 @@ define postgresql::user(
 	$user_params = "--no-superuser --no-createdb --no-createrole",
 	$homedir = params_lookup('homedir')
 ){
-	$userexists = "${homedir}/bin/psql --tuples-only -c 'SELECT rolname FROM pg_catalog.pg_roles;' | grep '^ ${name}$'"
+	$userexists = "${homedir}/bin/psql template 1 --tuples-only -c 'SELECT rolname FROM pg_catalog.pg_roles;' | grep '^ ${name}$'"
 	
 	
 	if $ensure == 'present' {
