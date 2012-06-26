@@ -101,7 +101,7 @@ file {
 		group => "${install_group}",
 		ensure => "${manage_files}",
 		path => "/home/${install_owner}/.ssh/",
-		mode => "0500"
+		mode => "0600"
 }
 ssh_authorized_key {
 	"${install_owner} rsa" :
