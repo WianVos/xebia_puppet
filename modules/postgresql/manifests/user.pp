@@ -13,7 +13,7 @@ define postgresql::user(
       command => "${homedir}/bincreateuser ${user_params} ${name}",
       user => "${install_owner}",
       unless => "${userexists}",
-      require => Class['postgresql'],
+      require => Service['postgresql'],
     }
 
   } elsif $ensure == 'absent' {
@@ -22,6 +22,8 @@ define postgresql::user(
       command => "${homedir}/bindropuser ${name}",
       user => "${install_owner}",
       onlyif => "$userexists",
+      require => Service['postgresql'],
+      
     }
   }
 }
