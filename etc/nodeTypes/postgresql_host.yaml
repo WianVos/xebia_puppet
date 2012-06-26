@@ -2,4 +2,4 @@
 universe : <universe>
 customer : <customer>
 application : <application>
-streaming_replication : false
+streaming_replication : "standalone"

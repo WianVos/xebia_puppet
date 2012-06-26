@@ -2,5 +2,4 @@
 universe : <universe>
 customer : <customer>
 application : <application>
-sr_role : slave
-streaming_replication : true
+streaming_replication : "slave"
