@@ -56,5 +56,11 @@ class postgresql::params{
 	$streamingReplicationMaster	= { hot_standby => "on",
 									wal_level   => "hot_standby",
 									max_wal_senders => "1"}	
+	$srSlaveOptions 			= {"primary_conninfo" => "\'host=${::fqdn} port=${port} user=${sr_user}\'", 
+								   "standby_mode" => "on"}
+	$streamingReplicationSlave	= { hot_standby => "on",
+									}	
+									
+	
 	
 }

@@ -22,13 +22,16 @@ class postgresql(
 	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
 	$universe				= params_lookup('universe'),
+	$application				= params_lookup('application'),
+	$customer				= params_lookup('customer'),
 	$facts_import_tags		= params_lookup('facts_import_tags'),
 	$pg_pool				= params_lookup('pg_pool'),
 	$streaming_replication  = params_lookup('streaming_replication'),
 	$sr_role				= params_lookup('sr_role'),
 	$streamingReplicationMaster = params_lookup('streamingReplicationMaster'),
 	$postgresConfBaseOptions	= params_lookup('postgresConfBaseOptions'),
-	$postgresLoggingOptions		= params_lookup('postgresLoggingOptions')
+	$postgresLoggingOptions		= params_lookup('postgresLoggingOptions'),
+	$srSlaveOptions				= params_lookup('srSlaveOptions')
 	
 		
 ) inherits postgresql::params{
@@ -287,18 +290,17 @@ if $streaming_replication == true {
 			require => User["${sr_user}"]
 	}
 	concat::fragment {
-	"${sr_user} pg_hba.conf":
-		content => "host    all     ${sr_user}        0.0.0.0/0          trust",
-		order   => 01,
-		target  => "${datadir}/pg_hba.conf"
+		"${sr_user} pg_hba.conf" :
+			content => "host    all     ${sr_user}        0.0.0.0/0          trust",
+			order => 01,
+			target => "${datadir}/pg_hba.conf"
 	}
 	postgresql::user {
 		"${sr_user}" :
-			user_params => "--replication --no-superuser --no-createdb --no-createrole",
+			user_params => "--no-superuser --no-createdb --no-createrole",
 			ensure => "${manage_user}",
 			require => Service['postgresql']
 	}
-	
 	if $sr_role == "master" {
 		concat::fragment {
 			"streamingReplicationMaster" :
@@ -307,8 +309,38 @@ if $streaming_replication == true {
 				inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
 				order => 02,
 		}
+		@@xebia_common::features::export_service_db {
+			"postgresql_master_${::hostname}" :
+				customer => "${customer}",
+				application => "${application}",
+				universe => "${universe}",
+				use_concat => true,
+				concat_target => "${datadir}/recovery.conf",
+				concat_options => $srSlaveOptions,
+				concat_owner => "${install_owner}",
+				concat_group => "${install_group}",
+				service => "postgresql",
+				role => "master",
+		}
+		if $sr_role == "slave" {
+			concat::fragment {
+				"streamingReplicationSlave" :
+					target => "${datadir}/postgresql.conf",
+					content =>
+					inline_template("<% streamingReplicationSlave.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+					order => 02,
+			}
+			concat {
+				"${datadir}/recovery.conf" :
+					owner => "${install_owner}",
+					group => "${install_owner}",
+					mode => "0770",
+			}
+			Xebia_common::Features::Export_service_db <<|universe == "${universe}" and customer == "${customer}" and application == ${application} and role == "master"|>>
+		}
+	
 	}
-}
+}	
 
 
 if $pg_pool == true {
@@ -362,12 +394,6 @@ service {
 # check if the machine is a slave
 	
 }
-	
-	
-	
-	
-	
-	
-	
+
 
 
