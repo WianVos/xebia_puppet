@@ -83,7 +83,7 @@ class postgresql(
 	
 	user {
 		"$install_owner":
-			ensure 		=> $manage_user,
+			ensure 		=> "${manage_user}",
 			gid 		=> "${install_group}",
 			managehome 	=> true,
 			system 		=> true,	
@@ -107,7 +107,15 @@ class postgresql(
 			type => "ssh-rsa",
 			user => "${install_owner}"
 	}
-	
+	file {"${install_owner} profile":
+			content => template('postgresql/user_profile.erb'),
+			path	=> "/home/${install_owner}/.profile",
+			mode	=> "0770",
+			owner 	=> "${install_owner}",
+			group   => "${install_group}",
+     			ensure  => "${manage_files}",
+			require => User["${install_owner}"]
+		}	
 	
 	
 	#setup infra 
@@ -264,6 +272,16 @@ file {
 		group => "${install_group}",
 		require => Exec["initdb ${datadir}"],
 }
+
+exec { "add pgpool_reclass":
+	command => "${homedir}/bin/psql -f pgpool-regclass.sql template1}",
+	user	=> "${install_owner}",
+	notify => Service['postgresql'],
+	require => Exec["initdb ${datadir}"],
+	}	 
+
+
+
 #run the service
 service {
 	'postgresql' :
