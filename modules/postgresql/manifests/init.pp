@@ -267,7 +267,7 @@ if $streaming_replication == true {
 			group => "${install_group}",
 			ensure => "${manage_files}",
 			path => "/home/${sr_user}/.ssh/",
-			mode => "0500"
+			mode => "0600"
 	}
 	ssh_authorized_key {
 		"${sr_user} rsa" :
