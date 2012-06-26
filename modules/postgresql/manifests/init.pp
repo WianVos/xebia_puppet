@@ -253,7 +253,7 @@ concat::fragment {
 		target  => "${datadir}/pg_hba.conf"
 }
 #Streaming replication setup
-if $streaming_replication != standalone {
+if $streaming_replication != "standalone" {
 	user {
 		"${sr_user}" :
 			ensure => "${manage_user}",
