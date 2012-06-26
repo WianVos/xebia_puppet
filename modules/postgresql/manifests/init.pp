@@ -161,8 +161,7 @@ class postgresql(
 
 # puppetfiles . installation based on files included in the module	
 if $install == "puppetfiles" {
-	 $puppetfiles_tarfile                            = "postgresql-${version}-lucid.tar.gz"
-        $puppetfiles_source
+	
 	file {
 		"${puppetfiles_tarfile}":
 			ensure => $manage_files,
@@ -273,12 +272,13 @@ file {
 		require => Exec["initdb ${datadir}"],
 }
 
-exec { "add pgpool_reclass":
-	command => "${homedir}/bin/psql -f pgpool-regclass.sql template1}",
-	user	=> "${install_owner}",
-	notify => Service['postgresql'],
-	require => Exec["initdb ${datadir}"],
-	}	 
+exec {
+	"add pgpool_reclass" :
+		command => "${homedir}/bin/psql -f pgpool-regclass.sql template1",
+		user => "${install_owner}",
+		notify => Service['postgresql'],
+		require => Exec["initdb ${datadir}"],
+}	 
 
 
 
