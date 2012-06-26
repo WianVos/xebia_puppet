@@ -252,8 +252,8 @@ concat::fragment {
 		order   => 01,
 		target  => "${datadir}/pg_hba.conf"
 }
-
-if $streaming_replication == true {
+#Streaming replication setup
+if $streaming_replication != standalone {
 	user {
 		"${sr_user}" :
 			ensure => "${manage_user}",
@@ -289,19 +289,22 @@ if $streaming_replication == true {
 			ensure => "${manage_files}",
 			require => User["${sr_user}"]
 	}
+	
 	concat::fragment {
 		"${sr_user} pg_hba.conf" :
 			content => "host    all     ${sr_user}        0.0.0.0/0          trust",
 			order => 01,
 			target => "${datadir}/pg_hba.conf"
 	}
+	
 	postgresql::user {
 		"${sr_user}" :
 			user_params => "--no-superuser --no-createdb --no-createrole",
 			ensure => "${manage_user}",
 			require => Service['postgresql']
 	}
-	if $sr_role == "master" {
+	
+	if $streaming_replication == "master" {
 		concat::fragment {
 			"streamingReplicationMaster" :
 				target => "${datadir}/postgresql.conf",
@@ -322,7 +325,7 @@ if $streaming_replication == true {
 				service => "postgresql",
 				role => "master",
 		}
-		if $sr_role == "slave" {
+		if $streaming_replication == "slave" {
 			concat::fragment {
 				"streamingReplicationSlave" :
 					target => "${datadir}/postgresql.conf",
