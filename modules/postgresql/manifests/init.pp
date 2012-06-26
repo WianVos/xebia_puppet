@@ -312,8 +312,7 @@ if $pg_pool == true {
 			command =>
 			"${homedir}/bin/psql -f ${homedir}/share/contrib/pgpool-regclass.sql template1",
 			user => "${install_owner}",
-			notify => Service['postgresql'],
-			require => [Exec["initdb ${datadir}"], Service['postgresql']],
+			require => [Service['postgresql']],
 			creates => "/opt/postgresql/lib/pgpool-regclass.so"
 	}
 	file {
