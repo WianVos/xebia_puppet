@@ -3,3 +3,5 @@ universe : <universe>
 customer : <customer>
 application : <application>
 sr_role : master
+streaming_replication : true
+
