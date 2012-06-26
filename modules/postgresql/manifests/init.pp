@@ -291,7 +291,13 @@ if $streaming_replication == true {
 		content => "host    all     ${sr_user}        0.0.0.0/0          trust",
 		order   => 01,
 		target  => "${datadir}/pg_hba.conf"
-}
+	}
+	postgresql::user {
+		"${sr_user}" :
+			user_params => "--replication --no-superuser --no-createdb --no-createrole",
+			ensure => "${manage_user}",
+			require => Service['postgresql']
+	}
 	
 	if $sr_role == "master" {
 		concat::fragment {
