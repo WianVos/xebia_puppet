@@ -1,11 +1,13 @@
 define postgresql::database (
 	$owner,
 	$install_owner = params_lookup('install_owner'),
-	$ensure	= params_lookup('ensure')
+	$ensure	= params_lookup('ensure'),
+	$homedir = params_lookup('homedir')
+	
 	) 
 	{
 	
-	$dbexists = "psql -ltA | grep '^${name}|'"
+	$dbexists = "${homedir}/binpsql -ltA | grep '^${name}|'"
 	
 	if ! defined(Postgresql::User["${owner}"]) {
 		postgresql::user {
@@ -17,7 +19,7 @@ define postgresql::database (
 	if $ensure == 'present' {
 		exec {
 			"createdb $name" :
-				command => "createdb -O ${owner} ${name}",
+				command => "${homedir}/bin/createdb -O ${owner} ${name}",
 				user => "${install_owner}",
 				unless => $dbexists,
 				require => Postgresql::User[$owner],
@@ -26,7 +28,7 @@ define postgresql::database (
 	elsif $ensure == 'absent' {
 		exec {
 			"dropdb $name" :
-				command => "dropdb ${name}",
+				command => "${homedir}/bin/dropdb ${name}",
 				user => "${install_owner}",
 				onlyif => $dbexists, 
 				before => Postgresql::User[$owner],
