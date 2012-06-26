@@ -49,7 +49,7 @@ class postgresql::params{
 	
 	#clustering settings
 	$pg_pool					= true								
-	$streaming_replication		= true
+	$streaming_replication		= false	
 	$sr_role					= "master"
 	$sr_user					= "sruser"
 	$sr_user_password			= "replication"
