@@ -239,7 +239,6 @@ concat {
 	"${datadir}/pg_hba.conf":
 		owner => "${install_owner}",
 		group => "${install_group}",
-		ensure => "${manage_files}",
 		notify => Service['postgresql'],
 		require => Exec["initdb ${datadir}"],
 		mode	=> "0770"
