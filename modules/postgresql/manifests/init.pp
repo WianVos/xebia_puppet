@@ -82,45 +82,44 @@ class postgresql(
 	
 	#create the needed users
 	group {
-		"$install_group":
-			ensure => $manage_user,
-	}
-	
-	user {
-		"$install_owner":
-			ensure 		=> "${manage_user}",
-			gid 		=> "${install_group}",
-			managehome 	=> true,
-			system 		=> true,	
-	}
-	
-	file {"${install_owner} keys":
-			source 			=> "puppet:///modules/postgresql/keys",
-			sourceselect	=> all,
-			recurse 		=> remote,
-			owner			=> "${install_owner}",
-			group			=> "${install_group}",
-			ensure			=> "${manage_files}",
-			path			=> "/home/${install_owner}/.ssh/",
-			mode			=> "0500"	
-		}		
-			
-	ssh_authorized_key {
-		"${install_owner} rsa" :
-			key =>
-			"AAAAB3NzaC1yc2EAAAADAQABAAABAQC0PSfqjNe0YZqMvzlFK34K4h5v8o5jpNIw8vYY9Wa7XA8wFUrDARhlt39On0VvQdTuqNZllu8qeFJS29crDJtGKUhOv5xKlUpaxFBnYvxGF+wF0PW6zlPvYQTAFgseA6JamaQ75ragH+0xumXQzQhrP4P4R7Klzz70haD9QVzDNkwpnqiZVtR4PxjtdsUDkTAFtRq5dTU6pfSDbmXJCiLTdCMyqryqYF5HUHbfmrjrzdhyIyDVywe0u4FOF9U/DxcdXBsvO16oWLYbsRrlubRpCnWzA+m0M2UOLamtCSpRL1NAQ1xEZvvcJUKIe8uRwxbcqyhAvMv3u5lnElcekJqf",
-			type => "ssh-rsa",
-			user => "${install_owner}"
-	}
-	file {"${install_owner} profile":
-			content => template('postgresql/user_profile.erb'),
-			path	=> "/home/${install_owner}/.profile",
-			mode	=> "0770",
-			owner 	=> "${install_owner}",
-			group   => "${install_group}",
-     			ensure  => "${manage_files}",
-			require => User["${install_owner}"]
-		}	
+	"$install_group" :
+		ensure => $manage_user,
+}
+user {
+	"$install_owner" :
+		ensure => "${manage_user}",
+		gid => "${install_group}",
+		managehome => true,
+		system => true,
+}
+file {
+	"${install_owner} keys" :
+		source => "puppet:///modules/postgresql/keys",
+		sourceselect => all,
+		recurse => remote,
+		owner => "${install_owner}",
+		group => "${install_group}",
+		ensure => "${manage_files}",
+		path => "/home/${install_owner}/.ssh/",
+		mode => "0500"
+}
+ssh_authorized_key {
+	"${install_owner} rsa" :
+		key =>
+		"AAAAB3NzaC1yc2EAAAADAQABAAABAQC0PSfqjNe0YZqMvzlFK34K4h5v8o5jpNIw8vYY9Wa7XA8wFUrDARhlt39On0VvQdTuqNZllu8qeFJS29crDJtGKUhOv5xKlUpaxFBnYvxGF+wF0PW6zlPvYQTAFgseA6JamaQ75ragH+0xumXQzQhrP4P4R7Klzz70haD9QVzDNkwpnqiZVtR4PxjtdsUDkTAFtRq5dTU6pfSDbmXJCiLTdCMyqryqYF5HUHbfmrjrzdhyIyDVywe0u4FOF9U/DxcdXBsvO16oWLYbsRrlubRpCnWzA+m0M2UOLamtCSpRL1NAQ1xEZvvcJUKIe8uRwxbcqyhAvMv3u5lnElcekJqf",
+		type => "ssh-rsa",
+		user => "${install_owner}"
+}
+file {
+	"${install_owner} profile" :
+		content => template('postgresql/user_profile.erb'),
+		path => "/home/${install_owner}/.profile",
+		mode => "0770",
+		owner => "${install_owner}",
+		group => "${install_group}",
+		ensure => "${manage_files}",
+		require => User["${install_owner}"]
+}	
 	
 	
 	#setup infra 
@@ -253,7 +252,7 @@ concat::fragment {
 
 if $streaming_replication == true {
 	user {
-		"$sr_user" :
+		"${sr_user}" :
 			ensure => "${manage_user}",
 			gid => "${install_group}",
 			managehome => true,
