@@ -182,7 +182,7 @@ if $install == "puppetfiles" {
 		"unpack postgresql" :
 			command =>
 			"/bin/tar -xzf ${tmpdir}/${puppetfiles_tarfile}",
-			cwd => "/",
+			cwd => "${basedir}",
 			creates => "${basedir}/postgresql/bin",
 			require => File["${basedir}", "${puppetfiles_tarfile}"],
 			user => "${install_owner}",
