@@ -24,14 +24,6 @@ class splunk(
 	$universe				= params_lookup('universe', 'global'),
 	$application				= params_lookup('application', 'global'),
 	$customer				= params_lookup('customer', 'global'),
-	$facts_import_tags		= params_lookup('facts_import_tags'),
-	$pg_pool				= params_lookup('pg_pool'),
-	$streaming_replication  = params_lookup('streaming_replication', 'global'),
-	$sr_role				= params_lookup('sr_role'),
-	$streamingReplicationMaster = params_lookup('streamingReplicationMaster'),
-	$postgresConfBaseOptions	= params_lookup('postgresConfBaseOptions'),
-	$postgresLoggingOptions		= params_lookup('postgresLoggingOptions'),
-	$srSlaveOptions				= params_lookup('srSlaveOptions')
 	
 		
 ) inherits splunk::params{
@@ -178,6 +170,22 @@ if $install == "puppetfiles" {
 	}
 }
 
+# init splunk 
+	exec {'splunk_init':
+			command => "${homedir}/bin/splunk start --accept-license --no-prompt --answer-yes > ${markerdir}/${name}.txt",
+			creates => "${markerdir}/${name}.txt",
+			require => File["${homedir}/etc"] 
+		}
+# create startup script 	
+	exec{'boot_start':
+			command => "${homedir}/bin/splunk enable boot-start"
+                        creates => "/etc/init.d/splunk",
+                        require => Exec["splunk_init"]
+# service 
+	service{'splunk':
+			require => 
+
+	
 }
 
 
