@@ -21,12 +21,12 @@ class postgresql(
 	$import_config				= params_lookup('import_config'),
 	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
-	$universe				= params_lookup('universe'),
-	$application				= params_lookup('application'),
-	$customer				= params_lookup('customer'),
+	$universe				= params_lookup('universe', 'global'),
+	$application				= params_lookup('application', 'global'),
+	$customer				= params_lookup('customer', 'global'),
 	$facts_import_tags		= params_lookup('facts_import_tags'),
 	$pg_pool				= params_lookup('pg_pool'),
-	$streaming_replication  = params_lookup('streaming_replication'),
+	$streaming_replication  = params_lookup('streaming_replication', 'global'),
 	$sr_role				= params_lookup('sr_role'),
 	$streamingReplicationMaster = params_lookup('streamingReplicationMaster'),
 	$postgresConfBaseOptions	= params_lookup('postgresConfBaseOptions'),
@@ -35,7 +35,9 @@ class postgresql(
 	
 		
 ) inherits postgresql::params{
-	
+	notify{"sr $streaming_replication":}
+	notify{"customer $customer":}
+	notify{"application $application":}	
 	# setup the concat module for later use
 	include concat::setup
 	
@@ -299,7 +301,6 @@ if $streaming_replication != "standalone" {
 		"${sr_user}" :
 			user_params => "--no-superuser --no-createdb --no-createrole",
 			ensure => "${manage_user}",
-			notify => Service['postgresql']
 	}
 	case $streaming_replication {
 		'master' : {
@@ -310,11 +311,13 @@ if $streaming_replication != "standalone" {
 					inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
 					order => 02,
 			}
-			@@xebia_common::features::export_service_db {
+			@@postgresql::export_service_db {
 				"postgresql_master_${::hostname}" :
 					customer => "${customer}",
 					application => "${application}",
 					universe => "${universe}",
+					service => portgresql,
+					role	=> master,
 					use_concat => true,
 					concat_target => "${datadir}/recovery.conf",
 					concat_options => $srSlaveOptions,
@@ -338,9 +341,7 @@ if $streaming_replication != "standalone" {
 					group => "${install_owner}",
 					mode => "0770",
 			}
-			Xebia_common::Features::Export_service_db <<| universe == "${universe}" and
-			customer == "${customer}" and application == "${application}" and role ==
-			"master" |>>
+			Xebia_common::Features::Export_service_db <<| tag == "SpostgresqlRmasterU${universe}C${customer}A${application}" |>>
 		}
 	}
 }	
@@ -390,12 +391,6 @@ service {
 		ensure => "${manage_service}",
 		hasrestart => true,
 	}
-	
-#export the servers settings 
-# check if where doing a cluser 
-# check if the machine is a master . 
-# check if the machine is a slave
-	
 }
 
 
