@@ -1,10 +1,10 @@
 class export_test::export(
-        $stage    = "xx",
-        $customer       = "xx"
-)inherits export_test::params{
+        $otap    = "xx",
+        $customer = "xx"
+){
 
 	@@exported{"${::hostname}":
-			stage => $stage,
+			otap => $otap,
 			customer => $customer
 		}
 

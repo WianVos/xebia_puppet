@@ -1,20 +1,20 @@
 define export_test::exported(
-	$stage 	= "xx",
+	$otap 		= "xx",
 	$customer	= "xx"
 ){
 
-	if (($stage == $export_test::import::stage) or ( $stage == "xx" )) 
+	if (("${otap}" == "${export_test::import::otap}") or ( $otap == "xx" )) 
 		and 
-	   (($customer == $export_test::import::customer) or ( $customer == "xx" ))
+	   (("${customer}" == "${export_test::import::customer}") or ( $customer == "xx" ))
   		{
 			file {"/tmp/${name}":
-				content => "test",
+				content => "${otap} ${customer}",
 				ensure => "present" 
 				}
 		}else{
 	
-	       		file {"/tmp/{$name}:
-				ensure => abent
+	       		file {"/tmp/${name}":
+				ensure => "absent"
 				}	
 		}		
 
