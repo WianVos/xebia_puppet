@@ -1,7 +1,7 @@
 define postgresql::database (
 	$owner,
 	$install_owner = params_lookup('install_owner'),
-	$ensure	= params_lookup('ensure'),
+	$ensure	= present,
 	$homedir = params_lookup('homedir')
 	
 	) 
