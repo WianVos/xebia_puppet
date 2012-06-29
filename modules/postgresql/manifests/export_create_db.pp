@@ -54,7 +54,6 @@ define postgresql::export_create_db(
 					content => "host    all     ${db_user}        0.0.0.0/0          trust",
 					order => 02,
 					target => "${datadir}/pg_hba.conf",
-					require => Concat["${datadir}/pg_hba.conf"]
 			}
 		}
 	}

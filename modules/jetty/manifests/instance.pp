@@ -261,7 +261,7 @@ file {
 
 #if auto_db is true then try to create the database by unsing a function from the postgresql module . 
 # this needs a change btw	
- if $auto_db {
+ if $auto_db == true {
  	@@postgresql::export_create_db {
  		"${instance_name}" :
  			application => "${application}",
