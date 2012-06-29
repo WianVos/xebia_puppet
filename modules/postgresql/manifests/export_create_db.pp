@@ -19,13 +19,13 @@ define postgresql::export_create_db(
 	if $age < $maxage {
 		$ensure_age = true
 	}
-	if ($universe = params_lookup("universe", global)) {
+	if ($universe == params_lookup("universe", global)) {
 		$ensure_universe = true
 	}
-	if (($customer = params_lookup("customer", global) or $customer == "xx")) {
+	if (($customer == params_lookup("customer", global) or $customer == "xx")) {
 		$ensure_customer = true
 	}
-	if (($application = params_lookup("application", global) or $application ==	"xx")) {
+	if (($application == params_lookup("application", global) or $application == "xx")) {
 		$ensure_application = true
 	}
 	
