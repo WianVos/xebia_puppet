@@ -35,361 +35,241 @@ class postgresql(
 	
 		
 ) inherits postgresql::params{
-	notify{"sr $streaming_replication":}
-	notify{"customer $customer":}
-	notify{"application $application":}	
+	notify {
+		"sr $streaming_replication" :
+	}
+	notify {
+		"customer $customer" :
+	}
+	notify {
+		"application $application" :
+	}
 	# setup the concat module for later use
 	include concat::setup
-	
+
 	#set various manage parameters in accordance to the $absent directive
 	$manage_package = $absent ? {
-		true 	=> "absent",
-		false 	=> "installed",
+		true => "absent",
+		false => "installed",
 		default => "installed"
-	}
-	
-	$manage_directory = $absent ? {
-		true 	=> "absent",
+	} $manage_directory = $absent ? {
+		true => "absent",
 		default => "directory",
-	}
-	
-	$manage_link = $absent ? {
-		true 	=> "absent",
+	} $manage_link = $absent ? {
+		true => "absent",
 		default => "link",
-	}
-	
-	$manage_files = $absent ? {
-		true 	=> "absent",
-		false 	=> "present",
+	} $manage_files = $absent ? {
+		true => "absent",
+		false => "present",
 		default => "present"
-	}
-	
-	$manage_user = $absent ? {
-		true 	=> "absent",
-		false 	=> "present",
+	} $manage_user = $absent ? {
+		true => "absent",
+		false => "present",
 		default => "present"
+	} $manage_service = $ensure ? {
+		true => "running",
+		false => "stoppped",
+		default => "running"
 	}
-	
 
-	$manage_service = $ensure ? {
-		true	=> "running",
-		false 	=> "stoppped",
-		default	=> "running"
-	}
-	
-	
-	
 	#install packages as needed by postgresql	
 	#we user extra packages from xebia_common
-	xebia_common::features::extra_package{$packages:
-		ensure	=> "${manage_package}"
+	xebia_common::features::extra_package {
+		$packages :
+			ensure => "${manage_package}"
 	}
-	
+
 	#create the needed users
 	group {
-	"$install_group" :
-		ensure => $manage_user,
-}
-user {
-	"$install_owner" :
-		ensure => "${manage_user}",
-		gid => "${install_group}",
-		managehome => true,
-		system => true,
-}
-file {
-	"${install_owner} keys" :
-		source => "puppet:///modules/postgresql/keys",
-		sourceselect => all,
-		recurse => remote,
-		owner => "${install_owner}",
-		group => "${install_group}",
-		ensure => "${manage_files}",
-		path => "/home/${install_owner}/.ssh/",
-		mode => "0600"
-}
-ssh_authorized_key {
-	"${install_owner} rsa" :
-		key =>
-		"AAAAB3NzaC1yc2EAAAADAQABAAABAQC0PSfqjNe0YZqMvzlFK34K4h5v8o5jpNIw8vYY9Wa7XA8wFUrDARhlt39On0VvQdTuqNZllu8qeFJS29crDJtGKUhOv5xKlUpaxFBnYvxGF+wF0PW6zlPvYQTAFgseA6JamaQ75ragH+0xumXQzQhrP4P4R7Klzz70haD9QVzDNkwpnqiZVtR4PxjtdsUDkTAFtRq5dTU6pfSDbmXJCiLTdCMyqryqYF5HUHbfmrjrzdhyIyDVywe0u4FOF9U/DxcdXBsvO16oWLYbsRrlubRpCnWzA+m0M2UOLamtCSpRL1NAQ1xEZvvcJUKIe8uRwxbcqyhAvMv3u5lnElcekJqf",
-		type => "ssh-rsa",
-		user => "${install_owner}"
-}
-file {
-	"${install_owner} profile" :
-		content => template('postgresql/user_profile.erb'),
-		path => "/home/${install_owner}/.profile",
-		mode => "0770",
-		owner => "${install_owner}",
-		group => "${install_group}",
-		ensure => "${manage_files}",
-		require => User["${install_owner}"]
-}	
-	
-	
-	#setup infra 
-	# all these directory's should be owned by root
-	file {["${infra_dir}","${marker_dir}","${script_dir}","${config_dir}"]:
-		ensure 	=> "${manage_directory}",
-		owner  	=> root,
-		group	=> root,
-		mode	=> 770,
+		"$install_group" :
+			ensure => $manage_user,
 	}
-	
-	#create the needed directory structures
-	
-	#tmpdir
-	file {"${tmpdir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
-	#basedir
-	file {"${basedir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
-	#homedir
-	file {"${homedir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
-	#datadir
-	file {"${datadir}":
-		ensure 	=> "${manage_directory}",
-		owner 	=> "${install_owner}",
-		group	=> "${install_group}"
-	}
-	
-	
-#download and unpack the needed files into the temporary directory in accordance with the installation type
-# cli is downloaded always 
-# server in downloaded only if installation type is set to server
-
-# puppetfiles . installation based on files included in the module	
-if $install == "puppetfiles" {
-	
-	file {
-		"${puppetfiles_tarfile}":
-			ensure => $manage_files,
-			path => "${tmpdir}/${puppetfiles_tarfile}",
-			require => File["${tmpdir}"],
-			source =>
-			"${puppetfiles_source}",
-			before => Exec["unpack postgresql"]
-	}
-	exec {
-		"unpack postgresql" :
-			command =>
-			"/bin/tar -xzf ${tmpdir}/${puppetfiles_tarfile}",
-			cwd => "${basedir}",
-			creates => "${basedir}/postgresql/bin",
-			require => File["${basedir}", "${puppetfiles_tarfile}"],
-			user => "${install_owner}",
-			logoutput => true,
-	}
-	file {
-		"${homedir}/etc" :
-			ensure => $manage_directory,
-			owner => "${install_owner}",
-			group => "${install_group}",
-			require => Exec["unpack postgresql"]
-	}
-}
-#initialize the database_cluster
-exec {
-	"initdb ${datadir}" :
-		command => "${homedir}/bin/initdb -D ${datadir}",
-		user => "${install_owner}",
-		require	=> [Exec["unpack postgresql"],File["${datadir}"]],
-		creates => "${datadir}/PG_VERSION"
-}
-#install service script in /etc/init.d
-file {'postgresql service script':
-		ensure => "${manage_files}",
-		content => template('postgresql/postgresql.sh.erb'),
-		mode	=> "0750",
-		require => Exec["unpack postgresql"],
-		path	=> "/etc/init.d/postgresql"
-	}
-
-#setup config
-concat {
-	"${datadir}/postgresql.conf" :
-		owner => "${install_owner}",
-		group => "${install_group}",
-		mode => "0770",
-		notify => Service["postgresql"],
-		require => Exec["initdb ${datadir}"]
-}
-concat::fragment {
-	"postgresConfBaseOptions" :
-		target => "${datadir}/postgresql.conf",
-		content =>
-		inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-		order => 01,
-}
-concat::fragment {
-	"postgresLoggingOptions" :
-		target => "${datadir}/postgresql.conf",
-		content =>
-		inline_template("<% postgresLoggingOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-		order => 01,
-}
-
-concat {
-	"${datadir}/pg_hba.conf":
-		owner => "${install_owner}",
-		group => "${install_group}",
-		notify => Service['postgresql'],
-		require => Exec["initdb ${datadir}"],
-		mode	=> "0770"
-}
-
-concat::fragment {
-	"base pg_hba.conf":
-		content => template('postgresql/pg_hba.conf.erb'),
-		order   => 01,
-		target  => "${datadir}/pg_hba.conf"
-}
-#Streaming replication setup
-if $streaming_replication != "standalone" {
 	user {
-		"${sr_user}" :
+		"$install_owner" :
 			ensure => "${manage_user}",
 			gid => "${install_group}",
 			managehome => true,
 			system => true,
 	}
 	file {
-		"${sr_user} keys" :
+		"${install_owner} keys" :
 			source => "puppet:///modules/postgresql/keys",
 			sourceselect => all,
 			recurse => remote,
-			owner => "${sr_user}",
+			owner => "${install_owner}",
 			group => "${install_group}",
 			ensure => "${manage_files}",
-			path => "/home/${sr_user}/.ssh/",
+			path => "/home/${install_owner}/.ssh/",
 			mode => "0600"
 	}
 	ssh_authorized_key {
-		"${sr_user} rsa" :
+		"${install_owner} rsa" :
 			key =>
 			"AAAAB3NzaC1yc2EAAAADAQABAAABAQC0PSfqjNe0YZqMvzlFK34K4h5v8o5jpNIw8vYY9Wa7XA8wFUrDARhlt39On0VvQdTuqNZllu8qeFJS29crDJtGKUhOv5xKlUpaxFBnYvxGF+wF0PW6zlPvYQTAFgseA6JamaQ75ragH+0xumXQzQhrP4P4R7Klzz70haD9QVzDNkwpnqiZVtR4PxjtdsUDkTAFtRq5dTU6pfSDbmXJCiLTdCMyqryqYF5HUHbfmrjrzdhyIyDVywe0u4FOF9U/DxcdXBsvO16oWLYbsRrlubRpCnWzA+m0M2UOLamtCSpRL1NAQ1xEZvvcJUKIe8uRwxbcqyhAvMv3u5lnElcekJqf",
 			type => "ssh-rsa",
-			user => "${sr_user}"
+			user => "${install_owner}"
 	}
 	file {
-		"${sr_user} profile" :
+		"${install_owner} profile" :
 			content => template('postgresql/user_profile.erb'),
-			path => "/home/${sr_user}/.profile",
+			path => "/home/${install_owner}/.profile",
 			mode => "0770",
-			owner => "${sr_user}",
+			owner => "${install_owner}",
 			group => "${install_group}",
 			ensure => "${manage_files}",
-			require => User["${sr_user}"]
+			require => User["${install_owner}"]
+	}
+
+	#setup infra 
+	# all these directory's should be owned by root
+	file {
+		["${infra_dir}", "${marker_dir}", "${script_dir}", "${config_dir}"] :
+			ensure => "${manage_directory}",
+			owner => root,
+			group => root,
+			mode => 770,
+	}
+
+	#create the needed directory structures
+
+	#tmpdir
+	file {
+		"${tmpdir}" :
+			ensure => "${manage_directory}",
+			owner => "${install_owner}",
+			group => "${install_group}"
+	}
+	#basedir
+	file {
+		"${basedir}" :
+			ensure => "${manage_directory}",
+			owner => "${install_owner}",
+			group => "${install_group}"
+	}
+	#homedir
+	file {
+		"${homedir}" :
+			ensure => "${manage_directory}",
+			owner => "${install_owner}",
+			group => "${install_group}"
+	}
+	#datadir
+	file {
+		"${datadir}" :
+			ensure => "${manage_directory}",
+			owner => "${install_owner}",
+			group => "${install_group}"
+	}
+
+	#download and unpack the needed files into the temporary directory in accordance with the installation type
+	# cli is downloaded always 
+	# server in downloaded only if installation type is set to server
+
+	# puppetfiles . installation based on files included in the module	
+	if $install == "puppetfiles" {
+		file {
+			"${puppetfiles_tarfile}" :
+				ensure => $manage_files,
+				path => "${tmpdir}/${puppetfiles_tarfile}",
+				require => File["${tmpdir}"],
+				source => "${puppetfiles_source}",
+				before => Exec["unpack postgresql"]
+		}
+		exec {
+			"unpack postgresql" :
+				command => "/bin/tar -xzf ${tmpdir}/${puppetfiles_tarfile}",
+				cwd => "${basedir}",
+				creates => "${basedir}/postgresql/bin",
+				require => File["${basedir}", "${puppetfiles_tarfile}"],
+				user => "${install_owner}",
+				logoutput => true,
+		}
+		file {
+			"${homedir}/etc" :
+				ensure => $manage_directory,
+				owner => "${install_owner}",
+				group => "${install_group}",
+				require => Exec["unpack postgresql"]
+		}
+	}
+	#initialize the database_cluster
+	exec {
+		"initdb ${datadir}" :
+			command => "${homedir}/bin/initdb -D ${datadir}",
+			user => "${install_owner}",
+			require => [Exec["unpack postgresql"], File["${datadir}"]],
+			creates => "${datadir}/PG_VERSION"
+	}
+	#install service script in /etc/init.d
+	file {
+		'postgresql service script' :
+			ensure => "${manage_files}",
+			content => template('postgresql/postgresql.sh.erb'),
+			mode => "0750",
+			require => Exec["unpack postgresql"],
+			path => "/etc/init.d/postgresql"
+	}
+
+	#setup config
+	concat {
+		"${datadir}/postgresql.conf" :
+			owner => "${install_owner}",
+			group => "${install_group}",
+			mode => "0770",
+			notify => Service["postgresql"],
+			require => Exec["initdb ${datadir}"]
 	}
 	concat::fragment {
-		"${sr_user} pg_hba.conf" :
-			content => "host    all     ${sr_user}        0.0.0.0/0          trust",
+		"postgresConfBaseOptions" :
+			target => "${datadir}/postgresql.conf",
+			content =>
+			inline_template("<% postgresConfBaseOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+			order => 01,
+	}
+	concat::fragment {
+		"postgresLoggingOptions" :
+			target => "${datadir}/postgresql.conf",
+			content =>
+			inline_template("<% postgresLoggingOptions.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
+			order => 01,
+	}
+	concat {
+		"${datadir}/pg_hba.conf" :
+			owner => "${install_owner}",
+			group => "${install_group}",
+			notify => Service['postgresql'],
+			require => Exec["initdb ${datadir}"],
+			mode => "0770"
+	}
+	concat::fragment {
+		"base pg_hba.conf" :
+			content => template('postgresql/pg_hba.conf.erb'),
 			order => 01,
 			target => "${datadir}/pg_hba.conf"
 	}
-	postgresql::user {
-		"${sr_user}" :
-			user_params => "--no-superuser --no-createdb --no-createrole",
-			ensure => "${manage_user}",
-	}
-	case $streaming_replication {
-		'master' : {
-			concat::fragment {
-				"streamingReplicationMaster" :
-					target => "${datadir}/postgresql.conf",
-					content =>
-					inline_template("<% streamingReplicationMaster.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-					order => 02,
-			}
-			@@postgresql::export_service_db {
-				"postgresql_master_${::hostname}" :
-					customer => "${customer}",
-					application => "${application}",
-					universe => "${universe}",
-					service => portgresql,
-					role	=> master,
-					use_concat => true,
-					concat_target => "${datadir}/recovery.conf",
-					concat_options => $srSlaveOptions,
-					concat_owner => "${install_owner}",
-					concat_group => "${install_group}",
-					service => "postgresql",
-					role => "master",
-			}
-		}
-		'slave' : {
-			concat::fragment {
-				"streamingReplicationSlave" :
-					target => "${datadir}/postgresql.conf",
-					content =>
-					inline_template("<% streamingReplicationSlave.sort_by {|key, value| key}.each do |key, value| %><%= key %> = <%= value %> \n<% end %>"),
-					order => 02,
-			}
-			concat {
-				"${datadir}/recovery.conf" :
-					owner => "${install_owner}",
-					group => "${install_owner}",
-					mode => "0770",
-			}
-			Xebia_common::Features::Export_service_db <<| tag == "SpostgresqlRmasterU${universe}C${customer}A${application}" |>>
+
+	#Streaming replication setup
+	if $streaming_replication != "standalone" {
+		class {
+			"postgresql::streaming_replication" :
+				before => Service['postgresql']
 		}
 	}
-}	
 
+	#pg_pool setup
+	if $pg_pool == true {
+		class {
+			"postgresql::pgpool" :
+				require => Exec["unpack postgresql"]
+		}
+	}
 
-if $pg_pool == true {
-	exec {
-		"add pgpool_reclass" :
-			command =>
-			"${homedir}/bin/psql -f ${homedir}/share/contrib/pgpool-regclass.sql template1",
-			user => "${install_owner}",
-			require => [Service['postgresql']],
-			creates => "/opt/postgresql/lib/pgpool-regclass.so"
-	}
-	file {
-		"basebackup.sh" :
-			path => "${datadir}/basebackup.sh",
-			owner => "${install_owner}",
-			group => "${install_group}",
-			ensure => "${manage_files}",
-			require => Exec["initdb ${datadir}"],
-			content => template('postgresql/basebackup.sh.erb')
-	}
-	file {
-		"pgpool_remote_start" :
-			path => "${datadir}/pgpool_remote_start",
-			owner => "${install_owner}",
-			group => "${install_group}",
-			ensure => "${manage_files}",
-			require => Exec["initdb ${datadir}"],
-			content => template('postgresql/pgpool_remote_start.erb')
-	}
-	file {
-		["/var/log/pgpool", "/var/log/pgpool/trigger"] :
-			ensure => "${manage_directory}",
-			owner => "${install_owner}",
-			group => "${install_group}",
-			require => Exec["initdb ${datadir}"],
-	}
-}
-
-
-#run the service
-service {
-	'postgresql' :
-		require => [Exec["initdb ${datadir}"],File['postgresql service script']],
-		ensure => "${manage_service}",
-		hasrestart => true,
+	#run the service
+	service {
+		'postgresql' :
+			require => [Exec["initdb ${datadir}"], File['postgresql service script']],
+			ensure => "${manage_service}",
+			hasrestart => true,
 	}
 }
 

@@ -1,16 +1,17 @@
 define postgresql::user(
 	$install_owner = params_lookup('install_owner'),
 	$ensure	= params_lookup('ensure'),
-	$user_params = "--no-superuser --no-createdb --no-createrole",
-	$homedir = params_lookup('homedir')
+	$homedir = params_lookup('homedir'),
+	$database = "template1",
+	$password = "changeme"
 ){
-	$userexists = "${homedir}/bin/psql template 1 --tuples-only -c 'SELECT rolname FROM pg_catalog.pg_roles;' | grep '^ ${name}$'"
+	$userexists = "${homedir}/bin/psql ${database} --tuples-only -c 'SELECT rolname FROM pg_catalog.pg_roles;' | grep '^ ${name}$'"
 	
 	
 	if $ensure == 'present' {
 
     exec { "createuser ${name}":
-      command => "${homedir}/bin/createuser ${user_params} ${name}",
+      command => "${homedir}/bin/psql ${database} -c \"CREATE USER ${$name} PASSWORD ${password}\"",
       user => "${install_owner}",
       unless => "${userexists}",
       require => Service['postgresql'],
