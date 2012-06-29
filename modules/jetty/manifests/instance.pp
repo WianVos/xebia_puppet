@@ -16,8 +16,10 @@ define jetty::instance(
   $activemq_libs	= false,
   $postgresql_libs	= false,
   $accesslog 		= true,
+  $universe			= params_lookup('universe', 'global'),
   $application 		= params_lookup('application', global),
-  $customer 		= params_lookup('customer', global)
+  $customer 		= params_lookup('customer', global),
+  $auto_db			= false
   
 ) {
 
@@ -251,5 +253,17 @@ file {
 		application		=> "${application}",
 		customer		=> "${customer}",
 	} 
+
+#if auto_db is true then try to create the database by unsing a function from the postgresql module . 
+# this needs a change btw	
+ if $auto_db {
+ 	@@postgresql::export_create_db {
+ 		"${instance_name}" :
+ 			application => "${application}",
+ 			customer => "${customer}",
+ 			universe => "${universe}"
+ 	}
+ }
+ }	
 }      
 
