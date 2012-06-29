@@ -109,13 +109,13 @@ class deployit(
 		}
 	}
 	
-	if $import_facts {
-		Xebia_common::Features::Export_facts <<| |>> 
-	}
-	if $import_config {
-		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
-		
-	}
+#	if $import_facts {
+#		Xebia_common::Features::Export_facts <<| |>> 
+#	}
+#	if $import_config {
+#		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
+#		
+#	}
 	
 	#install packages as needed by deployit	
 	package{$packages:
