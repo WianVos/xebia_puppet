@@ -20,7 +20,7 @@ class deployit(
 	$http_context_root			= params_lookup('http_context_root'),
 	$http_port					= params_lookup('http_port'),
 	$importable_packages_path	= params_lookup('importable_packages_path'),
-	$universe				= params_lookup('universe'),
+	$universe				= params_lookup('universe', 'global'),
 	$plugin_install				= params_lookup('plugin_install'),
 	$key_install				= params_lookup('key_install'),
 	$export_facts				= params_lookup('export_facts'),
