@@ -11,7 +11,7 @@ define postgresql::user(
 	if $ensure == 'present' {
 
     exec { "createuser ${name}":
-      command => "${homedir}/bin/psql ${database} -c \"CREATE USER ${$name} PASSWORD ${password}\"",
+      command => "${homedir}/bin/psql ${database} -c \"CREATE ROLE ${$name} PASSWORD ${password}\"",
       user => "${install_owner}",
       unless => "${userexists}",
       require => Service['postgresql'],
