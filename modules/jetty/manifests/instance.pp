@@ -66,15 +66,20 @@ define jetty::instance(
     default	=> running 
   }
 
-  user {
-  	$runtime_user :
-  		ensure => $ensure_user,
-  		gid => $runtime_user,
+  if !defined(User["${runtime_user}"]){	
+  	user {
+  		$runtime_user :
+  			ensure => $ensure_user,
+  			gid => $runtime_user,
+  	}
   }
   
-  group {
-  	$runtime_user :
-  		ensure => $ensure_group,
+  if !defined(Group["${runtime_user}"]){	
+  	group {
+  		$runtime_user :
+  			ensure => $ensure_group,
+  	}
+  
   }
   
   exec {
