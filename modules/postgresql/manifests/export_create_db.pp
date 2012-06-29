@@ -41,6 +41,13 @@ define postgresql::export_create_db(
 					database => "${db_name}"
 			}
 		}
+		if !defined(User["${db_user}"]){
+			user {"${db_user}":
+					ensure => present,
+					managehome => true
+			}
+		}
+		
 		if !defined(Concat::Fragment["${db_user} pg_hba.conf"]) {
 			concat::fragment {
 				"${db_user} pg_hba.conf" :
