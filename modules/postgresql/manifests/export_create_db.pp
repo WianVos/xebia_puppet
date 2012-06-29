@@ -25,11 +25,9 @@ define postgresql::export_create_db(
 	if (($customer == params_lookup("customer", global) or $customer == "xx")) {
 		$ensure_customer = true
 	}
-	if (($application == params_lookup("application", global) or $application == "xx")) {
-		$ensure_application = true
-	}
 	
-	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) and ($ensure_application == true)) {
+	
+	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) {
 		if !defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
 				"${customer}-${application}" :
