@@ -5,13 +5,13 @@ define postgresql::export_create_db(
 	$application =  "xx",
 	$universe	=	"xx",
 	$hostname	=   "${::hostname}",
-	$db_owner	= 	"postgresql"
+	$db_owner	= 	"postgresql",
+	$datadir	=   "/data"
 ){
 	
 	$db_user		= "${customer}-${application}-user"
 	$db_password	= "${customer}-${application}-password"
 	$db_name		= "${customer}-${application}-db"
-	
 	
 	# check age of facts ..
 	$age = inline_template("<%= require 'time'; Time.now - Time.parse(timestamp) %>")
@@ -34,16 +34,25 @@ define postgresql::export_create_db(
 			postgresql::database {
 				"${customer}-${application}" :
 					owner => "${db_owner}"
-				}
 			}
-			if !defined(Postgresql::User["${db_user}"]) {
-				postgresql::user {
-					"${db_user}" :
-						password => "${db_password}",
-						database => "${db_name}"
-				}
+		}
+		if !defined(Postgresql::User["${db_user}"]) {
+			postgresql::user {
+				"${db_user}" :
+					password => "${db_password}",
+					database => "${db_name}"
+			}
+		}
+		if !defined(Concat::Fragment["${db_user} pg_hba.conf"]) {
+			concat::fragment {
+				"${db_user} pg_hba.conf" :
+					content => "host    all     ${db_user}        0.0.0.0/0          trust",
+					order => 02,
+					target => "${datadir}/pg_hba.conf",
+					require => Concat["${datadir}/pg_hba.conf"]
 			}
 		}
 	}
+}
 		
 			

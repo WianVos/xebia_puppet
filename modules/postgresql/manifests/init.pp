@@ -271,6 +271,8 @@ class postgresql(
 			ensure => "${manage_service}",
 			hasrestart => true,
 	}
+	
+	Postgresql::Export_create_db <<| |>>{ datadir => "${datadir}" }
 }
 
 
