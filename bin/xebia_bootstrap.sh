@@ -9,7 +9,7 @@ customer="xx"
 application="xx"
 configfile="xx"
 tmpfile=`tempfile`
-service_fole="xx"
+service_role="xx"
 hiera_data_dir="/var/xebia_puppet/hieradata/"
 
 
@@ -45,8 +45,8 @@ case "$size_parameter" in
 #check and correct input
 if [ $node_group == "xx" ] ; then node_group="default" ; fi
 if [ $universe == "xx" ] ; then universe="default" ; fi
-if [ $customer == "xx" ] ; then customer="xebiaPuppet" ; fi
-if [ $application == "xx" ] ; then customer="xebiaCustomer" ; fi
+if [ $customer == "xx" ] ; then customer="xebiaCustomer" ; fi
+if [ $application == "xx" ] ; then application="xebiaApplication" ; fi
 if [ $configfile == "xx" ] ; then configfile="../etc/bootstrap.conf" ; fi
 
 #read in the configfile
@@ -61,7 +61,7 @@ host=`tail -1 $tmpfile`
 
 #setup the hiera classification for the host
 template_name="${node_group}"
-if [ service_role == "xx" ] ; then template_name="${node_group}" ; else template_name="${node_group}-${service_role}" ; fi
+if [ $service_role == "xx" ] ; then template_name="${node_group}" ; else template_name="${node_group}-${service_role}" ; fi
 
 if [ -f ../etc/nodeTypes/${template_name}.yaml ] 
 	then 
