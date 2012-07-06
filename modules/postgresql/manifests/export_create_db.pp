@@ -5,35 +5,48 @@ define postgresql::export_create_db(
 	$application =  "xx",
 	$universe	=	"xx",
 	$hostname	=   "${::hostname}",
-	$db_owner	= 	"postgresql",
 	$datadir	=   "/data"
 ){
-	
-	$db_user		= "${customer}-${application}-user"
-	$db_password	= "${customer}-${application}-password"
+	notify {
+                "export_db $name" :
+        }
+
+	#initialize a couple of variables on the importing side	
+	$db_user		= "${customer}_${application}_user"
+	$db_password	= "${customer}_${application}_password"
 	$db_name		= "${customer}-${application}-db"
-	
+	$local_universe  = params_lookup("universe", global)
+	$local_customer	=  params_lookup("customer", global)
+	$db_owner	= params_lookup("install_owner") 	
+
 	# check age of facts ..
 	$age = inline_template("<%= require 'time'; Time.now - Time.parse(timestamp) %>")
 	
-	if $age < $maxage {
+	if ("${age}" < "${maxage}") {
 		$ensure_age = true
+		notify{"${name} age: ${age} timestamp: ${timestamp} too old ":} 
 	}
 	if ($universe == params_lookup("universe", global)) {
 		$ensure_universe = true
+		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} wrong universe ":}
 	}
 	if (($customer == params_lookup("customer", global) or $customer == "xx")) {
 		$ensure_customer = true
+		                notify{"${name} customer: ${local_customer}  wrong customer":}
 	}
 	
 	
 	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) {
+
+		# if the database does not exist create it 
 		if !defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
 				"${customer}-${application}" :
 					owner => "${db_owner}"
 			}
 		}
+
+		#if the user is not defined then create it  	
 		if !defined(Postgresql::User["${db_user}"]) {
 			postgresql::user {
 				"${db_user}" :
@@ -41,17 +54,12 @@ define postgresql::export_create_db(
 					database => "${db_name}"
 			}
 		}
-		if !defined(User["${db_user}"]){
-			user {"${db_user}":
-					ensure => present,
-					managehome => true
-			}
-		}
+		
 		
 		if !defined(Concat::Fragment["${db_user} pg_hba.conf"]) {
 			concat::fragment {
 				"${db_user} pg_hba.conf" :
-					content => "host    all     ${db_user}        0.0.0.0/0          trust",
+					content => "host    all     ${db_user}        0.0.0.0/0          trust\n",
 					order => 02,
 					target => "${datadir}/pg_hba.conf",
 			}
