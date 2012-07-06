@@ -37,6 +37,12 @@ class deployit::params{
 	$export_facts				= 	true
 	$export_config				= 	true
 	$install					= 	'files'
+	$cli_conf_options 				= 	{ 	"deployit_hostname"    => "${::fqdn}",
+                                                		"deployit_ipaddress"   => "${::ipaddress}",
+                                                		"deployit_user"        => "admin",
+                                                		"deployit_password"    => "${admin_password}",
+                                                		"deployit_port"        => "${http_port}" 
+							}
 	
 			
 }

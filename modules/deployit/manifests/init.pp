@@ -29,7 +29,8 @@ class deployit(
 	$scriptdir					= params_lookup('scriptdir'),
 	$markerdir					= params_lookup('markerdir'),
 	$import_facts				= params_lookup('import_facts'),
-	$import_config				= params_lookup('import_config')
+	$import_config				= params_lookup('import_config'),
+	$cli_conf_options				= params_lookup('cli_conf_options')
 		
 		
 ) inherits deployit::params{
@@ -83,39 +84,46 @@ class deployit(
 	
 	#xebia_puppet intergration stuff
 	
-	if $export_facts {
-		@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
-			options => { "deployit_hostname" 	=> "${::fqdn}",
-						 "deployit_ipaddress" 	=> "${::ipaddress}",
-						 "deployit_user"		=> "admin",
-						 "deployit_password"	=> "${admin_password}",
-						 "deployit_port"		=>	"${http_port}"
-						},
-			tag		=> ["${universe}-deployit-service"]
-		}
-	}
+	#if $export_facts {
+	#@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
+	#		options => { "deployit_hostname" 	=> "${::fqdn}",
+	#					 "deployit_ipaddress" 	=> "${::ipaddress}",
+	#					 "deployit_user"		=> "admin",
+	#					 "deployit_password"	=> "${admin_password}",
+	#					 "deployit_port"		=>	"${http_port}"
+	#					},
+	#		tag		=> ["${universe}-deployit-service"]
+	#	}
+	#}
 	
-	if $export_config {
-		@@xebia_common::features::export_config{"${::hostname}_deployit_config.sh":
-			filename => "deployit_config.sh",
-			options => { "deployit_hostname" 	=> "${::fqdn}",
-						 "deployit_ipaddress" 	=> "${::ipaddress}",
-						 "deployit_user"		=> "admin",
-						 "deployit_password"	=> "${admin_password}",
-						 "deployit_port"		=>	"${http_port}"
-						},
-			confdir =>	"${xebia_common::regdir::configDir}",
-			tag		=> ["${universe}-deployit-service-config"]
-		}
-	}
+	#if $export_config {
+	#	@@xebia_common::features::export_config{"${::hostname}_deployit_config.sh":
+	#		filename => "deployit_config.sh",
+	#		options => { "deployit_hostname" 	=> "${::fqdn}",
+	#					 "deployit_ipaddress" 	=> "${::ipaddress}",
+	#					 "deployit_user"		=> "admin",
+	#					 "deployit_password"	=> "${admin_password}",
+	#					 "deployit_port"		=>	"${http_port}"
+	#					},
+	#		confdir =>	"${xebia_common::regdir::configDir}",
+	#		tag		=> ["${universe}-deployit-service-config"]
+	#	}
+	#}
 	
 #	if $import_facts {
 #		Xebia_common::Features::Export_facts <<| |>> 
 #	}
-#	if $import_config {
-#		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
-#		
-#	}
+	#if $import_config {
+	#	Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
+	#	
+	#}
+#
+	 file {
+                        "${confdir}/deployit.conf" :
+                                require => File["${confdir}"],
+                                content =>
+                                inline_template("<% cli_conf_options.sort_by {|key, value| key}.each do |key, value| %><%= key %>='<%= value %>' \n<% end %>")
+                }	
 	
 	#install packages as needed by deployit	
 	package{$packages:
@@ -308,8 +316,16 @@ exec{
 		 
 }
 
-#export facts
+file {"${scriptdir}/$name":
+                        require                 => Class["xebia_common::regdir"],
+                        source                  => "puppet:///modules/deployit/features/cli_python/",
+                        sourceselect    	=> all,
+                        recurse                 => remote,
+                        owner                   => "${install_owner}",
+                        group                   => "${install_group}",
+                        ensure                  => "${manage_files}"
 
+                }
 service{
 	'deployit':
 		require 	=> [File["${homedir}/server","deployit config file"],Exec["init deployit"]],
