@@ -1,12 +1,13 @@
-define deployit::types::jetty_ssh ($hostname = "${::hostname}",
+define deployit::types::postgresql_ssh ($hostname = "${::hostname}",
 	$homedir	,
-	$instanceName ,
+	$db_name        ,			
 	$environments 	= "${::environment}",
-	$fqdn 			= "${::fqdn}",
-	$customer		= undef,
-	$application	= undef
-	$db_name	=		
-	$postgresql_home = "/opt/postgresql"
+	$fqdn 	        = "${::fqdn}",
+	$customer       = undef,
+	$application	= undef,
+	$postgresql_home = "/opt/postgresql",
+	$db_username	= "${db_name}-user",
+	$db_password	= ""
 	){
 	
 	case $customer {
@@ -28,26 +29,26 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 		}
 	}
 	
-	if ! defined(Deployit_cli::Features::Ci["${hostname} ssh-host"]){
-	deployit::features::ci{ "${hostname} ssh-host":
+	if ! defined(Deployit::Features::Ci["${hostname} ssh-host"]){
+		deployit::features::ci{ "${hostname} ssh-host":
  				 ciId => "Infrastructure/${hostname}",
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
-                 sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
-                 ciEnvironments => "${ciEnv}",
+                 		 sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
+                 		 ciEnvironments => "${ciEnv}",
   				 ensure => present,
 		}
 	}
-	
-	deployit::features::ci {
-		"jetty_server_${hostname}_${instanceName} " :
-			ciId => "Infrastructure/${hostname}/${instanceName}",
-			ciType => 'sql.PostgreSqlClient',
-			ciValues => { postgresqlHome => "$homedir", databaseName => "${db_name}",
-			stopScript => "${homedir}/stop.sh"},
-			ciEnvironments => "${ciEnv}",
-			require =>
-			Deployit_cli::Features::Ci["${hostname} ssh-host"],
-			ensure => present,
+	if ! defined(Deployit::Features::Ci["postgresql_database_${db_name}"] {	
+		deployit::features::ci {
+			"postgresql_database_${db_name} " :
+				ciId => "Infrastructure/${hostname}/${db_name}",
+				ciType => 'sql.PostgreSqlClient',
+				ciValues => { postgresqlHome => "$homedir", databaseName => "${db_name}", username => "${db_username}", password => "${db_password}"},
+				ciEnvironments => "${ciEnv}",
+				require =>
+				Deployit_cli::Features::Ci["${hostname} ssh-host"],
+				ensure => present,
+		}
 	}
 }
