@@ -23,7 +23,6 @@ class deployit(
 	$universe				= params_lookup('universe', 'global'),
 	$plugin_install				= params_lookup('plugin_install'),
 	$key_install				= params_lookup('key_install'),
-	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
@@ -82,41 +81,19 @@ class deployit(
 	} 
 	
 	
+	
 	#xebia_puppet intergration stuff
 	
-	#if $export_facts {
-	#@@xebia_common::features::export_facts{"deployit_facts_${::hostname}":
-	#		options => { "deployit_hostname" 	=> "${::fqdn}",
-	#					 "deployit_ipaddress" 	=> "${::ipaddress}",
-	#					 "deployit_user"		=> "admin",
-	#					 "deployit_password"	=> "${admin_password}",
-	#					 "deployit_port"		=>	"${http_port}"
-	#					},
-	#		tag		=> ["${universe}-deployit-service"]
-	#	}
-	#}
+	#export deployit user
+	if $export_config {
+		@@deployit::exports::create_deployit_user{"deployit_user":
+		
+		}	
+	}
+	if $import_config {
+		
+	}
 	
-	#if $export_config {
-	#	@@xebia_common::features::export_config{"${::hostname}_deployit_config.sh":
-	#		filename => "deployit_config.sh",
-	#		options => { "deployit_hostname" 	=> "${::fqdn}",
-	#					 "deployit_ipaddress" 	=> "${::ipaddress}",
-	#					 "deployit_user"		=> "admin",
-	#					 "deployit_password"	=> "${admin_password}",
-	#					 "deployit_port"		=>	"${http_port}"
-	#					},
-	#		confdir =>	"${xebia_common::regdir::configDir}",
-	#		tag		=> ["${universe}-deployit-service-config"]
-	#	}
-	#}
-	
-#	if $import_facts {
-#		Xebia_common::Features::Export_facts <<| |>> 
-#	}
-	#if $import_config {
-	#	Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
-	#	
-	#}
 #
 	 file {
                         "${confdir}/deployit.conf" :

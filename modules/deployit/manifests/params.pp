@@ -29,12 +29,10 @@ class deployit::params{
 	$absent 					=	false
 	$disabled 					= 	false
 	$ensure						= 	'running'
-	$import_facts				= 	true
 	$import_config				= 	true
 	$confdir					= 	'/etc/xebia_puppet/config'
 	$scriptdir					= 	'/etc/xebia_puppet/script'
 	$markerdir					= 	'/etc/xebia_puppet/marker'
-	$export_facts				= 	true
 	$export_config				= 	true
 	$install					= 	'files'
 	$cli_conf_options 				= 	{ 	"deployit_hostname"    => "${::fqdn}",
@@ -43,7 +41,10 @@ class deployit::params{
                                                 		"deployit_password"    => "${admin_password}",
                                                 		"deployit_port"        => "${http_port}" 
 							}
-	$user_key 				= "AAAAB3NzaC1yc2EAAAABIwAAAQEA0g6DUrMHsEFYb58cam+WaUoqDi0qhHc6sVcVR/Rb9XGWo9faTCfWukS7iYqfNKhsm5+lLAmBIe7ycyfWHcxvWL3vOAZBNlceImPl96Ow2op2Kej9wMYD1jFcgGmekOzzW+ZyOWStXUyzXS48cijG1C/m7+zizezL8i10rPjIKpiQVOm8io8iPOXI69YKej1x9U8Lz/JKV353n7KoaAycu5q2YN2rGyCs7jnNZgoP7agrQZs2vsCHbHs5UZVQVYiKIKKo6TK7oZQHZom8dAi/01GZRBS/BKFr0VnyUA79xLrRwcJ2Wgtlc5K76ItKOxqpJ7Ji2HxSRyFkESkXnbXuTQ=="
+	
+	$install_owner				= 	'deployit'
+	$install_group				= 	'deployit'
+	$install_owner_key 			= "AAAAB3NzaC1yc2EAAAABIwAAAQEA0g6DUrMHsEFYb58cam+WaUoqDi0qhHc6sVcVR/Rb9XGWo9faTCfWukS7iYqfNKhsm5+lLAmBIe7ycyfWHcxvWL3vOAZBNlceImPl96Ow2op2Kej9wMYD1jFcgGmekOzzW+ZyOWStXUyzXS48cijG1C/m7+zizezL8i10rPjIKpiQVOm8io8iPOXI69YKej1x9U8Lz/JKV353n7KoaAycu5q2YN2rGyCs7jnNZgoP7agrQZs2vsCHbHs5UZVQVYiKIKKo6TK7oZQHZom8dAi/01GZRBS/BKFr0VnyUA79xLrRwcJ2Wgtlc5K76ItKOxqpJ7Ji2HxSRyFkESkXnbXuTQ=="
 	
 			
 }

@@ -39,7 +39,8 @@ define deployit::types::postgresql_ssh ($hostname = "${::hostname}",
   				 ensure => present,
 		}
 	}
-	if ! defined(Deployit::Features::Ci["postgresql_database_${db_name}"] {	
+	
+	if ! defined(Deployit::Features::Ci["postgresql_database_${db_name}"]) {	
 		deployit::features::ci {
 			"postgresql_database_${db_name} " :
 				ciId => "Infrastructure/${hostname}/${db_name}",
