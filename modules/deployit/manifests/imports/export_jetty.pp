@@ -6,7 +6,7 @@ define deployit::imports::export_jetty(
 	$customer	=  "xx",
 	$application 	=  "xx",
 	$universe	=  "xx",
-	$hostname	=  "${::hostname}",
+	$remotehost	=  "",
 	$environments 	=  "${::environment}",
 	$fqdn 		=  "${::fqdn}"
 		
@@ -25,7 +25,7 @@ define deployit::imports::export_jetty(
 		$ensure_age = true
 		notify{"${name} age: ${age} timestamp: ${timestamp} too old ":} 
 	}
-	if ($universe == params_lookup("universe", global)) {
+	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
 		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} wrong universe ":}
 	}
@@ -33,12 +33,13 @@ define deployit::imports::export_jetty(
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
 		deployit::types::jetty_ssh {
-			"${instance_name}" :
+			"${remotehost}-${instance_name}" :
 				environments 	=> "general",
 				homedir	        => "${homedir}",
 				instance_name 	=> "${instance_name}",
 				application	=> "${application}",
 				customer	=> "${customer}",
+				remotehost	=> "${remotehost}"
 		} 
 	}
 	

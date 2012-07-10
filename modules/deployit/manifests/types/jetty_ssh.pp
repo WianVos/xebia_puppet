@@ -1,10 +1,11 @@
-define deployit::types::jetty_ssh ($hostname = "${::hostname}",
+define deployit::types::jetty_ssh ($remotehost, 
 	$homedir	,
 	$instance_name ,
 	$environments 	= "${::environment}",
 	$fqdn 			= "${::fqdn}",
 	$customer		= undef,
-	$application	= undef
+	$application	= undef,
+	$remotehost	= ""
 	){
 	
 	case $customer {
@@ -26,9 +27,9 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 		}
 	}
 	
-	if ! defined(Deployit::Features::Ci["${hostname} ssh-host"]){
-	deployit::features::ci{ "${hostname} ssh-host":
- 				 ciId => "Infrastructure/${hostname}",
+	if ! defined(Deployit::Features::Ci["${remotehost} ssh-host"]){
+	deployit::features::ci{ "${remotehost} ssh-host":
+ 				 ciId => "Infrastructure/${remotehost}",
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
                  		sudoUsername => 'root', address => "${fqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
@@ -38,14 +39,14 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 	}
 	
 	deployit::features::ci {
-		"jetty_server_${hostname}_${instance_name} " :
-			ciId => "Infrastructure/${hostname}/${instance_name}",
+		"jetty_server_${remotehost}_${instance_name} " :
+			ciId => "Infrastructure/${remotehost}/${instance_name}",
 			ciType => 'jetty.Server',
 			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
 			stopScript => "${homedir}/stop.sh"},
 			ciEnvironments => "${ciEnv}",
 			require =>
-			Deployit::Features::Ci["${hostname} ssh-host"],
+			Deployit::Features::Ci["${remotehost} ssh-host"],
 			ensure => present,
 	}
 }

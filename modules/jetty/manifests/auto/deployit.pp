@@ -17,7 +17,8 @@ define jetty::auto::deployit (
 			universe => "${universe}",
 			homedir => "${homedir}",
 			environments => "${::environment}",
-			fqdn => "${::fqdn}"
+			fqdn => "${::fqdn}",
+			remotehost => "${::hostname}"
 	}
 	
 }
