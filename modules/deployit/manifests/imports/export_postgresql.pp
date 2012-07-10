@@ -1,14 +1,12 @@
-define deployit::imports::export_jetty(
-	$instance_name ,
-	$homedir,
+define deployit::imports::export_postgresql(
+	$dbname ,
 	$timestamp	=  inline_template("<%= Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') %>"),
 	$maxage 	=  "28800",
 	$customer	=  "xx",
 	$application 	=  "xx",
 	$universe	=  "xx",
 	$remotehost	=  "",
-	$environments 	=  "${::environment}",
-	$remotefqdn 		=  ""
+	$environments 	=  "${::environment}"
 		
 ){
 	notify {
@@ -32,15 +30,14 @@ define deployit::imports::export_jetty(
 	
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
-		deployit::types::jetty_ssh {
+		deployit::types::postgresql_ssh {
 			"${remotehost}-${instance_name}" :
 				environments 	=> "general",
 				homedir	        => "${homedir}",
 				instance_name 	=> "${instance_name}",
 				application	=> "${application}",
 				customer	=> "${customer}",
-				remotehost	=> "${remotehost}",
-				remotefqdn	=> "${remotefqdn}"
+				remotehost	=> "${remotehost}"
 		} 
 	}
 	
