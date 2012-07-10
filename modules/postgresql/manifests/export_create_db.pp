@@ -28,16 +28,14 @@ define postgresql::export_create_db(
 	}
 	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
-		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} wrong universe ":}
 	}
-	if (("${customer}" == params_lookup("customer", global) or $customer == "xx")) {
+	if (("${customer}" == params_lookup("customer", global) or "${customer}" == "xx")) {
 		$ensure_customer = true
-		                notify{"${name} customer: ${local_customer}  wrong customer":}
 	}
 	
 	
 	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) {
-
+		notify{"creating database ${customer}-${application}": }
 		# if the database does not exist create it 
 		if !defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
