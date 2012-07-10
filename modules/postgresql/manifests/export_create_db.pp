@@ -64,6 +64,13 @@ define postgresql::export_create_db(
 					target => "${datadir}/pg_hba.conf",
 			}
 		}
+		
+		if !defined(Deployit::Exports::Create_deployit_user["deployit_user"]){
+			
+			Deployit::Exports::Create_deployit_user <<| |>>
+		
+		}
+		
 		@@deployit::imports::export_postgresql{
 			"${hostname}-${db_name}":
 				customer => "${customer}",
