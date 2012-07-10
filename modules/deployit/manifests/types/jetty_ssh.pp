@@ -26,7 +26,7 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 		}
 	}
 	
-	if ! defined(Deployit_cli::Features::Ci["${hostname} ssh-host"]){
+	if ! defined(Deployit::Features::Ci["${hostname} ssh-host"]){
 	deployit::features::ci{ "${hostname} ssh-host":
  				 ciId => "Infrastructure/${hostname}",
   				 ciType => 'overthere.SshHost',

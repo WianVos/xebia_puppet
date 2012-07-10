@@ -153,9 +153,6 @@ class jetty(
     }
     
 	create_resources(jetty::instance, $instances )
-  	#deployit_cli::types::jetty_ssh{"jetty instance":
-	#			environments => "general",
-	#			require => Service["jetty"]
-	#}
+  	
   	
 }

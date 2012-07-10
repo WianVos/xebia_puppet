@@ -19,7 +19,8 @@ define jetty::instance(
   $universe			= params_lookup('universe', 'global'),
   $application 		= params_lookup('application', global),
   $customer 		= params_lookup('customer', global),
-  $auto_db			= false
+  $auto_postgresql	= params_lookup('auto_db', global),
+  $auto_deployit	= params_lookup('auto_deployit',global)
   
 ) {
 
@@ -248,27 +249,28 @@ file {
         stop       => "${installdir}/stop.sh > /dev/null 2>&1",
         status     => "ps -fU ${instance_name} | grep jetty > /dev/null 2>&1",
        }
- # deployit intergration
- 
- deployit_cli::types::jetty_ssh {
-	"${instance_name}" :
-		environments 	=> "general",
-		homedir	 		=> "${installdir}",
-		instanceName 	=> "${instance_name}",
-		application		=> "${application}",
-		customer		=> "${customer}",
-	} 
-
-#if auto_db is true then try to create the database by unsing a function from the postgresql module . 
-# this needs a change btw	
- if $auto_db == true {
- 	@@postgresql::export_create_db {
- 		"${instance_name}" :
+ if $auto_deployit {
+ 	jetty::auto::deployit {
+ 		"${::hostname}_${name}" :
+ 			instanceName => "${name}",
  			application => "${application}",
+ 			homedir => ${installdir},
  			customer => "${customer}",
- 			universe => "${universe}"
+ 			universe => "${universe}",
+ 			environments => "general"
  	}
  }
+
+ #if auto_db is true then try to create the database by unsing a function from the postgresql module . 
+ # this needs a change btw	
+ if $auto_postgresql {
+ 	jetty::auto::postgresql {
+ 		"${::hostname}_${name}" :
+ 			instance_name => "${name}",
+ 			application => "${application}",
+ 			customer => "${customer}",
+ 			universe => "${universe}",
+ 	}
  }	
-    
+}    
 

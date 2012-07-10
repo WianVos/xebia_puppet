@@ -91,16 +91,17 @@ class deployit(
 		}	
 	}
 	if $import_config {
-		
+		Deployit::Imports::Export_jetty <<| |>>
+		Deployit::Imports::Export_postgresql <<| |>>
 	}
 	
 #
 	 file {
-                        "${confdir}/deployit.conf" :
-                                require => File["${confdir}"],
-                                content =>
-                                inline_template("<% cli_conf_options.sort_by {|key, value| key}.each do |key, value| %><%= key %>='<%= value %>' \n<% end %>")
-                }	
+		"${confdir}/deployit.conf" :
+			require => File["${confdir}"],
+			content =>
+			inline_template("<% cli_conf_options.sort_by {|key, value| key}.each do |key, value| %><%= key %>='<%= value %>' \n<% end %>")
+	}	
 	
 	#install packages as needed by deployit	
 	package{$packages:

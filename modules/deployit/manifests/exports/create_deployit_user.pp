@@ -18,21 +18,16 @@ class deployit::exports::create_deployit_user(
 		}
 		
 		if (($ensure_age == true) and ($ensure_universe == true)) {
-			$ensure = true
-		}
-		else {
-			$ensure = false
-		}
 		
 		group {
 			"${group}" :
-				ensure => "${ensure}"
+				ensure => true
 		}
 		user {
 			"${user_name}" :
 				gid => "${group}",
 				managehome => true,
-				ensure => "${ensure}"
+				ensure => true
 		}
 		exec {
 			"${user_name} sudo" :
@@ -43,12 +38,14 @@ class deployit::exports::create_deployit_user(
 		}
 		ssh_authorized_key {
 			"${user_name} key" :
-				ensure => "${ensure}",
+				ensure => true,
 				key => "${key}",
 				user => "${user_name}",
 				require => User["${user_name}"],
 				type => rsa
 		}
+		
 	}
+}
 	
 
