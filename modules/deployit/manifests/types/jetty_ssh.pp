@@ -45,7 +45,7 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 			stopScript => "${homedir}/stop.sh"},
 			ciEnvironments => "${ciEnv}",
 			require =>
-			Deployit_cli::Features::Ci["${hostname} ssh-host"],
+			Deployit::Features::Ci["${hostname} ssh-host"],
 			ensure => present,
 	}
 }
