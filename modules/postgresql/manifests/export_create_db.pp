@@ -24,7 +24,6 @@ define postgresql::export_create_db(
 	
 	if ("${age}" < "${maxage}") {
 		$ensure_age = true
-		notify{"${name} age: ${age} timestamp: ${timestamp} too old ":} 
 	}
 	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
