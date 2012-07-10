@@ -299,7 +299,7 @@ exec{
 }
 
 file {"${scriptdir}/$name":
-                        require                 => Class["xebia_common::regdir"],
+                        require                 => File["${scriptdir}"],
                         source                  => "puppet:///modules/deployit/features/cli_python/",
                         sourceselect    	=> all,
                         recurse                 => remote,
