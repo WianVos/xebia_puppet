@@ -35,6 +35,7 @@ define deployit::imports::export_postgresql(
 		
 		deployit::types::postgresql_ssh {
 			"${remotehost}-${dbname}" :
+				db_name	=> "${dbname}",
 				environments 	=> "general",
 				application	=> "${application}",
 				customer	=> "${customer}",
