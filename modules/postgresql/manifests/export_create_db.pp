@@ -4,7 +4,8 @@ define postgresql::export_create_db(
 	$customer	=	"xx",
 	$application =  "xx",
 	$universe	=	"xx",
-	$hostname	=   "${::hostname}",
+	$remotehost	=   "${::hostname}",
+	$remotefqdn =   "${::remotefqdn}",
 	$datadir	=   "/data"
 	){
 	notify {
@@ -74,8 +75,8 @@ define postgresql::export_create_db(
 				customer => "${customer}",
 				application => "${application}",
 				universe	=> "${universe}",
-				remotehost	=> "${::hostname}",
-				remotefqdn	=> "${::fqdn}",
+				remotehost	=> "${remotehost}",
+				remotefqdn	=> "${remotefqdn}",
 				db_username	=> "${db_user}",
 				db_password => "${db_password}"
 		}
