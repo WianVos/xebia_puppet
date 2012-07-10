@@ -19,7 +19,7 @@ define jetty::instance(
   $universe			= params_lookup('universe', 'global'),
   $application 		= params_lookup('application', global),
   $customer 		= params_lookup('customer', global),
-  $auto_postgresql	= params_lookup('auto_db', global),
+  $auto_db	= params_lookup('auto_db', global),
   $auto_deployit	= params_lookup('auto_deployit',global)
   
 ) {
@@ -252,9 +252,9 @@ file {
  if $auto_deployit {
  	jetty::auto::deployit {
  		"${::hostname}_${name}" :
- 			instanceName => "${name}",
+ 			instance_name => "${name}",
  			application => "${application}",
- 			homedir => ${installdir},
+ 			homedir => "${installdir}",
  			customer => "${customer}",
  			universe => "${universe}",
  			environments => "general"
@@ -263,7 +263,7 @@ file {
 
  #if auto_db is true then try to create the database by unsing a function from the postgresql module . 
  # this needs a change btw	
- if $auto_postgresql {
+ if $auto_db {
  	jetty::auto::postgresql {
  		"${::hostname}_${name}" :
  			instance_name => "${name}",

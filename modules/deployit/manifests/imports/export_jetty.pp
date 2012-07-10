@@ -1,14 +1,14 @@
 define deployit::imports::export_jetty(
-	$instanceName ,
+	$instance_name ,
 	$homedir,
-	$timestamp	=	inline_template("<%= Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') %>"),
-	$maxage 	= 	"28800",
-	$customer	=	"xx",
-	$application =  "xx",
-	$universe	=	"xx",
-	$hostname	=   "${::hostname}",
-	$environments 	= "${::environment}",
-	$fqdn 			= "${::fqdn}"
+	$timestamp	=  inline_template("<%= Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') %>"),
+	$maxage 	=  "28800",
+	$customer	=  "xx",
+	$application 	=  "xx",
+	$universe	=  "xx",
+	$hostname	=  "${::hostname}",
+	$environments 	=  "${::environment}",
+	$fqdn 		=  "${::fqdn}"
 		
 ){
 	notify {
@@ -33,12 +33,12 @@ define deployit::imports::export_jetty(
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
 		deployit::types::jetty_ssh {
-			"${instanceName}" :
+			"${instance_name}" :
 				environments 	=> "general",
-				homedir	 		=> "${homedir}",
-				instanceName 	=> "${instanceName}",
-				application		=> "${application}",
-				customer		=> "${customer}",
+				homedir	        => "${homedir}",
+				instance_name 	=> "${instance_name}",
+				application	=> "${application}",
+				customer	=> "${customer}",
 		} 
 	}
 	

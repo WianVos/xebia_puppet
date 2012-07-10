@@ -1,5 +1,5 @@
 define jetty::auto::deployit (
-	$instanceName,
+	$instance_name,
 	$application,
 	$homedir,
 	$customer = params_lookup("customer", 'global'),
@@ -10,8 +10,8 @@ define jetty::auto::deployit (
 	Deployit::Exports::Create_deployit_user <<| |>>
 	
 	@@deployit::imports::export_jetty {
-		"${::hostname}-${::instanceName}" :
-			instanceName => "${instanceName}",
+		"${::hostname}-${::instance_name}" :
+			instance_name => "${instance_name}",
 			customer => "${customer}",
 			application => "${application}",
 			universe => "${universe}",

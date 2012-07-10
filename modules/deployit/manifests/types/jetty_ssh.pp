@@ -1,6 +1,6 @@
 define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 	$homedir	,
-	$instanceName ,
+	$instance_name ,
 	$environments 	= "${::environment}",
 	$fqdn 			= "${::fqdn}",
 	$customer		= undef,
@@ -38,8 +38,8 @@ define deployit::types::jetty_ssh ($hostname = "${::hostname}",
 	}
 	
 	deployit::features::ci {
-		"jetty_server_${hostname}_${instanceName} " :
-			ciId => "Infrastructure/${hostname}/${instanceName}",
+		"jetty_server_${hostname}_${instance_name} " :
+			ciId => "Infrastructure/${hostname}/${instance_name}",
 			ciType => 'jetty.Server',
 			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
 			stopScript => "${homedir}/stop.sh"},
