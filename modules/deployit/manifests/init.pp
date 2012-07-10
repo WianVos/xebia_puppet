@@ -87,6 +87,10 @@ class deployit(
 	#export deployit user
 	if $export_config {
 		@@deployit::exports::create_deployit_user{"deployit_user":
+			key => params_lookup('install_owner_key', global),
+			user_name => "${install_owner}",
+			group	=> "${install_owner}",
+			universe => "${universe}"
 		
 		}	
 	}

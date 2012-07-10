@@ -21,7 +21,8 @@ define deployit::features::execute(
 	$params = "",
 	$homedir = "${deployit::params::homedir}/cli",
 	$confdir = "/etc/xebia_puppet/config",
-	$scriptdir = "${deployit::params::scriptdir}/deployit"
+	$scriptdir = "${deployit::params::scriptdir}/deployit",
+	$markerdir = "${deployit::params::markerdir}"
 ) {
 
 	if ! defined(Class["deployit"]){

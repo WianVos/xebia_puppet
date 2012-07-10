@@ -1,8 +1,8 @@
 define deployit::exports::create_deployit_user(
-	$user_name = params_lookup("install_owner"),
-	$group = params_lookup("install_owner"),
-	$key = params_lookup("install_user_key"),
-	$universe = params_lookup('univers', global),
+	$user_name ,
+	$group ,
+	$key ,
+	$universe ,
 	$timestamp	=	inline_template("<%= Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') %>"),
 	$maxage 	= 	"28800"
 	) {
