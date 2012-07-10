@@ -44,7 +44,7 @@ define deployit::features::execute(
 	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
-			command => "bash -c \'${scriptdir}/run_cli.sh -f ${source} -- ${params}\' && touch ${markerfile}",
+			command => "bash -c \'${scriptdir}/run_cli.sh -f ${source} -- ${params}\'; if [ $? -eq 0 ] ; then /usr/bin/touch $markerfile ; fi ",
 			require => [File["run_cli.sh wrapper"]],
 			creates => "${markerfile}",
 			logoutput => true,
