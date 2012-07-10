@@ -26,11 +26,11 @@ define postgresql::export_create_db(
 		$ensure_age = true
 		notify{"${name} age: ${age} timestamp: ${timestamp} too old ":} 
 	}
-	if ($universe == params_lookup("universe", global)) {
+	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
 		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} wrong universe ":}
 	}
-	if (($customer == params_lookup("customer", global) or $customer == "xx")) {
+	if (("${customer}" == params_lookup("customer", global) or $customer == "xx")) {
 		$ensure_customer = true
 		                notify{"${name} customer: ${local_customer}  wrong customer":}
 	}
