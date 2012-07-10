@@ -7,5 +7,5 @@ jetty_instances :
     port : 8080
     application : <application>
     customer : <customer>
-    auto_db : false
+    auto_db : true
     auto_deployit : true
