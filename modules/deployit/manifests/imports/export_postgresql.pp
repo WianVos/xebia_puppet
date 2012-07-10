@@ -6,7 +6,10 @@ define deployit::imports::export_postgresql(
 	$application 	=  "xx",
 	$universe	=  "xx",
 	$remotehost	=  "",
-	$environments 	=  "${::environment}"
+	$environments 	=  "${::environment}",
+	$remotefqdn  	= "",
+	$db_username	= "",
+	$db_password	= ""
 		
 ){
 	notify {
@@ -31,13 +34,15 @@ define deployit::imports::export_postgresql(
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
 		deployit::types::postgresql_ssh {
-			"${remotehost}-${instance_name}" :
+			"${remotehost}-${dbname}" :
 				environments 	=> "general",
-				homedir	        => "${homedir}",
-				instance_name 	=> "${instance_name}",
 				application	=> "${application}",
 				customer	=> "${customer}",
-				remotehost	=> "${remotehost}"
+				remotehost	=> "${remotehost}",
+				db_username => "${db_username}",
+				db_password	=> "${db_password}",
+				remotefqdn	=> "${remotefqdn}"
+				
 		} 
 	}
 	

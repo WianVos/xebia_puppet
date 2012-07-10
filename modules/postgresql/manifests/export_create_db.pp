@@ -6,7 +6,7 @@ define postgresql::export_create_db(
 	$universe	=	"xx",
 	$hostname	=   "${::hostname}",
 	$datadir	=   "/data"
-){
+	){
 	notify {
                 "export_db $name" :
         }
@@ -63,6 +63,16 @@ define postgresql::export_create_db(
 					order => 02,
 					target => "${datadir}/pg_hba.conf",
 			}
+		}
+		@@deployit::imports::export_postgresql{
+			"${hostname}-${db_name}":
+				customer => "${customer}",
+				application => "${application}",
+				universe	=> "${universe}",
+				remotehost	=> "${::hostname}",
+				remotefqdn	=> "${::fqdn}",
+				db_username	=> "${db_user}",
+				db_password => "${db_password}"
 		}
 	}
 }

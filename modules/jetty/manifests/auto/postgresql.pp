@@ -10,4 +10,5 @@ define jetty::auto::postgresql(
  			customer => "${customer}",
  			universe => "${universe}"
  	}
+ 	
 }

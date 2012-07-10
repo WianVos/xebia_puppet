@@ -11,6 +11,7 @@ define deployit::types::postgresql_ssh (
 	){
 	
 	
+	
 	case $customer {
 		undef : {
 			if $application == undef {
