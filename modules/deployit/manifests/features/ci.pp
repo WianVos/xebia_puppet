@@ -27,13 +27,13 @@ define deployit::features::ci(
 		}
 
 		deployit::features::execute { "set tags on CI ${ciId}":
-			require 	=> Deployit_cli::Features::Execute["create CI ${ciId} of type ${ciType}"], 
+			require 	=> Deployit::Features::Execute["create CI ${ciId} of type ${ciType}"], 
 			source 		=> "${script_dir}/deployit/set-tags.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciTags.each do |val| -%>'<%= val %>' <% end %>"),
 		}
 
 		deployit::features::execute { "set environments on CI ${ciId}":
-			require		=> Deployit_cli::Features::Execute["set tags on CI ${ciId}"],
+			require		=> Deployit::Features::Execute["set tags on CI ${ciId}"],
 			source 		=> "${script_dir}/deployit/set-envs.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciEnvironments.each do |val| -%>'<%= val %>' <% end %>"),
 		}
