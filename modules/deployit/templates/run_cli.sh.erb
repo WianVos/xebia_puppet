@@ -6,3 +6,6 @@ set -x
 
 <%= homedir %>/bin/cli.sh -host $deployit_hostname  -port $deployit_port -username $deployit_user -password $deployit_password $@  
 
+#touch a file in the marker dir when where done . 
+
+if [ $? -eq 0 ] ; then touch <% markerfile %> ; fi

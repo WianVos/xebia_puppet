@@ -23,8 +23,11 @@ define deployit::features::execute(
 	$confdir = "/etc/xebia_puppet/config",
 	$scriptdir = "${deployit::params::scriptdir}/deployit",
 	$markerdir = "${deployit::params::markerdir}"
+	
 ) {
 
+	$markerfile = "${markerdir}/${name}.txt"
+	
 	if ! defined(Class["deployit"]){
 		class{"deployit":} 
 	}
@@ -41,7 +44,7 @@ define deployit::features::execute(
 	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
-			command => "${scriptdir}/run_cli.sh -f ${source} -- ${params} && touch ${markerdir}/${name}.txt",
+			command => "${scriptdir}/run_cli.sh -f ${source} -- ${params}",
 			require => [File["run_cli.sh wrapper"]],
 			creates => "${markerdir}/${name}.txt",
 			logoutput => true,
