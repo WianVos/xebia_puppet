@@ -92,7 +92,7 @@ class deployit(
 	}
 	if $import_config {
 		Deployit::Imports::Export_jetty <<| |>>
-		Deployit::Imports::Export_postgresql <<| |>>
+	#	Deployit::Imports::Export_postgresql <<| |>>
 	}
 	
 #

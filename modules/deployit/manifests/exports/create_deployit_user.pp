@@ -1,4 +1,4 @@
-class deployit::exports::create_deployit_user(
+define deployit::exports::create_deployit_user(
 	$user_name = params_lookup("install_owner"),
 	$group = params_lookup("install_owner"),
 	$key = params_lookup("install_user_key"),
