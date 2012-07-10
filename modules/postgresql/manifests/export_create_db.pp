@@ -71,6 +71,7 @@ define postgresql::export_create_db(
 		
 		@@deployit::imports::export_postgresql{
 			"${hostname}-${db_name}":
+				dbname	=> "${db_name}",
 				customer => "${customer}",
 				application => "${application}",
 				universe	=> "${universe}",
