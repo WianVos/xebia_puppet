@@ -41,7 +41,7 @@ define deployit::features::execute(
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
 			command => "${scriptdir}/run_cli.sh -f ${source} -- ${params}",
-			require => [File["run_cli.sh wrapper"],Class["deployit"]],
+			require => [File["run_cli.sh wrapper"]],
 			logoutput => true,
 			path => ["/usr/bin","/bin","/sbin","/usr/sbin"]
 			}
