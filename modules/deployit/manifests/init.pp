@@ -24,6 +24,7 @@ class deployit(
 	$plugin_install				= params_lookup('plugin_install'),
 	$key_install				= params_lookup('key_install'),
 	$export_config				= params_lookup('export_config'),
+	$infradir					= params_lookup('infradir'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
 	$markerdir					= params_lookup('markerdir'),
@@ -70,16 +71,15 @@ class deployit(
 		default	=> "running"
 	}
 	
-	if ! defined(Class['xebia_common::regdir']){
-		class{'xebia_common::regdir':
-			absent 		=> "${absent}",
-			config_dir	=> "${confdir}",
-			script_dir	=> "${scriptdir}",
-			marker_dir	=> "${markerdir}",
-			
-		}
-	} 
 	
+	 
+	file {
+		["${infradir}", "${markerdir}", "${scriptdir}", "${confdir}"] :
+			ensure => "${manage_directory}",
+			owner => root,
+			group => root,
+			mode => 770,
+	}
 	
 	
 	#xebia_puppet intergration stuff

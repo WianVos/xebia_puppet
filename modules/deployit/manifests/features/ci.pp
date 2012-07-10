@@ -21,19 +21,19 @@ define deployit::features::ci(
 ) {
 	if $ensure == present {
 
-		deployit::features::execute { "create CI ${ciId} of type ${ciType}":
+		deployit::features::execute { "create-CI-${ciId}-of-type-${ciType}":
 			source 		=> "${script_dir}/deployit/create-ci.py",
 			params 		=> inline_template("'<%= ciId %>' '<%= ciType %>' <% ciValues.each do |key, val| -%><%= key %>='<%= val %>' <% end -%>"),
 		}
 
-		deployit::features::execute { "set tags on CI ${ciId}":
-			require 	=> Deployit::Features::Execute["create CI ${ciId} of type ${ciType}"], 
+		deployit::features::execute { "set-tags-on-CI-${ciId}":
+			require 	=> Deployit::Features::Execute["create-CI-${ciId}-of-type-${ciType}"], 
 			source 		=> "${script_dir}/deployit/set-tags.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciTags.each do |val| -%>'<%= val %>' <% end %>"),
 		}
 
-		deployit::features::execute { "set environments on CI ${ciId}":
-			require		=> Deployit::Features::Execute["set tags on CI ${ciId}"],
+		deployit::features::execute { "set-environments-on-CI-${ciId}":
+			require		=> Deployit::Features::Execute["set-tags-on-CI-${ciId}"],
 			source 		=> "${script_dir}/deployit/set-envs.py",
 			params 		=> inline_template("'<%= ciId %>' <% ciEnvironments.each do |val| -%>'<%= val %>' <% end %>"),
 		}
