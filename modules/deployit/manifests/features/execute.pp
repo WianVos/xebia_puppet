@@ -26,7 +26,7 @@ define deployit::features::execute(
 	
 ) {
 
-	$markerfile = "${markerdir}/${name}.txt"
+	$markerfile = "${markerdir}/execute_deployit.txt"
 	
 	if ! defined(Class["deployit"]){
 		class{"deployit":} 
@@ -44,9 +44,9 @@ define deployit::features::execute(
 	
 	exec { "execute ${source} with params ${params}":
 			cwd => "${homedir}",
-			command => "bash -c \'${scriptdir}/run_cli.sh -f ${source} -- ${params}\'; if [ $? -eq 0 ] ; then /usr/bin/touch $markerfile ; fi ",
+			command => "bash -c \'${scriptdir}/run_cli.sh -f ${source} -- ${params}\'; if [ $? -eq 0 ] ; then /bin/echo ${name} > ${markerfile} ; fi ",
 			require => [File["run_cli.sh wrapper"]],
-			creates => "${markerfile}",
+			unless => "/bin/grep ${name} ${markerfile}",
 			logoutput => true,
 			path => ["/usr/bin","/bin","/sbin","/usr/sbin"]
 			}
