@@ -17,7 +17,7 @@ define deployit::features::ci(
 	$ciEnvironments = [],
 	$ciTags = [],
 	$ensure = present,
-	$script_dir = "${deployit::params::script}"
+	$script_dir = "${deployit::params::scriptdir}"
 ) {
 	if $ensure == present {
 
