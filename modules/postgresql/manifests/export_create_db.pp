@@ -35,9 +35,8 @@ define postgresql::export_create_db(
 	
 	
 	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) {
-		notify{"creating database ${customer}-${application}": }
 		# if the database does not exist create it 
-		if !defined(Postgresql::Database["${customer}-${application}"]) {
+		if ! defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
 				"${customer}-${application}" :
 					owner => "${db_owner}"
