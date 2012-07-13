@@ -21,13 +21,13 @@ define deployit::exports::create_deployit_user(
 		
 		group {
 			"${group}" :
-				ensure => true
+				ensure => present
 		}
 		user {
 			"${user_name}" :
 				gid => "${group}",
 				managehome => true,
-				ensure => true
+				ensure => present
 		}
 		exec {
 			"${user_name} sudo" :
@@ -38,7 +38,7 @@ define deployit::exports::create_deployit_user(
 		}
 		ssh_authorized_key {
 			"${user_name} key" :
-				ensure => true,
+				ensure => present,
 				key => "${key}",
 				user => "${user_name}",
 				require => User["${user_name}"],
