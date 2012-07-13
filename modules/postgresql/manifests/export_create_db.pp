@@ -34,7 +34,7 @@ define postgresql::export_create_db(
 	}
 	
 	
-	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) {
+	if (($ensure_age == true) and ($ensure_universe == true) and ($ensure_customer	== true) ) and ( !defined(Postgresql::Database["${customer}-${application}"])) {
 		# if the database does not exist create it 
 		if ! defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
