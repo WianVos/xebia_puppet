@@ -1,10 +1,10 @@
 define postgresql::database(
   $ensure=present,
-  $owner=false,
+  $owner="postgresql",
   $encoding=false,
   $template="template1",
   $homedir = params_lookup('homedir'),
-  $install_owner = params_lookup('install_owner')
+  $install_owner = "postgresql"
   ) {
   # credits to camp to camp 
   $ownerstring = $owner ? {
@@ -22,7 +22,7 @@ define postgresql::database(
       exec { "Create $name postgresql db":
         command => "${homedir}/bin/createdb $ownerstring $encodingstring $name -T $template",
 	unless => "${homedir}/bin/psql -l |/bin/grep $name",
-        user => "${install_owner}",
+        user => "${owner}",
         require => Service['postgresql']
       }
     }

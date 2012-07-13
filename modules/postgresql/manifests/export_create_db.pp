@@ -39,7 +39,6 @@ define postgresql::export_create_db(
 		if ! defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
 				"${customer}-${application}" :
-					owner => "${db_owner}"
 			}
 		}
 
