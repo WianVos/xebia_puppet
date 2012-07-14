@@ -3,6 +3,7 @@ define postgresql::export_create_db(
 	$maxage 	= 	"28800",
 	$customer	=	"xx",
 	$application =  "xx",
+	$appstage	= "xx",
 	$universe	=	"xx",
 	$remotehost	=   "${::hostname}",
 	$remotefqdn =   "${::remotefqdn}",
@@ -68,7 +69,7 @@ define postgresql::export_create_db(
 		}
 		
 		@@deployit::imports::export_postgresql{
-			"${hostname}-${db_name}":
+			"${remotehost}-${db_name}":
 				dbname	=> "${db_name}",
 				customer => "${customer}",
 				application => "${application}",
@@ -76,7 +77,8 @@ define postgresql::export_create_db(
 				remotehost	=> "${remotehost}",
 				remotefqdn	=> "${remotefqdn}",
 				db_username	=> "${db_user}",
-				db_password => "${db_password}"
+				db_password => "${db_password}",
+				appstage	=> "${appstage}"
 		}
 	}
 }

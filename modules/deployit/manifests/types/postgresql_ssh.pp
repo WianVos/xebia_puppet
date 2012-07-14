@@ -7,23 +7,21 @@ define deployit::types::postgresql_ssh (
 	$postgresql_home = "/opt/postgresql",
 	$db_username	= "",
 	$db_password	= "",
-	$remotehost		= ""
-	){
-	
-	
-	
+	$remotehost		= "",
+	$appstage		= undef
+	) {
 	case $customer {
 		undef : {
 			if $application == undef {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${environments}"
 				}
 				else {
-					$ciEnv = "Environments/${stage}"
+					$ciEnv = "Environments/${appstage}"
 				}
 			}
 			else {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${application}"
 				}
 				else {
@@ -36,7 +34,7 @@ define deployit::types::postgresql_ssh (
 								ensure => present
 						}
 					}
-					$ciEnv = "Environments/${application}/${stage}"
+					$ciEnv = "Environments/${application}/${appstage}"
 				}
 			}
 		}
@@ -51,7 +49,7 @@ define deployit::types::postgresql_ssh (
 				}
 			}
 			if $application == undef {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/default"
 				}
 				else {
@@ -63,12 +61,12 @@ define deployit::types::postgresql_ssh (
 								ciValues => {name => "default"},
 								ensure => present
 						}
-						$ciEnv = "Environments/${customer}/default/${stage}"
+						$ciEnv = "Environments/${customer}/default/${appstage}"
 					}
 				}
 			}
 			else {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/${application}"
 				}
 				else {
@@ -81,34 +79,37 @@ define deployit::types::postgresql_ssh (
 								ciValues => {name => "${application}"},
 								ensure => present
 						}
-						$ciEnv = "Environments/${customer}/${application}/${stage}"
+						$ciEnv = "Environments/${customer}/${application}/${appstage}"
 					}
 				}
 			}
 		}
-	
-	
-	if ! defined(Deployit::Features::Ci["${remotehost}-ssh-host"]){
-		deployit::features::ci{ "${remotehost}-ssh-host":
- 				 ciId => "Infrastructure/${remotehost}",
-  				 ciType => 'overthere.SshHost',
-  				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
-                 sudoUsername => 'root', address => "${remotefqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
-                 ciEnvironments => "${ciEnv}",
-  				 ensure => present,
+		
+		}
+		if !defined(Deployit::Features::Ci["${remotehost}-ssh-host"]) {
+			deployit::features::ci {
+				"${remotehost}-ssh-host" :
+					ciId => "Infrastructure/${remotehost}",
+					ciType => 'overthere.SshHost',
+					ciValues => {os => UNIX, connectionType => SUDO, username => 'deployit',
+					password => 'deployit', sudoUsername => 'root', address =>
+					"${remotefqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa"},
+					ciEnvironments => "${ciEnv}",
+					ensure => present,
+			}
+		}
+		if !defined(Deployit::Features::Ci["postgresql_database_${db_name}"]) {
+			deployit::features::ci {
+				"postgresql_database_${db_name} " :
+					ciId => "Infrastructure/${remotehost}/${db_name}",
+					ciType => 'sql.PostgreSqlClient',
+					ciValues => {postgresqlHome => "$postgresql_home", databaseName =>
+					"${db_name}", username => "${db_username}", password => "${db_password}"},
+					ciEnvironments => "${ciEnv}",
+					require => Deployit::Features::Ci["${remotehost}-ssh-host"],
+					ensure => present,
+			}
 		}
 	}
 	
-	if ! defined(Deployit::Features::Ci["postgresql_database_${db_name}"]) {	
-		deployit::features::ci {
-			"postgresql_database_${db_name} " :
-				ciId => "Infrastructure/${remotehost}/${db_name}",
-				ciType => 'sql.PostgreSqlClient',
-				ciValues => { postgresqlHome => "$postgresql_home", databaseName => "${db_name}", username => "${db_username}", password => "${db_password}"},
-				ciEnvironments => "${ciEnv}",
-				require =>
-				Deployit::Features::Ci["${remotehost}-ssh-host"],
-				ensure => present,
-		}
-	}
-}
+

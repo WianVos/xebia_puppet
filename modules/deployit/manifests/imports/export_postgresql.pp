@@ -4,6 +4,7 @@ define deployit::imports::export_postgresql(
 	$maxage 	=  "28800",
 	$customer	=  "xx",
 	$application 	=  "xx",
+	$appstage		= "xx",
 	$universe	=  "xx",
 	$remotehost	=  "",
 	$environments 	=  "${::environment}",
@@ -42,7 +43,8 @@ define deployit::imports::export_postgresql(
 				remotehost	=> "${remotehost}",
 				db_username => "${db_username}",
 				db_password	=> "${db_password}",
-				remotefqdn	=> "${remotefqdn}"
+				remotefqdn	=> "${remotefqdn}",
+				appstage	=> "${appstage}"
 				
 		} 
 	}

@@ -19,7 +19,7 @@ define jetty::instance(
   $universe			= params_lookup('universe', 'global'),
   $application 		= params_lookup('application', global),
   $customer 		= params_lookup('customer', global),
-  $stage			= params_lookup('stage', global),
+  $appstage			= params_lookup('appstage', global),
   $auto_db	= params_lookup('auto_db', global),
   $auto_deployit	= params_lookup('auto_deployit',global)
   
@@ -31,7 +31,7 @@ define jetty::instance(
   
   
   # set the instancename on disk
-  $instance_name="${customer}-${application}-${stage}"
+  $instance_name="${customer}-${application}-${appstage}"
   
   #create runtime user
   $runtime_user="${customer}_jetty"
@@ -258,7 +258,7 @@ file {
  			homedir => "${installdir}",
  			customer => "${customer}",
  			universe => "${universe}",
- 			stage	=> "${stage}",
+ 			appstage	=> "${appstage}",
  			environments => "general"
  	}
  }
@@ -271,7 +271,7 @@ file {
  			instance_name => "${name}",
  			application => "${application}",
  			customer => "${customer}",
-  			stage	=> "${stage}",			
+  			appstage	=> "${appstage}",			
  			universe => "${universe}",
  	}
  }	

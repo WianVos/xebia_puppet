@@ -3,14 +3,14 @@ define jetty::auto::postgresql(
 	$application 	= "",
 	$customer		= "",
 	$universe		= "",
-	$stage			= ""
+	$appstage			= ""
 ){
 	@@postgresql::export_create_db {
  		"${instance_name}" :
  			application => "${application}",
  			customer => "${customer}",
  			universe => "${universe}",
- 			stage	=> "${stage}"
+ 			appstage	=> "${appstage}"
  	}
  	
 }

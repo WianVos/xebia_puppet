@@ -8,7 +8,8 @@ define deployit::imports::export_jetty(
 	$universe	=  "xx",
 	$remotehost	=  "",
 	$environments 	=  "${::environment}",
-	$remotefqdn 		=  ""
+	$remotefqdn 		=  "",
+	$appstage			= "xx"
 		
 ){
 	notify {
@@ -39,7 +40,8 @@ define deployit::imports::export_jetty(
 				application	=> "${application}",
 				customer	=> "${customer}",
 				remotehost	=> "${remotehost}",
-				remotefqdn	=> "${remotefqdn}"
+				remotefqdn	=> "${remotefqdn}",
+				appstage	=> "${appstage}"
 		} 
 	}
 	

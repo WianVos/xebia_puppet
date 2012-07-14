@@ -6,21 +6,21 @@ define deployit::types::jetty_ssh ($remotehost,
 	$customer		= undef,
 	$application	= undef,
 	$remotehost	= "",
-	$stage			= undef
+	$appstage			= undef
 	){
 	
 	case $customer {
 		undef : {
 			if $application == undef {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${environments}"
 				}
 				else {
-					$ciEnv = "Environments/${stage}"
+					$ciEnv = "Environments/${appstage}"
 				}
 			}
 			else {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${application}"
 				}
 				else {
@@ -33,7 +33,7 @@ define deployit::types::jetty_ssh ($remotehost,
 								ensure => present
 						}
 					}
-					$ciEnv = "Environments/${application}/${stage}"
+					$ciEnv = "Environments/${application}/${appstage}"
 				}
 			}
 		}
@@ -48,7 +48,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				}
 			}
 			if $application == undef {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/default"
 				}
 				else {
@@ -60,12 +60,12 @@ define deployit::types::jetty_ssh ($remotehost,
 								ciValues => {name => "default"},
 								ensure => present
 						}
-						$ciEnv = "Environments/${customer}/default/${stage}"
+						$ciEnv = "Environments/${customer}/default/${appstage}"
 					}
 				}
 			}
 			else {
-				if $stage == undef {
+				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/${application}"
 				}
 				else {
@@ -78,12 +78,12 @@ define deployit::types::jetty_ssh ($remotehost,
 								ciValues => {name => "${application}"},
 								ensure => present
 						}
-						$ciEnv = "Environments/${customer}/${application}/${stage}"
+						$ciEnv = "Environments/${customer}/${application}/${appstage}"
 					}
 				}
 			}
 		}
-	
+	}
 	
 	
 	
