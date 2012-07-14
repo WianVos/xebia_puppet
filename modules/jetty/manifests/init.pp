@@ -26,6 +26,7 @@ class jetty(
 	$universe				= params_lookup('universe', global),
 	$customer				= params_lookup('customer', global),
 	$application			= params_lookup('application', global),
+	$appstage				= params_lookup('appstage', global),
 	$instances				= params_lookup('instances')
 		
 ) inherits jetty::params{

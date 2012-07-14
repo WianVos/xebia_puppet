@@ -31,7 +31,7 @@ define jetty::instance(
   
   
   # set the instancename on disk
-  $instance_name="${customer}-${application}-${appstage}"
+  $instance_name="${customer}-${application}-${appstage}-${name}"
   
   #create runtime user
   $runtime_user="${customer}_jetty"
