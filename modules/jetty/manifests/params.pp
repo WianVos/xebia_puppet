@@ -23,8 +23,9 @@ class jetty::params{
 	$universe				= "general"
 	$customer				= "default"
 	$application			= "default_app"
-	$instances 				= { 'test1' => {port => 8080 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet"},
-								'test2' => {port => 8090 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet"},
-								'test3' => {port => 8100 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet"}}
+	$stage					= "test"
+	$instances 				= { 'test1' => {port => 8080 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet", stage => "test"},
+								'test2' => {port => 8090 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet", stage => "test"},
+								'test3' => {port => 8100 ,basedir => "${basedir}",application => "test", customer => "xebia_puppet", stage => "test"}}
 	
 }

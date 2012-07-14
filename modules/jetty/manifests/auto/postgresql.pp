@@ -2,13 +2,15 @@ define jetty::auto::postgresql(
 	$instance_name,
 	$application 	= "",
 	$customer		= "",
-	$universe		= ""
+	$universe		= "",
+	$stage			= ""
 ){
 	@@postgresql::export_create_db {
  		"${instance_name}" :
  			application => "${application}",
  			customer => "${customer}",
- 			universe => "${universe}"
+ 			universe => "${universe}",
+ 			stage	=> "${stage}"
  	}
  	
 }

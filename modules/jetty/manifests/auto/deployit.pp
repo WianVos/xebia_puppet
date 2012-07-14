@@ -4,6 +4,7 @@ define jetty::auto::deployit (
 	$homedir,
 	$customer = params_lookup("customer", 'global'),
 	$universe = params_lookup("universe", 'global'),
+	$stage    = params_lookup("stage", global),
 	$environments = "general"
 ) {
 	
@@ -14,6 +15,7 @@ define jetty::auto::deployit (
 			instance_name => "${instance_name}",
 			customer => "${customer}",
 			application => "${application}",
+			stage => "${stage}",
 			universe => "${universe}",
 			homedir => "${homedir}",
 			environments => "${::environment}",
