@@ -14,14 +14,17 @@ define deployit::types::jetty_ssh ($remotehost,
 			if $application == undef {
 				if $appstage == undef {
 					$ciEnv = "Environments/${environments}"
+					$ciEnvName = "${environments}"
 				}
 				else {
 					$ciEnv = "Environments/${appstage}"
+					$ciEnvName ="${appstage}"
 				}
 			}
 			else {
 				if $appstage == undef {
 					$ciEnv = "Environments/${application}"
+					$ciEnvName = "${application}"
 				}
 				else {
 					if !defined(Deployit::Features::Ci["${application} directory"]) {
@@ -34,6 +37,7 @@ define deployit::types::jetty_ssh ($remotehost,
 						}
 					}
 					$ciEnv = "Environments/${application}/${appstage}"
+					$ciEnvName = ${appstage}
 				}
 			}
 		}
@@ -50,6 +54,7 @@ define deployit::types::jetty_ssh ($remotehost,
 			if $application == undef {
 				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/default"
+					$ciEnvName ="default"
 				}
 				else {
 					if !defined(Deployit::Features::Ci["${customer} default directory"]) {
@@ -61,12 +66,14 @@ define deployit::types::jetty_ssh ($remotehost,
 								ensure => present
 						}
 						$ciEnv = "Environments/${customer}/default/${appstage}"
+						$ciEnvName = "${appstage}"
 					}
 				}
 			}
 			else {
 				if $appstage == undef {
 					$ciEnv = "Environments/${customer}/${application}"
+					$ciEnvName = "${application}"
 				}
 				else {
 					if
@@ -79,13 +86,21 @@ define deployit::types::jetty_ssh ($remotehost,
 								ensure => present
 						}
 						$ciEnv = "Environments/${customer}/${application}/${appstage}"
+						$ciEnvName = "${appstage}"
 					}
 				}
 			}
 		}
 	}
 	
-	
+	if ! defined(Deployit::Features::Ci["${ciEnv}"]){
+	deployit::features::ci{ "${ciEnv}":
+ 				 ciId => "${ciEnv}",
+  				 ciType => 'udm.Environment',
+  				 ciValues => { name => "${ciEnvName}"  },
+  				 ensure => present,
+		}
+	}
 	
 	if ! defined(Deployit::Features::Ci["${remotehost} ssh-host"]){
 	deployit::features::ci{ "${remotehost} ssh-host":
@@ -95,6 +110,8 @@ define deployit::types::jetty_ssh ($remotehost,
                  		sudoUsername => 'root', address => "${remotefqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
                  		ciEnvironments => "${ciEnv}",
   				 ensure => present,
+  				 require => Deployit::Features::Ci["${ciEnv}"]
+  				 
 		}
 	}
 	
@@ -106,7 +123,7 @@ define deployit::types::jetty_ssh ($remotehost,
 			stopScript => "${homedir}/stop.sh"},
 			ciEnvironments => "${ciEnv}",
 			require =>
-			Deployit::Features::Ci["${remotehost} ssh-host"],
+			Deployit::Features::Ci["${remotehost} ssh-host","${ciEnv}"],
 			ensure => present,
 	}
 }
