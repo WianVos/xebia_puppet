@@ -12,17 +12,26 @@ define deployit::types::jetty_ssh ($remotehost,
 		undef : {
 			if $application == undef {
 				$ciEnv = "Environments/${environments}"
+				
 			}
 			else {
 				$ciEnv = "Environments/${application}"
 			}
 		}
 		default : {
+			if ! defined(Deployit::Features::Ci["${customer} directory"]){
+				deployit::features::ci{ "${customer} directory":
+					ciId => "Environments/${customer}",
+					ciType => 'core.Directory',
+					ciValues => { name => "${customer}"},
+					ensure => present
+				}
+			}
 			if $application == undef {
-				$ciEnv = "Environments/${customer}"
+				$ciEnv = "Environments/${customer}/default"
 			}
 			else {
-				$ciEnv = "Environments/${customer}-${application}"
+				$ciEnv = "Environments/${customer}/${application}"
 			}
 		}
 	}
