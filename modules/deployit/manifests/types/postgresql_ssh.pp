@@ -22,11 +22,18 @@ define deployit::types::postgresql_ssh (
 			}
 		}
 		default : {
+			if ! defined(Deployit::Features::Ci["${customer} directory"]){
+				deployit::features::ci{ "${customer} directory":
+					ciId => "Environments/${customer}",
+					ciType => 'core.Directory',
+					ciValues => { name => "${customer}"},
+					ensure => present
+				}
 			if $application == undef {
 				$ciEnv = "Environments/${customer}"
 			}
 			else {
-				$ciEnv = "Environments/${customer}-${application}"
+				$ciEnv = "Environments/${customer}/${application}"
 			}
 		}
 	}
