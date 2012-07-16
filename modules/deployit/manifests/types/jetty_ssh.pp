@@ -32,7 +32,7 @@ define deployit::types::jetty_ssh ($remotehost,
 	}
 	
 	if ! defined(Deployit::Features::Ci["${customer}/${application}/${appstage} dir"]){
-		deployit::features::ci{ "${customer}/${application}/${appstage} env":
+		deployit::features::ci{ "${customer}/${application}/${appstage} dir":
  				 ciId => "${customer}/${application}/${appstage}",
   				 ciType => 'core.Directory',
   				 ciValues => { name => "${appstage}"},
@@ -47,7 +47,7 @@ define deployit::types::jetty_ssh ($remotehost,
   				 ciType => 'udm.Environment',
   				 ciValues => { name => "${application}-${appstage}"  },
   				 ensure => present,
-  				 require => Deployit::Features::Ci["${customer}/${application} dir","${application}-${appstage} env dir","${customer} dir"]
+  				 require => Deployit::Features::Ci["${customer}/${application} dir","${customer}/${application}/${appstage} dir","${customer} dir"]
 		}
 	}
 	
