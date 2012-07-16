@@ -27,7 +27,7 @@ define deployit::types::postgresql_ssh (
 								ciType => 'core.Directory',
 								ciValues => {name => "${application}"},
 								ensure => present,
-								require => Deployit::Features::CI["${customer} dir"]
+								require => Deployit::Features::Ci["${customer} dir"]
 						}		
 		
 	}
@@ -38,7 +38,7 @@ define deployit::types::postgresql_ssh (
   				 ciType => 'core.Directory',
   				 ciValues => { name => "${appstage}"},
   				 ensure => present,
-  				 require => Deployit::Features::CI["${customer}/${application} dir"]
+  				 require => Deployit::Features::Ci["${customer}/${application} dir"]
 		}
 	}
 	
@@ -48,7 +48,7 @@ define deployit::types::postgresql_ssh (
   				 ciType => 'udm.Environment',
   				 ciValues => { name => "${application}-${appstage}"  },
   				 ensure => present,
-  				 require => Deployit::Features::CI["${customer}/${application} dir","${application}-${appstage} env dir","${customer} dir"]
+  				 require => Deployit::Features::Ci["${customer}/${application} dir","${application}-${appstage} env dir","${customer} dir"]
 		}
 	}
 	
