@@ -6,11 +6,13 @@ define jetty::auto::postgresql(
 	$appstage			= ""
 ){
 	@@postgresql::export_create_db {
- 		"${instance_name}" :
+ 		"${instance_name} ${::hostname}" :
  			application => "${application}",
  			customer => "${customer}",
  			universe => "${universe}",
- 			appstage	=> "${appstage}"
+ 			appstage	=> "${appstage}",
+ 			remotehost	=> "${::hostname}",
+ 			remotefqdn	=> "${::fqdn}"
  	}
  	
 }
