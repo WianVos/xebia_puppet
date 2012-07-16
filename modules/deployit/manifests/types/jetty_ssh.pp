@@ -3,102 +3,51 @@ define deployit::types::jetty_ssh ($remotehost,
 	$instance_name ,
 	$environments 	= "${::environment}",
 	$remotefqdn 	= "",
-	$customer		= undef,
-	$application	= undef,
+	$customer		= "default",
+	$application	= "default",
 	$remotehost	= "",
-	$appstage			= undef
+	$appstage			= "test"
 	){
 	
-	case $customer {
-		undef : {
-			if $application == undef {
-				if $appstage == undef {
-					$ciEnv = "Environments/${environments}"
-					$ciEnvName = "${environments}"
-				}
-				else {
-					$ciEnv = "Environments/${appstage}"
-					$ciEnvName ="${appstage}"
-				}
-			}
-			else {
-				if $appstage == undef {
-					$ciEnv = "Environments/${application}"
-					$ciEnvName = "${application}"
-				}
-				else {
-					if !defined(Deployit::Features::Ci["${application} directory"]) {
-						deployit::features::ci {
-							"${application} directory" :
-								ciId => "Environments/${application}",
+	if ! defined(Deployit::Features::CI["${customer} dir"]){
+		deployit::features::ci {
+							"${customer} dir" :
+								ciId => "Environments/${customer}",
 								ciType => 'core.Directory',
-								ciValues => {name => "${application}"},
+								ciValues => {name => "${customer}"},
 								ensure => present
 						}
-					}
-					$ciEnv = "Environments/${application}/${appstage}"
-					$ciEnvName = ${appstage}
-				}
-			}
-		}
-		default : {
-			if !defined(Deployit::Features::Ci["${customer} directory"]) {
-				deployit::features::ci {
-					"${customer} directory" :
-						ciId => "Environments/${customer}",
-						ciType => 'core.Directory',
-						ciValues => {name => "${customer}"},
-						ensure => present
-				}
-			}
-			if $application == undef {
-				if $appstage == undef {
-					$ciEnv = "Environments/${customer}/default"
-					$ciEnvName ="default"
-				}
-				else {
-					if !defined(Deployit::Features::Ci["${customer} default directory"]) {
-						deployit::features::ci {
-							"${customer} default directory" :
-								ciId => "Environments/${customer}/default",
-								ciType => 'core.Directory',
-								ciValues => {name => "default"},
-								ensure => present
-						}
-						$ciEnv = "Environments/${customer}/default/${appstage}"
-						$ciEnvName = "${appstage}"
-					}
-				}
-			}
-			else {
-				if $appstage == undef {
-					$ciEnv = "Environments/${customer}/${application}"
-					$ciEnvName = "${application}"
-				}
-				else {
-					if
-					!defined(Deployit::Features::Ci["${customer} ${application} directory"]) {
-						deployit::features::ci {
-							"${customer} ${application} directory" :
+	}
+	
+	if ! defined(Deployit::Features::CI["${customer}/${application} dir"]){
+		deployit::features::ci {
+							"${customer}/${application} dir" :
 								ciId => "Environments/${customer}/${application}",
 								ciType => 'core.Directory',
 								ciValues => {name => "${application}"},
-								ensure => present
-						}
-						$ciEnv = "Environments/${customer}/${application}/${appstage}"
-						$ciEnvName = "${appstage}"
-					}
-				}
-			}
+								ensure => present,
+								require => Deployit::Features::CI["${customer} dir"]
+						}		
+		
+	}
+	
+	if ! defined(Deployit::Features::CI["${customer}/${application}/${appstage} dir"]){
+		deployit::features::ci{ "${customer}/${application}/${appstage} env":
+ 				 ciId => "${customer}/${application}/${appstage}",
+  				 ciType => 'core.Directory',
+  				 ciValues => { name => "${appstage}"},
+  				 ensure => present,
+  				 require => Deployit::Features::CI["${customer}/${application} dir"]
 		}
 	}
 	
-	if ! defined(Deployit::Features::Ci["${ciEnv}"]){
-	deployit::features::ci{ "${ciEnv}":
- 				 ciId => "${ciEnv}",
+	if ! defined(Deployit::Features::CI["${customer}/${application}/${appstage}/${application}-${appstage} env"]){
+		deployit::features::ci{ "${customer}/${application}/${appstage}/${application}-${appstage} env":
+ 				 ciId => "${customer}/${application}/${appstage}/${application}-${appstage}",
   				 ciType => 'udm.Environment',
-  				 ciValues => { name => "${ciEnvName}"  },
+  				 ciValues => { name => "${application}-${appstage}"  },
   				 ensure => present,
+  				 require => Deployit::Features::CI["${customer}/${application} dir","${application}-${appstage} env dir","${customer} dir"]
 		}
 	}
 	
@@ -108,9 +57,9 @@ define deployit::types::jetty_ssh ($remotehost,
   				 ciType => 'overthere.SshHost',
   				 ciValues => { os => UNIX, connectionType => SUDO, username => 'deployit', password => 'deployit',
                  		sudoUsername => 'root', address => "${remotefqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa" },
-                 		ciEnvironments => "${ciEnv}",
+                 		ciEnvironments => "${customer}/${application}/${appstage}/${application}-${appstage}",
   				 ensure => present,
-  				 require => Deployit::Features::Ci["${ciEnv}"]
+  				 require => Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"]
   				 
 		}
 	}
@@ -121,9 +70,9 @@ define deployit::types::jetty_ssh ($remotehost,
 			ciType => 'jetty.Server',
 			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
 			stopScript => "${homedir}/stop.sh"},
-			ciEnvironments => "${ciEnv}",
+			ciEnvironments => "${customer}/${application}/${appstage}/${application}-${appstage}",
 			require =>
-			Deployit::Features::Ci["${remotehost} ssh-host","${ciEnv}"],
+			Deployit::Features::Ci["${remotehost} ssh-host","${customer}/${application}/${appstage}/${application}-${appstage} env"],
 			ensure => present,
 	}
 }
