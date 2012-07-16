@@ -10,7 +10,7 @@ define deployit::types::postgresql_ssh (
 	$remotehost		= "",
 	$appstage		= undef
 	) {
-	if ! defined(Deployit::Features::CI["${customer} dir"]){
+	if ! defined(Deployit::Features::Ci["${customer} dir"]){
 		deployit::features::ci {
 							"${customer} dir" :
 								ciId => "Environments/${customer}",
@@ -20,7 +20,7 @@ define deployit::types::postgresql_ssh (
 						}
 	}
 	
-	if ! defined(Deployit::Features::CI["${customer}/${application} dir"]){
+	if ! defined(Deployit::Features::Ci["${customer}/${application} dir"]){
 		deployit::features::ci {
 							"${customer}/${application} dir" :
 								ciId => "Environments/${customer}/${application}",
@@ -32,7 +32,7 @@ define deployit::types::postgresql_ssh (
 		
 	}
 	
-	if ! defined(Deployit::Features::CI["${customer}/${application}/${appstage} dir"]){
+	if ! defined(Deployit::Features::Ci["${customer}/${application}/${appstage} dir"]){
 		deployit::features::ci{ "${customer}/${application}/${appstage} env":
  				 ciId => "${customer}/${application}/${appstage}",
   				 ciType => 'core.Directory',
@@ -42,7 +42,7 @@ define deployit::types::postgresql_ssh (
 		}
 	}
 	
-	if ! defined(Deployit::Features::CI["${customer}/${application}/${appstage}/${application}-${appstage} env"]){
+	if ! defined(Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"]){
 		deployit::features::ci{ "${customer}/${application}/${appstage}/${application}-${appstage} env":
  				 ciId => "${customer}/${application}/${appstage}/${application}-${appstage}",
   				 ciType => 'udm.Environment',
