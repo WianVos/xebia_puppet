@@ -2,12 +2,12 @@
 universe : <universe>
 customer : <customer>
 application : <application>
-stage : <stage>
+appstage : <appstage>
 jetty_instances :
  <customer>-<application>-1 :
     port : 8080
     application : <application>
     customer : <customer>
-    stage : <stage>
+    appstage : <appstage>
     auto_db : true
     auto_deployit : true

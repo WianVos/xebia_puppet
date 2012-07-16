@@ -7,7 +7,7 @@ nodegroup="xx"
 universe="xx"
 customer="xx"
 application="xx"
-stage="xx"
+appstage="xx"
 configfile="xx"
 tmpfile=`tempfile`
 service_role="xx"
@@ -21,7 +21,7 @@ do case "$o" in
 	u)universe=$OPTARG;;
 	c)customer=$OPTARG;;
 	a)application=$OPTARG;;
-	s)stage=$OPTARG;;
+	s)appstage=$OPTARG;;
 	C)configfile=$OPTARG;;
 	S)size_parameter=$OPTARG;; 
 	R)service_role=$OPTARG;;
@@ -29,7 +29,7 @@ do case "$o" in
 		echo "	-u <universe name> " 
 		echo "	-c <customer> "
 		echo "	-a <application> "
-		echo "	-s <stage> "
+		echo "	-s <appstage> "
 		echo "	-C <configfile> "
 		echo "	-S <small/medium/large> "
 		exit 0 
@@ -50,7 +50,7 @@ if [ $node_group == "xx" ] ; then node_group="default" ; fi
 if [ $universe == "xx" ] ; then universe="default" ; fi
 if [ $customer == "xx" ] ; then customer="xebiaCustomer" ; fi
 if [ $application == "xx" ] ; then application="xebiaApplication" ; fi
-if [ $stage == "xx" ] ; then application="test" ; fi
+if [ $appstage == "xx" ] ; then appstage="test" ; fi
 if [ $configfile == "xx" ] ; then configfile="../etc/bootstrap.conf" ; fi
 
 #read in the configfile
@@ -70,7 +70,7 @@ if [ $service_role == "xx" ] ; then template_name="${node_group}" ; else templat
 if [ -f ../etc/nodeTypes/${template_name}.yaml ] 
 	then 
 	cp ../etc/nodeTypes/${template_name}.yaml /tmp/${template_name}.yaml
-        cat /tmp/${template_name}.yaml | sed -e 's|<application>|'$application'|g' |  sed -e 's|<customer>|'$customer'|g' |  sed -e 's|<universe>|'$universe'|g' | sed -e 's|<stage>|'$stage'|g'  >> ${hiera_data_dir}/hosts/${host}.yaml
+        cat /tmp/${template_name}.yaml | sed -e 's|<application>|'$application'|g' |  sed -e 's|<customer>|'$customer'|g' |  sed -e 's|<universe>|'$universe'|g' | sed -e 's|<appstage>|'$appstage'|g'  >> ${hiera_data_dir}/hosts/${host}.yaml
 else
 	echo "unable to further classify ${host}"
 fi 
