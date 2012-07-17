@@ -5,12 +5,12 @@
 
 echo "Checking if the server is stopped ..."
 TIMEOUT=15
-while `ps -fU <%= installdir %>| grep jetty | grep -v grep > /dev/null 2>&1`; do
+while `ps -ef|grep <%= installdir %>| grep -v grep > /dev/null 2>&1`; do
   echo Waiting for Jetty to stop ...
   if [ $TIMEOUT -eq 0 ] ; then
     echo "Oops, server process $pid is still alive ..."
     echo "Sending server process $pid he KILL signal."
-    pid=`ps -fU <%= installdir %> | grep jetty | grep -v grep | awk '{ print $2 }'`
+    pid=`ps -ef|grep <%= installdir %> | grep -v grep | awk '{ print $2 }'`
     kill -KILL $pid
     echo "The server is forcefully stopped."
     exit 0
