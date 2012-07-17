@@ -21,15 +21,7 @@ done
 /opt/xebia_puppet/bin/xebia_bootstrap.sh -n deployit_host -u xebia & 
 /opt/xebia_puppet/bin/xebia_bootstrap.sh -n postgresql_host -u xebia -c lg -R standalone &
 sleep 400 
-/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s ontw -R single &
-sleep 120
-/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klici -s test1 -R single 
-sleep 120
-/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s test2 -R single &
-sleep 120
-/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s acpt -R single 
-/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s prod -R single 
-
-su - peadmin -c 'mco puppetd runonce' 
-sleep 500
-su - peadmin -c 'mco puppetd runonce' 
+/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s ontw -R single 
+su - peadmin -c 'mco puppetd runonce'
+/opt/xebia_puppet/bin/xebia_bootstrap.sh -n jetty_host -u xebia -c kadaster -a klic -s test1 -R single 
+su - peadmin -c 'mco puppetd runonce'

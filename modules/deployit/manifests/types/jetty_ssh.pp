@@ -74,7 +74,7 @@ define deployit::types::jetty_ssh ($remotehost,
 			ciValues => {home => "$homedir", startScript => "${homedir}/start.sh",
 			stopScript => "${homedir}/stop.sh"},
 			ciEnvironments =>
-			"${customer}/${application}/${appstage}/${application}-${appstage}",
+			"Environments/${customer}/${application}/${appstage}/${application}-${appstage}",
 			require => Deployit::Features::Ci["${remotehost} ssh-host",
 			"${customer}/${application}/${appstage}/${application}-${appstage} env"],
 			ensure => present,
