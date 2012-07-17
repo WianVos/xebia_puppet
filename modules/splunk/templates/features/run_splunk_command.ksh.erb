@@ -1,0 +1,26 @@
+#!/bin/ksh
+
+splunkHome="<%=homedir%>"
+commandPayload="<%=splunk_command%>"
+commandTag="<%=name%>"
+splunkUser="<%=admin_user%>"
+splunkPassword="<%=admin_password%>"
+splunkInfraDir="<%=markerdir%>"
+validRetCodes="<%splunk_returns.each do |val| -%><%=val %> <% end -%>"
+
+#execute a splunk cli command
+fullCommand="${splunkHome}/bin/splunk ${commandPayload} -auth ${splunkUser}:${splunkPassword} --no-prompt --answer-yes --accept-license"
+
+dummy=`$fullCommand`
+outcome=$?
+
+for i in $validRetCodes 
+	do
+
+         if [ $outcome -eq $i ] 
+		then /bin/touch "${splunkInfraDir}/etc/${commandTag}_command_run"
+	 fi 
+done
+
+return $outcome
+

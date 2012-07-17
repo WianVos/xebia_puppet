@@ -31,6 +31,7 @@ class deployit(
 	$import_facts				= params_lookup('import_facts'),
 	$import_config				= params_lookup('import_config'),
 	$cli_conf_options				= params_lookup('cli_conf_options')
+	
 		
 		
 ) inherits deployit::params{

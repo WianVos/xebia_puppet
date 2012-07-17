@@ -20,7 +20,7 @@ class skeleton::params{
 	$ensure						= 	'running'
 	$import_facts				= 	true
 	$import_config				= 	true
-	$confbasedir					=	'/etc/xebia_puppet'
+	$baseconfdir				=	'/etc/xebia_puppet'
 	$confdir					= 	'/etc/xebia_puppet/config'
 	$scriptdir					= 	'/etc/xebia_puppet/script'
 	$markerdir					= 	'/etc/xebia_puppet/marker'

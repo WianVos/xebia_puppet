@@ -27,4 +27,8 @@ class splunk::params{
 	# splunk specific settings
 	$puppetfiles_tarfile				= "splunk-4.3-115073-Linux-x86_64.tgz"
 	$puppetfiles_source			= "puppet:///modules/splunk/install_tar/${puppetfiles_tarfile}"
+	$default_passwd				= admin
+	$admin_passwd				= test # override in hiera ... duh
+	$admin_user					= admin # should change
+	
 }

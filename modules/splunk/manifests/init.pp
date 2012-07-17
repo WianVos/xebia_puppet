@@ -22,7 +22,13 @@ class splunk ($packages = params_lookup('packages'),
 	$export_config = params_lookup('export_config'),
 	$universe = params_lookup('universe', 'global'),
 	$application = params_lookup('application', 'global'),
-	$customer = params_lookup('customer', 'global')
+	$customer = params_lookup('customer', 'global'),
+	$puppetfiles_tarfile	= params_lookup('puppetfiles_tarfile'),			
+	$puppetfiles_source		= params_lookup('puppetfiles_source'),
+	$default_passwd				= params_lookup('default_passwd'),
+	$admin_passwd				= params_lookup('admin_passwd'),
+	$admin_user					= params_lookup('admin_user')
+	
 	) inherits splunk::params {
 	# setup the concat module for later use
 	include concat::setup
@@ -177,9 +183,18 @@ class splunk ($packages = params_lookup('packages'),
 			require => Exec["splunk_init"],
 	}
 	
+	exec {"change_default_password":
+		command => "splunk edit user ${admin_user} -password ${default_passwd} -role admin -auth ${admin_user}:${default_passwd} > ${markerdir}/etc/splunk_${admin_user}",
+		path => "${homedir}/bin",
+		creates => "${markerdir}/etc/splunk_${admin_user}",
+		logoutput => true,
+		require => [File["${markerdir}"],Exec["splunk_init"]]
+	
+	}
+	
 	# service 
 	service {'splunk' : 
-		require => Exec["boot_start","splunk_init"],
+		require => Exec["boot_start","splunk_init","change_default_password"],
 		ensure => "${manage_service}",
 	}
 }

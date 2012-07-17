@@ -29,43 +29,41 @@ class skeleton(
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
 	$markerdir					= params_lookup('markerdir'),
-	$import_facts				= params_lookup('import_facts'),
-	$import_config				= params_lookup('import_config')
-		
+	
 		
 ) inherits skeleton::params{
 	
 	#set various manage parameters in accordance to the $absent directive
-	$manage_package = $absent ? {
+	$manage_package = absent ? {
 		true 	=> "absent",
 		false 	=> "installed",
 		default => "installed"
 	}	
 	
-	$manage_directory = $absent ? {
+	$manage_directory = absent ? {
 		true 	=> "absent",
 		default => "directory",
 	}
 	
-	$manage_link = $absent ? {
+	$manage_link = absent ? {
 		true 	=> "absent",
 		default => "link",
 	}
 	
-	$manage_files = $absent ? {
+	$manage_files = absent ? {
 		true 	=> "absent",
 		false 	=> "present",
 		default => "present"
 	}
 	
-	$manage_user = $absent ? {
+	$manage_user = absent ? {
 		true 	=> "absent",
 		false 	=> "present",
 		default => "present"
 	}
 	
 
-	$ensure_service = $ensure ? {
+	$ensure_service = ensure ? {
 		true	=> "running",
 		false 	=> "stoppped",
 		default	=> "running"
@@ -109,35 +107,7 @@ class skeleton(
                 }
         }
 	
-	#xebia_puppet intergration stuff
 	
-	if $export_facts {
-		@@xebia_common::features::export_facts{"skeleton_facts_${::hostname}":
-			options => { "skeleton_hostname" 	=> "${::fqdn}",
-				     "skeleton_ipaddress" 	=> "${::ipaddress}",
-				   },
-			tag		=> ["${universe}-skeleton-service"]
-		}
-	}
-	
-	if $export_config {
-		@@xebia_common::features::export_config{"${::hostname}_skeleton_config.sh":
-			filename => "skeleton_config.sh",
-			options => { "skeleton_hostname" 	=> "${::fqdn}",
-						 "skeleton_ipaddress" 	=> "${::ipaddress}",
-				   },
-			confdir  	=> "${confdir}",
-			tag		=> ["${universe}-skeleton-service-config"]
-		}
-	}
-	
-	if $import_facts {
-		Xebia_common::Features::Export_facts <<| |>> 
-	}
-	if $import_config {
-		Xebia_common::Features::Export_config <<| |>>{	confdir	=> "${confdir}" }
-		
-	}
 	
 	#install packages as needed by skeleton
 	xebia_common::features::extra_package{$packages:
