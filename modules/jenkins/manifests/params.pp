@@ -29,5 +29,4 @@ class jenkins::params{
 	$markerdir					= 	'/etc/xebia_puppet/marker'
 	$export_facts				= 	true
 	$export_config				= 	true
-	$install					= 	'files'
 }
