@@ -3,7 +3,8 @@ class jenkins::install inherits jenkins {
 	# so far we only have one, but we can add the as we go 
 	case $jenkins::install {
 		package : {
-			require jenkins::repository package {
+			require jenkins::repository
+			package {
 				'jenkins' :
 					ensure => $jenkins::manage_package,
 					name => $jenkins::install_package,
