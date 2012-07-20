@@ -71,6 +71,7 @@ class git (
                         owner   => root,
                         group   => root,
                         mode    => 770,
+                        require => File["${baseconfdir}"]
                 }
         }	
 
@@ -80,6 +81,7 @@ class git (
                         owner   => root,
                         group   => root,
                         mode    => 770,
+                        require => File["${baseconfdir}"]
                 }
         }
 
@@ -89,6 +91,7 @@ class git (
                         owner   => root,
                         group   => root,
                         mode    => 770,
+                        require => File["${baseconfdir}"]
                 }
         }
 	
