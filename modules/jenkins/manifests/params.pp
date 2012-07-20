@@ -8,6 +8,7 @@ class jenkins::params{
 	$install_package			=	"jenkins"
 	$install_owner				= 	'jenkins'
 	$install_group				= 	'jenkins'
+	$install				= 	'package'
 	$plugin_install				= 	true
 	$key_install				= 	true
 
