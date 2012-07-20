@@ -57,7 +57,14 @@ class jenkins (
 		false 	=> "stoppped",
 		default	=> "running"
 	}
-	
+	if ! defined(File["${baseconfdir}"]) {
+                file { "${baseconfdir}" :
+                        ensure  => $manage_directory,
+                        owner   => root,
+                        group   => root,
+                        mode    => 770,
+                }
+        }	
 	if ! defined(File["${confdir}"]) {
                 file { "${confdir}" :
                         ensure  => $manage_directory,
