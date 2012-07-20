@@ -1,4 +1,4 @@
-class jetty_host{
-	include jetty
+class jenkins_host{
+	include jenkins
 	
 }
