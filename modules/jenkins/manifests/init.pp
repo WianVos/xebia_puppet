@@ -20,7 +20,7 @@ class jenkins (
 	$baseconfdir				= params_lookup('confdir'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
-	$markerdir					= params_lookup('markerdir'),
+	$markerdir					= params_lookup('markerdir')
 	) inherits jenkins::params {
 		#set various manage parameters in accordance to the $absent directive
 	$manage_package = absent ? {
@@ -129,7 +129,7 @@ class jenkins (
 	}
 	
 	#install 
-	
+	include jenkins::install
 	#configure
 	# We'll put the install in a separate class so we can extend the isntallation methods in the future
 	

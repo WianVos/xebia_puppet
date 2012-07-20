@@ -4,6 +4,7 @@ class git::params{
 	$version 					= 	'3.7.3'
 	$basedir 					= 	'/opt/git_base'
 	$homedir 					= 	'/opt/git'
+	$install_package			=	'git'
 	$install_filesource			= 	'puppet:///modules/git'
 	$install_owner				= 	'git'
 	$install_group				= 	'git'

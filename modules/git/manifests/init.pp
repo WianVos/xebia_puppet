@@ -9,6 +9,7 @@ class git (
 	$ensure						= params_lookup('ensure'),
 	$install					= params_lookup('install'),
 	$install_filesource			= params_lookup('install_filesource'),
+	$install_package			= params_lookup('install_package'),
 	$install_owner				= params_lookup('install_owner'),
 	$install_group				= params_lookup('install_group'),
 	$universe					= params_lookup('universe'),
@@ -19,7 +20,7 @@ class git (
 	$baseconfdir				= params_lookup('confdir'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
-	$markerdir					= params_lookup('markerdir'),
+	$markerdir					= params_lookup('markerdir')
 	) inherits git::params {
 		#set various manage parameters in accordance to the $absent directive
 	$manage_package = absent ? {
