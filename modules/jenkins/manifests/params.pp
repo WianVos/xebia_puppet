@@ -3,7 +3,9 @@ class jenkins::params{
 	
 	$version 					= 	'3.7.3'
 	$basedir 					= 	'/opt/jenkins_base'
-	$homedir 					= 	'/opt/jenkins'
+	$homedir 					= 	'/var/lib/jenkins'
+	$jenkins_config				=	"${homedir}/config.xml"
+	$jenkins_userdb				=	"${homedir}/users"
 	$install_filesource			= 	'puppet:///modules/jenkins'
 	$install_package			=	"jenkins"
 	$install_owner				= 	'jenkins'
@@ -29,4 +31,7 @@ class jenkins::params{
 	$markerdir					= 	'/etc/xebia_puppet/marker'
 	$export_facts				= 	true
 	$export_config				= 	true
+	$jenkins_users				= 	{test1 => {mail => "test1@test1.com"},
+									 test2 => {api_token => "testtest"}
+									}
 }

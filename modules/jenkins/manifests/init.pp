@@ -20,7 +20,10 @@ class jenkins (
 	$baseconfdir				= params_lookup('confdir'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
-	$markerdir					= params_lookup('markerdir')
+	$markerdir					= params_lookup('markerdir'),
+	$jenkins_config				= params_lookup('jenkins_config'),
+	$jenkins_userdb				= params_lookup('jenkins_userdb'),
+	$jenkins_users				= params_lookup('jenkins_users')
 	) inherits jenkins::params {
 		#set various manage parameters in accordance to the $absent directive
 	$manage_package = absent ? {
@@ -139,10 +142,18 @@ class jenkins (
 	}
 	
 	#install 
-	include jenkins::install
+	class{"jenkins::install":}
 	#configure
+	class{"jenkins::config":
+		require => Class["jenkins::install"]
+	}
+	#configure users:
+	create_resources('jenkins::user' , ${jenkins_users})	
 	# We'll put the install in a separate class so we can extend the isntallation methods in the future
-	
+	#service
+	service{"jenkins":
+			ensure => "${ensure_service}"
+	}
 	#intergrate
 	
 	
