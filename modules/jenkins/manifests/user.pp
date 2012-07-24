@@ -18,7 +18,7 @@ define jenkins::user (
 		"${name}_${template}_user" :
 			target => "${jenkins::jenkins_config}",
 			order => "21",
-			content => template("jenkins/config_user${template}.xml.erb"),
+			content => template("jenkins/config_user_${template}.xml.erb"),
 	}
 	if !defined(Concat::Fragment["user_config_end"]) {
 		concat::fragment {
