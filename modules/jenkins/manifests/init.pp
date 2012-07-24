@@ -148,7 +148,7 @@ class jenkins (
 		require => Class["jenkins::install"]
 	}
 	#configure users:
-	create_resources('jenkins::user' , ${jenkins_users})	
+	create_resources('jenkins::user' , $jenkins_users)	
 	# We'll put the install in a separate class so we can extend the isntallation methods in the future
 	#service
 	service{"jenkins":
