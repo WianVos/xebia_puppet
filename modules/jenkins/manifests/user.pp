@@ -22,7 +22,7 @@ define jenkins::user (
 	}
 	if !defined(Concat::Fragment["user_config_end"]) {
 		concat::fragment {
-			"user_config_start" :
+			"user_config_end" :
 				target => "${jenkins::jenkins_config}",
 				order => "29",
 				content => template("jenkins/config_user_end.xml.erb"),
