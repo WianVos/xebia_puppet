@@ -11,7 +11,6 @@ define jenkins::user (
 				target => "${jenkins::jenkins_config}",
 				order => "20",
 				content => template("jenkins/config_user_start.xml.erb"),
-				require => Class["jenkins::config"]
 		}
 	}
 	concat::fragment {
@@ -26,7 +25,6 @@ define jenkins::user (
 				target => "${jenkins::jenkins_config}",
 				order => "29",
 				content => template("jenkins/config_user_end.xml.erb"),
-				require => Class["jenkins::config"]
 		}
 	}
 	if !defined(File["${jenkins::jenkins_userdb}"]) {
@@ -34,7 +32,6 @@ define jenkins::user (
 			"${jenkins::jenkins_userdb}" :
 				owner => "${jenkins::install_owner}",
 				group => "${jenkins::install_group}",
-				require => Class["jenkins::install"],
 				mode => "0770",
 				ensure => "${jenkins::manage_directory}"
 		}
@@ -43,7 +40,6 @@ define jenkins::user (
 		"${jenkins::jenkins_userdb}/${name}" :
 			owner => "${jenkins::install_owner}",
 			group => "${jenkins::install_group}",
-			require => File["${jenkins::jenkins_userdb}"],
 			mode => "0770",
 			ensure => "${jenkins::manage_directory}"
 	}
@@ -51,7 +47,6 @@ define jenkins::user (
 		"${jenkins::jenkins_userdb}/${name}/config.xml":
 			owner => "${jenkins::install_owner}",
 			group => "${jenkins::install_group}",
-			require => File["${jenkins::jenkins_userdb}/${name}"],
 			content => template("jenkins/user_config.xml.erb"),
 			mode => "0770",
 			ensure => "${jenkins::manage_files}"
