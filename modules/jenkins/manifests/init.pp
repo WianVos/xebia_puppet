@@ -25,6 +25,10 @@ class jenkins (
 	$jenkins_userdb				= params_lookup('jenkins_userdb'),
 	$jenkins_users				= params_lookup('jenkins_users')
 	) inherits jenkins::params {
+	
+	#include concat::setup because where gonna use concat later on 	
+	include concat::setup
+		
 		#set various manage parameters in accordance to the $absent directive
 	$manage_package = absent ? {
 		true 	=> "absent",
