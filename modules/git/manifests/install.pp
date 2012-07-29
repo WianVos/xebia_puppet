@@ -5,7 +5,7 @@ class git::install inherits git {
 		package : {
 			
 			package {
-				'git' :
+				'git-core' :
 					ensure => $git::manage_package,
 					name => $git::install_package,
 			}
