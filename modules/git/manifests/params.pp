@@ -28,5 +28,5 @@ class git::params{
 	$markerdir					= 	'/etc/xebia_puppet/marker'
 	$export_facts				= 	true
 	$export_config				= 	true
-	$install					= 	'files'
+	$install					= 	'package'
 }
