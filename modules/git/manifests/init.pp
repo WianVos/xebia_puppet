@@ -139,6 +139,8 @@ class git (
 	}
 	
 	#install 
+	class{"git::install":}
+	
 	# We'll put the install in a separate class so we can extend the isntallation methods in the future
 	
 	#configure
