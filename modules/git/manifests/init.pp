@@ -17,7 +17,7 @@ class git (
 	$key_install				= params_lookup('key_install'),
 	$export_facts				= params_lookup('export_facts'),
 	$export_config				= params_lookup('export_config'),
-	$baseconfdir				= params_lookup('confdir'),
+	$baseconfdir				= params_lookup('baseconfdir'),
 	$confdir					= params_lookup('confdir'),
 	$scriptdir					= params_lookup('scriptdir'),
 	$markerdir					= params_lookup('markerdir')
