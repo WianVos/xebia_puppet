@@ -9,7 +9,7 @@ define deployit::types::jetty_ssh ($remotehost,
 	$appstage			= "test"
 	) {
 		
-	if !defined(Deployit::Features::Ci["${customer} dir"]) {
+	if ! defined(Deployit::Features::Ci["${customer} dir"]) {
 		deployit::features::ci {
 			"${customer} dir" :
 				ciId => "Environments/${customer}",
@@ -18,7 +18,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				ensure => present
 		}
 	}
-	if !defined(Deployit::Features::Ci["${customer}/${application} dir"]) {
+	if ! defined(Deployit::Features::Ci["${customer}/${application} dir"]) {
 		deployit::features::ci {
 			"${customer}/${application} dir" :
 				ciId => "Environments/${customer}/${application}",
@@ -28,7 +28,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				require => Deployit::Features::Ci["${customer} dir"]
 		}
 	}
-	if !defined(Deployit::Features::Ci["${customer}/${application}/${appstage} dir"])
+	if ! defined(Deployit::Features::Ci["${customer}/${application}/${appstage} dir"])
 	{
 		deployit::features::ci {
 			"${customer}/${application}/${appstage} dir" :
@@ -39,7 +39,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				require => Deployit::Features::Ci["${customer}/${application} dir"]
 		}
 	}
-	if !defined(Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"])
+	if ! defined(Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"])
 	{
 		deployit::features::ci {
 			"${customer}/${application}/${appstage}/${application}-${appstage} env" :
@@ -52,7 +52,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				"${customer}/${application}/${appstage} dir", "${customer} dir"]
 		}
 	}
-	if !defined(Deployit::Features::Ci["${remotehost} ssh-host"]) {
+	if ! defined(Deployit::Features::Ci["${remotehost} ssh-host"]) {
 		deployit::features::ci {
 			"${remotehost} ssh-host" :
 				ciId => "Infrastructure/${remotehost}",
@@ -67,6 +67,7 @@ define deployit::types::jetty_ssh ($remotehost,
 				Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"]
 		}
 	}
+	
 	deployit::features::ci {
 		"jetty_server_${remotehost}_${instance_name} " :
 			ciId => "Infrastructure/${remotehost}/${instance_name}",
