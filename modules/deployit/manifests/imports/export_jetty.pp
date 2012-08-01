@@ -29,7 +29,7 @@ define deployit::imports::export_jetty(
 	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
 	}
-	
+	notify{"$name  eu: ${ensure_universe} ea: ${ensure_age}":}
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
 		deployit::types::jetty_ssh {
