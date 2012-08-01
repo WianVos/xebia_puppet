@@ -69,13 +69,13 @@ define postgresql::export_create_db(
 		}
 		
 		@@deployit::imports::export_postgresql{
-			"${remotehost}-${db_name}":
+			"${::hostname}-${db_name}":
 				dbname	=> "${db_name}",
 				customer => "${customer}",
 				application => "${application}",
 				universe	=> "${universe}",
-				remotehost	=> "${remotehost}",
-				remotefqdn	=> "${remotefqdn}",
+				remotehost	=> "${::hostname}",
+				remotefqdn	=> "${::fqdn}",
 				db_username	=> "${db_user}",
 				db_password => "${db_password}",
 				appstage	=> "${appstage}"

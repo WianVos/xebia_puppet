@@ -55,9 +55,9 @@ define deployit::types::postgresql_ssh (
 					"${customer}/${application}/${appstage} dir", "${customer} dir"]
 			}
 		}
-		if !defined(Deployit::Features::Ci["${remotehost}-ssh-host"]) {
+		if !defined(Deployit::Features::Ci["${remotehost} ssh-host"]) {
 			deployit::features::ci {
-				"${remotehost}-ssh-host" :
+				"${remotehost} ssh-host" :
 					ciId => "Infrastructure/${remotehost}",
 					ciType => 'overthere.SshHost',
 					ciValues => {os => UNIX, connectionType => SUDO, username => 'deployit',
