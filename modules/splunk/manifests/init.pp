@@ -27,7 +27,11 @@ class splunk ($packages = params_lookup('packages'),
 	$puppetfiles_source		= params_lookup('puppetfiles_source'),
 	$default_passwd				= params_lookup('default_passwd'),
 	$admin_passwd				= params_lookup('admin_passwd'),
-	$admin_user					= params_lookup('admin_user')
+	$admin_user					= params_lookup('admin_user'),
+	$infra_dir				= params_lookup('infra_dir'),
+	$config_dir				= params_lookup('config_dir'),
+	$script_dir				= params_lookup('script_dir'),
+	$marker_dir				= params_lookup('marker_dir')
 	
 	) inherits splunk::params {
 	# setup the concat module for later use
