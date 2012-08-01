@@ -14,7 +14,7 @@ define postgresql::export_create_db(
         }
 
 	#initialize a couple of variables on the importing side	
-	$db_user		= "${customer}_${application}_user"
+	$db_user		= "${customer}_${application}_${appstage}_user"
 	$db_password	= "${customer}_${application}_password"
 	$db_name		= "${customer}-${application}-${appstage}"
 	$local_universe  = params_lookup("universe", global)
