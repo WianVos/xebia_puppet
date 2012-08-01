@@ -79,7 +79,7 @@ define deployit::types::postgresql_ssh (
 					"${db_name}", username => "${db_username}", password => "${db_password}"},
 					ciEnvironments =>
 					"${customer}/${application}/${appstage}/${application}-${appstage}",
-					require => Deployit::Features::Ci["${remotehost}-ssh-host"],
+					require => Deployit::Features::Ci["${remotehost} ssh-host"],
 					ensure => present,
 			}
 		}
