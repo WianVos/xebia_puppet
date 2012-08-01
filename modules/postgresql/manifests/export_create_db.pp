@@ -9,10 +9,7 @@ define postgresql::export_create_db(
 	$remotefqdn =   "${::remotefqdn}",
 	$datadir	=   "/data"
 	){
-	notify {
-                "export_db $name" :
-        }
-
+	
 	#initialize a couple of variables on the importing side	
 	$db_user		= "${customer}_${application}_${appstage}_user"
 	$db_password	= "${customer}_${application}_password"
@@ -20,7 +17,10 @@ define postgresql::export_create_db(
 	$local_universe  = params_lookup("universe", global)
 	$local_customer	=  params_lookup("customer", global)
 	$db_owner	= params_lookup("install_owner") 	
-
+    notify {
+                "export_db $db_name" :
+        }
+    
 	# check age of facts ..
 	$age = inline_template("<%= require 'time'; Time.now - Time.parse(timestamp) %>")
 	
