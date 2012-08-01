@@ -4,14 +4,14 @@ customer : <customer>
 application : <application>
 appstage : <appstage>
 jetty_instances :
- <customer>-<application>-1 :
+ <customer>-<application>-<appstage>-1 :
     port : 8080
     application : <application>
     customer : <customer>
     appstage : <appstage>
     auto_db : false
     auto_deployit : true
- <customer>-<application>-2 :
+ <customer>-<application>-<appstage>-2 :
     port : 8090
     application : <application>
     customer : <customer>
