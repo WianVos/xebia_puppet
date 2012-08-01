@@ -25,11 +25,11 @@ define deployit::imports::export_postgresql(
 	
 	if ("${age}" < "${maxage}") {
 		$ensure_age = true
-		notify{"${name} age: ${age} timestamp: ${timestamp} too old ":} 
+		notify{"${name} age: ${age} timestamp: ${timestamp} where ok ":} 
 	}
 	if ("${universe}" == params_lookup("universe", global)) {
 		$ensure_universe = true
-		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} wrong universe ":}
+		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} correct universe ":}
 	}
 	
 	if (($ensure_age == true) and ($ensure_universe == true)) {
