@@ -16,7 +16,7 @@ define postgresql::export_create_db(
 	#initialize a couple of variables on the importing side	
 	$db_user		= "${customer}_${application}_user"
 	$db_password	= "${customer}_${application}_password"
-	$db_name		= "${customer}-${application}"
+	$db_name		= "${customer}-${application}-${appstage}"
 	$local_universe  = params_lookup("universe", global)
 	$local_customer	=  params_lookup("customer", global)
 	$db_owner	= params_lookup("install_owner") 	
@@ -39,7 +39,7 @@ define postgresql::export_create_db(
 		# if the database does not exist create it 
 		if ! defined(Postgresql::Database["${customer}-${application}"]) {
 			postgresql::database {
-				"${customer}-${application}" :
+				"${db_name}" :
 			}
 		}
 
