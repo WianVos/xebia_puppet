@@ -63,8 +63,6 @@ define deployit::types::postgresql_ssh (
 					ciValues => {os => UNIX, connectionType => SUDO, username => 'deployit',
 					password => 'deployit', sudoUsername => 'root', address =>
 					"${remotefqdn}", privateKeyFile => "/opt/deployit/keys/jetty_id_rsa"},
-					ciEnvironments =>
-					"Environments/${customer}/${application}/${appstage}/${application}-${appstage}",
 					ensure => present,
 					require =>
 					Deployit::Features::Ci["${customer}/${application}/${appstage}/${application}-${appstage} env"]
@@ -78,7 +76,7 @@ define deployit::types::postgresql_ssh (
 					ciValues => {postgresqlHome => "$postgresql_home", databaseName =>
 					"${db_name}", username => "${db_username}", password => "${db_password}"},
 					ciEnvironments =>
-					"${customer}/${application}/${appstage}/${application}-${appstage}",
+					"Environments/${customer}/${application}/${appstage}/${application}-${appstage}",
 					require => Deployit::Features::Ci["${remotehost} ssh-host"],
 					ensure => present,
 			}
