@@ -23,15 +23,15 @@ class splunk ($packages = params_lookup('packages'),
 	$universe = params_lookup('universe', 'global'),
 	$application = params_lookup('application', 'global'),
 	$customer = params_lookup('customer', 'global'),
-	$puppetfiles_tarfile	= params_lookup('puppetfiles_tarfile'),			
-	$puppetfiles_source		= params_lookup('puppetfiles_source'),
-	$default_passwd				= params_lookup('default_passwd'),
-	$admin_passwd				= params_lookup('admin_passwd'),
-	$admin_user					= params_lookup('admin_user'),
-	$infra_dir				= params_lookup('infra_dir'),
-	$config_dir				= params_lookup('config_dir'),
-	$script_dir				= params_lookup('script_dir'),
-	$marker_dir				= params_lookup('marker_dir')
+	$puppetfiles_tarfile = params_lookup('puppetfiles_tarfile'),
+	$puppetfiles_source = params_lookup('puppetfiles_source'),
+	$default_passwd = params_lookup('default_passwd'),
+	$admin_passwd = params_lookup('admin_passwd'),
+	$admin_user = params_lookup('admin_user'),
+	$infra_dir = params_lookup('infra_dir'),
+	$config_dir = params_lookup('config_dir'),
+	$script_dir = params_lookup('script_dir'),
+	$marker_dir = params_lookup('marker_dir')
 	
 	) inherits splunk::params {
 	# setup the concat module for later use
@@ -175,7 +175,7 @@ class splunk ($packages = params_lookup('packages'),
 		'splunk_init' :
 			command =>
 			"${homedir}/bin/splunk start --accept-license --no-prompt --answer-yes > ${markerdir}/${name}.txt",
-			creates => "${markerdir}/${name}.txt",
+			creates => "${marker_dir}/${name}.txt",
 			require => File["${homedir}/etc"]
 	}
 	# create startup script 	
@@ -188,11 +188,11 @@ class splunk ($packages = params_lookup('packages'),
 	}
 	
 	exec {"change_default_password":
-		command => "splunk edit user ${admin_user} -password ${default_passwd} -role admin -auth ${admin_user}:${default_passwd} > ${markerdir}/etc/splunk_${admin_user}",
+		command => "splunk edit user ${admin_user} -password ${default_passwd} -role admin -auth ${admin_user}:${default_passwd} > ${marker_dir}/etc/splunk_${admin_user}",
 		path => "${homedir}/bin",
-		creates => "${markerdir}/etc/splunk_${admin_user}",
+		creates => "${marker_dir}/etc/splunk_${admin_user}",
 		logoutput => true,
-		require => [File["${markerdir}"],Exec["splunk_init"]]
+		require => [File["${marker_dir}"],Exec["splunk_init"]]
 	
 	}
 	
