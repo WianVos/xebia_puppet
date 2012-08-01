@@ -20,8 +20,8 @@ define postgresql::database(
   case $ensure {
     present: {
       exec { "Create $name postgresql db":
-        command => "sudo su - ${install_owner} -c \"${homedir}/bin/createdb ${ownerstring} ${encodingstring} ${name} -T ${template}\"",
-	unless => "${homedir}/bin/psql -l |/bin/grep $name",
+        command => "/usr/bin/sudo /bin/su - ${install_owner} -c \"${homedir}/bin/createdb ${ownerstring} ${encodingstring} ${name} -T ${template}\"",
+	unless => "${homedir}/bin/psql -l |/bin/grep ${name}",
         user => "${owner}",
         require => Service['postgresql']
       }
