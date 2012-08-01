@@ -21,7 +21,7 @@ define postgresql::database(
     present: {
       exec { "Create $name postgresql db":
         command => "/usr/bin/sudo /bin/su - ${install_owner} -c \"${homedir}/bin/createdb ${ownerstring} ${encodingstring} ${name} -T ${template}\"",
-	unless => "${homedir}/bin/psql -l |/bin/grep ${name}",
+		unless => "/bin/su - postgresql -c \"${homedir}/bin/psql -l |/bin/grep ${name} \"",
         require => Service['postgresql']
       }
     }
