@@ -31,6 +31,7 @@ define deployit::imports::export_postgresql(
 		$ensure_universe = true
 		 notify{"${name} universe: ${local_universe} imported_universe: ${universe} correct universe ":}
 	}
+	notify{"$name  eu: ${ensure_universe} ea: ${ensure_age}":}
 	
 	if (($ensure_age == true) and ($ensure_universe == true)) {
 		
