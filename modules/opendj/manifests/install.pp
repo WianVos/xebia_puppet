@@ -5,7 +5,7 @@ class opendj::install (
 		case $opendj::install {
 			source : {
 				xebia_common::source {
-					"${opendj::install_source_url}" :
+					"${opendj::install_file}" :
 						source_url => "${opendj::install_source_url}",
 						target => "${opendj::homedir}",
 						regdir => "${opendj::markerdir}"
