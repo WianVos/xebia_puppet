@@ -7,7 +7,8 @@ class opendj::install (
 				xebia_common::source {
 					"${opendj::install_source_url}" :
 						source_url => "${opendj::install_source_url}",
-						target => "${opendj::homedir}"
+						target => "${opendj::homedir}",
+						regdir => "${opendj::markerdir}"
 				}
 				exec {
 					"opendj install" :
