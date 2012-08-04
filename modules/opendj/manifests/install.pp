@@ -1,7 +1,7 @@
 class opendj::install (
 	$ensure = "present"
 ) {
-	if ${ensure} == "present" {
+	if "${ensure}" == "present" {
 		case $opendj::install {
 			source : {
 				xebia_common::source {
