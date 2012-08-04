@@ -29,7 +29,7 @@ define xebia_common::archive::zip (
 	}
 
  	exec {"$name download and unpack":
-    		command 	=> "bash -c TMPFILE=`/bin/mktemp -u`; /usr/bin/curl -o \$TMPFILE.zip --url ${source_url} && unzip \$TMPFILE.zip -d ${target} && rm \$TMPFILE.zip && && chown -R ${owner}:${group} ${target} && chmod -R ${mode} ${target} && touch ${regdir}/${name}",
+    		command 	=> "bash -c TMPFILE=`/bin/mktemp -u`; /usr/bin/curl -o \$TMPFILE.zip --url ${source_url} && unzip \$TMPFILE.zip -d ${target} && rm \$TMPFILE.zip && chown -R ${owner}:${group} ${target} && chmod -R ${mode} ${target} && touch ${regdir}/${name}",
     		creates 	=> "$regdir/$name",
     		require 	=> [Package["unzip","curl"],File["${target}"]],
     		path 		=> ["/bin","/usr/bin", "/usr/sbin"],
