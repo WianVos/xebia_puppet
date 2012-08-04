@@ -1,9 +1,9 @@
 class jenkins::install inherits jenkins {
 	# case the different installation methods
 	# so far we only have one, but we can add the as we go 
-	case $jenkins::install {
+	case $opendj::install {
 		package : {
-			require jenkins::repository
+			
 			package {
 				'jenkins' :
 					ensure => $jenkins::manage_package,
