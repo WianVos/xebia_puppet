@@ -25,7 +25,8 @@ class opendj (
 	$mgtport					= params_lookup('mgtport'),	
 	$basedn						= params_lookup('basedn'),	
 	$rootuser					= params_lookup('rootuser'),	
-	$rootpassword				= params_lookup('rootpassword')	
+	$rootpassword				= params_lookup('rootpassword'),
+	$java_parameters			= params_lookup('java_parameters')
 	
 											  
 	

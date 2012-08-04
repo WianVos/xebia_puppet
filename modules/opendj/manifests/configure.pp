@@ -1,6 +1,9 @@
 class opendj::configure (
 	$ensure = "present"
 ) {
+	#import variables needed for templates
+	$java_parameters = "${opendj::java_parameters}"
+	
 	if $ensure == "present" {
 		xebia_common::ulimit {
 			"opendj root nofiles ulimit" :
