@@ -1,4 +1,3 @@
-class splunk_host{
-	include splunk
-	
+class opendj_host{
+	include opendj
 }
