@@ -15,7 +15,8 @@ class opendj::install (
 						command =>
 						"${opendj::homedir}/setup --cli --baseDN ${opendj::basedn} --ldapPort ${opendj::ldapport} --adminConnectorPort ${opendj::mgtport} --rootUserDN cn=\'${opendj::rootuser}\' --rootUserPassword ${opendj::rootpassword} --no-prompt --noPropertiesFile && touch ${opendj::homedir}/puppetinstalledopendj.txt ",
 						creates => "${opendj::homedir}/puppetinstalledopendj.txt",
-						require => Xebia_common::Source["${opendj::install_file}"]
+						require => Xebia_common::Source["${opendj::install_file}"],
+						logoutput => true
 				}
 			}
 			default : {
