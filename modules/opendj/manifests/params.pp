@@ -34,7 +34,7 @@ class opendj::params{
 	# opendj settings
 	$ldapport					=	'389'
 	$mgtport					=	'4444'
-	$basedn						=	"dc=${universe},dc=com"
+	$basednsuffix				=	"dc=com"
 	$rootuser					=	"Directory Manager"
 	$rootpassword				=	"xebiapuppet01"
 	$java_parameters			=	"-server -Xmx2046m -Xms1024m"

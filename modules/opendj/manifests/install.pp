@@ -1,6 +1,10 @@
 class opendj::install (
-	$ensure = "present"
+	$ensure = "present",
+	$basedn = "${opendj::universe},${opendj::basednsuffix}"
+	
 ) {
+	
+	
 	if "${ensure}" == "present" {
 		case $opendj::install {
 			source : {
@@ -13,7 +17,7 @@ class opendj::install (
 				exec {
 					"opendj install" :
 						command =>
-						"${opendj::homedir}/setup --cli --baseDN ${opendj::basedn} --ldapPort ${opendj::ldapport} --adminConnectorPort ${opendj::mgtport} --rootUserDN cn=\'${opendj::rootuser}\' --rootUserPassword ${opendj::rootpassword} --no-prompt --noPropertiesFile && touch ${opendj::homedir}/puppetinstalledopendj.txt ",
+						"${opendj::homedir}/setup --cli --baseDN ${basedn} --ldapPort ${opendj::ldapport} --adminConnectorPort ${opendj::mgtport} --rootUserDN cn=\'${opendj::rootuser}\' --rootUserPassword ${opendj::rootpassword} --no-prompt --noPropertiesFile && touch ${opendj::homedir}/puppetinstalledopendj.txt ",
 						creates => "${opendj::homedir}/puppetinstalledopendj.txt",
 						require => Xebia_common::Source["${opendj::install_file}"],
 						logoutput => true
