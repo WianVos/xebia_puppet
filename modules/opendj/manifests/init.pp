@@ -12,7 +12,7 @@ class opendj (
 	$install_source_url			= params_lookup('install_source_url'),
 	$install_owner				= params_lookup('install_owner'),
 	$install_group				= params_lookup('install_group'),
-	$universe					= params_lookup('universe'),
+	$universe					= params_lookup('universe', 'global'),
 	$plugin_install				= params_lookup('plugin_install'),
 	$key_install				= params_lookup('key_install'),
 	$export_facts				= params_lookup('export_facts'),
