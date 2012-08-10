@@ -1,6 +1,6 @@
 class opendj::install (
 	$ensure = "present",
-	$basedn = "${opendj::universe},${opendj::basednsuffix}"
+	$basedn = "dc=${opendj::universe},${opendj::basednsuffix}"
 	
 ) {
 	
