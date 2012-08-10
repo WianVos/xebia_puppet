@@ -1,7 +1,7 @@
 class opendj::params{
 	
 	
-	$version 					= 	'2.5.0'
+	$version 					= 	'2.4.6'
 	$homedir 					= 	"/opt/OpenDJ-${version}"
 	$install_owner				= 	'opendj'
 	$install_group				= 	'opendj'
