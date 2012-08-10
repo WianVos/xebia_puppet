@@ -1,20 +1,17 @@
-define opendj::ldiff(
+define opendj::ldif(
 	$ensure 	= "present",
 	$ldiffFile,
 	$rootuser		= "${opendj::rootuser}",
 	$rootpassword	= "${opendj::rootpassword}",
-	$mgtport		= "${opendj::mgtport}",
+	$ldapport		= "${opendj::ldapport}",
 	$hostname		= "localhost",
-	$includeBranch	= "dc=${opendj::universe},${opendj::basednsuffix}"
-		
+	$markerdir		= "${opendj::markerdir}"	
 ){
-	#import-ldif
- 	#--port 4444
- 	#--hostname opendj.example.com
- 	#--bindDN "cn=Directory Manager"
- 	#--bindPassword password
-  	#--includeBranch dc=example,dc=org
- 	#--backendID userRoot
- 	#--ldifFile /path/to/generated.ldif
- 	#--trustAll
+	exec{ "${name}_ldiff":
+		require => [Package["ldap-utils"],Service["opendj"]],
+		command => "/usr/bin/ldapmodify -h 'localhost' -p ${ldapport} -D \"${rootuser}\" -w ${rootpassword} -f ${ldiffFile} && touch ${markerdir}/${name}_ldiff ",
+		creates => "${markerdir}/${name}_ldiff",
+		logoutput 	=> true,
+	}
+	
 }

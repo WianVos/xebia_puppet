@@ -16,7 +16,7 @@ class opendj::params{
 	$universe					= 	'general'
 
 	#module management settings
-	$packages 					= 	['openjdk-6-jdk', 'unzip']
+	$packages 					= 	['openjdk-6-jdk', 'unzip', 'ldap-utils']
 	$tmpdir						= 	'/var/tmp/opendj'
 	$absent 					=	false
 	$disabled 					= 	false
