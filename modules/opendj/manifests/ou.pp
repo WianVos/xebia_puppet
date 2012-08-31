@@ -1,13 +1,13 @@
 define opendj::ou(
 	$ensure = "present",
 	$confdir = "${opendj::confdir}",
-	$dn = "none",
+	$domainName = "none",
 	$ou		= "${name},"
 ){
 	#setting the dn
-	case $dn {
+	case $domainName {
 		"none": {$dn = "ou=${ou},dc=${opendj::universe},dc=${opendj::basednsuffix}"}
-		default: {$dn = "ou=${ou},${dn}"}
+		default: {$dn = "ou=${ou},${domainName}"}
 	}
 	
 	
