@@ -165,6 +165,6 @@ class opendj (
 			}
 		default: {}
 	}
-	create_resources(opendj::jetty, "$entitys")
+	create_resources(opendj::entity, "$entitys")
 	
 	}
