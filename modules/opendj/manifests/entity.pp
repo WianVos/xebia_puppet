@@ -1,6 +1,7 @@
 define opendj::entity(
 	$ensure = "present",
-	$confdir = "${opendj::confdir}"
+	$confdir = "${opendj::confdir}",
+	$dn	
 	
 ){
 	# set ensure
@@ -9,7 +10,7 @@ define opendj::entity(
 		default : { $changeType="add"   }
 	}
 	# get the first part of the name (being the dn) 
-	$firstPart = inline_template("<%= name.split(\",\").first %>")
+	$firstPart = inline_template("<%= dn.split(\",\").first %>")
 	$ident 		= inline_template("<%= firstPart.split(\"=\").first %>")
 	$entity_name = inline_template("<%= firstPart.split(\"=\").second %>")		
 	
@@ -17,11 +18,10 @@ define opendj::entity(
 	case $ident {
 		"ou" : { $template = "ou.ldif.erb"
 				 $ou = "$firstPart"
-				 $dn = "${name}"
+				 
 		}
 		"dc" : { $template = "domain.ldif.erb"
 				 $dc = "$firstPart"
-				 $dn = "${name}"
 		}
 	}	
 	
