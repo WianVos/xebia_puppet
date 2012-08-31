@@ -161,10 +161,10 @@ class opendj (
 	
 	case $entitys {
 		"": {	include opendj::ldif_params
-			create_resources("$entitys", opendj::entity)
+			
 			}
-		default: {create_resources("$entitys", opendj::entity)}
+		default: {}
 	}
-	
+	create_resources(opendj::jetty, "$entitys")
 	
 	}
