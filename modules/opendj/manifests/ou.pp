@@ -5,7 +5,7 @@ define opendj::ou(
 	$ou		= "${name}"
 ){
 	#setting the dn
-	$dn = "${ou},${dn_suffix}"
+	$dn = "ou=${ou},${dn_suffix}"
 	
 	case $ensure {
 		"absent": { $changeType="delete"}
