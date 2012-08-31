@@ -6,7 +6,7 @@ define opendj::ou(
 ){
 	#setting the dn
 	case $domainName {
-		"none": {$dn = "ou=${ou},dc=${opendj::universe},dc=${opendj::basednsuffix}"}
+		"none": {$dn = "ou=${ou},dc=${opendj::universe},${opendj::basednsuffix}"}
 		default: {$dn = "ou=${ou},${domainName}"}
 	}
 	
