@@ -39,7 +39,7 @@ define opendj::entity(
 	}
 	
 	opendj::ldif{"${ident}_${entity_name}":
-		ldifFile => "${confdir}/${name}_${ident}.ldif",
+		ldifFile => "${confdir}/${entity_name}_${ident}.ldif",
 		require => File["Ldif_${entity_name}_${ident}"]
 	}
 }
