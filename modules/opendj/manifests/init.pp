@@ -26,8 +26,11 @@ class opendj (
 	$rootuser					= params_lookup('rootuser'),	
 	$rootpassword				= params_lookup('rootpassword'),
 	$java_parameters			= params_lookup('java_parameters'),
-	$basednsuffix				= params_lookup('basednsuffix')
-	
+	$basednsuffix				= params_lookup('basednsuffix'),
+	$ous						= params_lookup('ous'),
+	$persons					= params_lookup('persons'),
+	$groups						= params_lookup('groups')
+		
 											  
 	
 	) inherits opendj::params {
