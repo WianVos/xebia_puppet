@@ -14,6 +14,6 @@ define opendj::ldif (
 			creates => "${markerdir}/${name}_ldif",
 			logoutput => true,
 			returns => [0, 68, 32],
-			onlyif => ["test -f ${markerdir}", "test -f ${ldifFile}"]
+			onlyif => ["/usr/bin/test -f ${markerdir}", "/usr/bin/test -f ${ldifFile}"]
 	}
 }
