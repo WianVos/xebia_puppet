@@ -1,16 +1,14 @@
-define opendj::ou(
+define opendj::domain(
 	$ensure = "present",
 	$confdir = "${opendj::confdir}",
-	$dn = "none",
-	$ou		= "${name},"
+	$dn = "none", 	
+	$dc = "${name}"		
 ){
-	#setting the dn
+	
 	case $dn {
-		"none": {$dn = "ou=${ou},dc=${opendj::universe},dc=${opendj::basednsuffix}"}
-		default: {$dn = "ou=${ou},${dn}"}
+		"none": {$dc = "dc=${dc},dc=${opendj::universe},dc=${opendj::basednsuffix}"}
+		default: {$dn = "dc=${dc},${dn}"}
 	}
-	
-	
 	case $ensure {
 		"absent": { $changeType="delete"}
 		default : { $changeType="add"   }

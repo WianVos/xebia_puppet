@@ -25,7 +25,7 @@ class opendj::install (
 			}
 			default : {
 				notify {
-					"no default installation method for available for jenkins" :
+					"no default installation method for available for opendj" :
 				}
 			}
 		}

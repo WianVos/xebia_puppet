@@ -40,9 +40,9 @@ class opendj::params{
 	$java_parameters			=	"-server -Xmx2046m -Xms1024m"
 											  
 	#ldap import settings
-	$ous 				= { 'applications' => {dn_suffix => "dc=${universe},${basednsuffix}"},
-							'groups' => {dn_suffix => "dc=${universe},${basednsuffix}"},
-							'users' => {dn_suffix => "dc=${universe},${basednsuffix}"}}
+	$ous 				= { 'applications' => {ensure => "present"},
+							'groups' => {ensure => "present"},
+							'users' => {ensure => "present"}}
 	
 
 }
