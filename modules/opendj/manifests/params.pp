@@ -39,10 +39,7 @@ class opendj::params{
 	$rootpassword				=	"xebiapuppet01"
 	$java_parameters			=	"-server -Xmx2046m -Xms1024m"
 											  
-	#ldap import settings
-	$ous 				= { 'applications' => {ensure => "present"},
-							'groups' => {ensure => "present"},
-							'users' => {ensure => "present"}}
+	
 	
 
 }

@@ -27,11 +27,7 @@ class opendj (
 	$rootpassword				= params_lookup('rootpassword'),
 	$java_parameters			= params_lookup('java_parameters'),
 	$basednsuffix				= params_lookup('basednsuffix'),
-	$ous						= params_lookup('ous'),
-	$persons					= params_lookup('persons'),
-	$groups						= params_lookup('groups')
-		
-											  
+	$entitys					= params_lookup('entitys')
 	
 	) inherits opendj::params {
 		#set various manage parameters in accordance to the $absent directive
@@ -163,13 +159,11 @@ class opendj (
 			pattern => "OpenDJ-${opendj::version}"
 	}
 	
-	#create ous
-	create_resources(opendj::ou, $ous )
-	#create groups
-	#create_resources(opendj::group, $groups )
-	#create persons
-	#create_resources(opendj::person, $persons )
-	#integrate
+	case $entitys {
+		"": {include opendj::ldif_params}
+		default: {}
+	}
 	
+	create_resources("$entitys", opendj::entity)
 	
 	}
