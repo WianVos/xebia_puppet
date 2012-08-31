@@ -160,6 +160,12 @@ class opendj (
 			pattern => "OpenDJ-${opendj::version}"
 	}
 	
+	#create ous
+	create_resources(opendj::ou, $ous )
+	#create groups
+	#create_resources(opendj::group, $groups )
+	#create persons
+	#create_resources(opendj::person, $persons )
 	#integrate
 	
 	

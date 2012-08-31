@@ -1,9 +1,12 @@
 define opendj::ou(
 	$ensure = "present",
 	$confdir = "${opendj::confdir}",
-	$dn, 	
+	$dn_suffix, 	
 	$ou		= "${name}"
 ){
+	#setting the dn
+	$dn = "${ou},${dn_suffix}"
+	
 	case $ensure {
 		"absent": { $changeType="delete"}
 		default : { $changeType="add"   }
