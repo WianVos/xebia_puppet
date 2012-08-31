@@ -10,7 +10,7 @@ define opendj::ldif (
 		"${name}_ldiff" :
 			#require => [Package["ldap-utils"], Service["opendj"]],
 			command =>
-			"/usr/bin/ldapmodify -h 'localhost' -p ${ldapport} -D \"${rootuser}\" -w ${rootpassword} -f ${ldifFile} && touch ${markerdir}/${name}_ldif ",
+			"/usr/bin/ldapmodify -h 'localhost' -p ${ldapport} -D \'${rootuser}\' -w ${rootpassword} -f ${ldifFile} && touch ${markerdir}/${name}_ldif ",
 			creates => "${markerdir}/${name}_ldif",
 			logoutput => true,
 			returns => [0, 68, 32],

@@ -2,7 +2,7 @@ define opendj::ou(
 	$ensure = "present",
 	$confdir = "${opendj::confdir}",
 	$domainName = "none",
-	$ou		= "${name},"
+	$ou		= "${name}"
 ){
 	#setting the dn
 	case $domainName {
